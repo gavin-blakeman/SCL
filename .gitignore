@@ -1,0 +1,7 @@
+Makefile.*
+Makefile
+*.user
+*.html
+/documentation/html/
+/documentation/latex/
+*.filters
