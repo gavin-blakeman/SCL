@@ -31,12 +31,12 @@ else:unix:CONFIG(release, debug|release) {
   OBJECTS_DIR = "../Library/unix/release/object/SCL"
 }
 else:unix:CONFIG(debug, debug|release) {
-  DESTDIR = "../Library/unix/debug"
-  OBJECTS_DIR = "../Library/unix/debug/object/SCL"
+  DESTDIR = ""
+  OBJECTS_DIR = "objects"
 }
 
 INCLUDEPATH += \
-  "../Boost/boost 1.62" \
+  "../boost 1.62" \
   "../GCL" \
   "../MCL"
 

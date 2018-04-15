@@ -26,7 +26,7 @@
 //
 // OVERVIEW:
 //
-// HISTORY:             2015-09-22 GGB - AIRDAS 2015.09 release
+// HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
 //
 //**********************************************************************************************************************************
 
@@ -52,11 +52,11 @@
  *
  * @section Projects
  * The Storage Class Library is used as the Astronomy Library by the following projects.
- * @li Astronomical Image Reduction and Data Analysis Software.  (<a href="http://www.airdas.net">AIRDAS</a>)
+ * @li Astronomical Image Reduction and Data Analysis Software.  (<a href="http://www.astroManager.net">astroManager</a>)
  * @li The Robotic Observatory Project (<a href="http://www.theroboticobservatory.org">The Robotic Observatory</a>)
  *
  * @section Development
- * The library is still under active development and is being expanded and improved along with the development of the AIRDAS
+ * The library is still under active development and is being expanded and improved along with the development of the astroManager
  * application.
  * @par Note
  * The classes within this library have been in development from 2005. As a result, all the code is not written using the
@@ -70,7 +70,7 @@
  * @par Source Code
  * The source code can be downloaded as a zipped file from the <a href="https://bugzilla.theroboticobservatory.org">The Robotic
  * Observatory project.</a>.<br>
- * The source code is also included in the source package for the <a href="http://www.airdas.net">AIRDAS Project</a>. Where it
+ * The source code is also included in the source package for the <a href="http://www.astroManager.net">astroManager Project</a>. Where it
  * can be downloaded from the project site, or from the project site on Launchpad.
  *
  * @section Legal

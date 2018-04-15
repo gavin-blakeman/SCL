@@ -26,7 +26,7 @@
 //                      3) The list can be traversed in either direction.
 //                      4) Implemented using a doubly-linked list.
 //
-// HISTORY:             2015-09-22 GGB - AIRDAS 2015.09 release
+// HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
 //                      2010-04-28 GGB - Unscrabble Application Release 1.00
 //
 //*****************************************************************************

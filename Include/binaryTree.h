@@ -23,11 +23,11 @@
 // OVERVIEW:            1. Items are inserted into the binary tree in the correct sorted position
 //                      2. The binary tree iterator will iterate the tree in the correct order. (Asc and Desc)
 //
-// HISTORY:             2015-09-22 GGB - AIRDAS 2015.09 release
+// HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
 //                      2015-04-02 GGB - Removed all deprecated functions.
-//                      2013-09-30 GGB - AIRDAS 2013.09 release.
-//                      2013-03-22 GGB - AIRDAS 2013.03 release.
-//                      2013-01-20 GGB - AIRDAS 0000.00 release.
+//                      2013-09-30 GGB - astroManager 2013.09 release.
+//                      2013-03-22 GGB - astroManager 2013.03 release.
+//                      2013-01-20 GGB - astroManager 0000.00 release.
 //                      2010-04-28/GGB - Unscrabble Application Release 1.00
 //                      2010-04-22/GGB - File Created.
 //

@@ -35,7 +35,7 @@
 // NOTE:                This class is complete and usable. However, all overloads of the std::valarray functions have not been
 //                      written.
 //
-// HISTORY:             2015-09-22 GGB - AIRDAS 2015.09 release
+// HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
 //                      2014-01-14 GGB - File created.
 //
 //*********************************************************************************************************************************

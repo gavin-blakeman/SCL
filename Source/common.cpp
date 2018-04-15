@@ -34,7 +34,7 @@
 //
 // FUNCTIONS INCLUDED:  std::string getVersionString()
 //
-// HISTORY:             2015-09-22 GGB - AIRDAS 2015.09 release
+// HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
 //                      2015-06-29 GGB - File created.
 //
 //*********************************************************************************************************************************
