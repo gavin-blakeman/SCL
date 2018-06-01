@@ -226,7 +226,7 @@ SEPARATE_MEMBER_PAGES  = NO
 # uses this value to replace tabs by spaces in code fragments.
 # Minimum value: 1, maximum value: 16, default value: 4.
 
-TAB_SIZE               = 4
+TAB_SIZE               = 2
 
 # This tag can be used to specify a number of aliases that act as commands in
 # the documentation. An alias has the form:
@@ -291,7 +291,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 # Note that for custom extensions you also need to set FILE_PATTERNS otherwise
 # the files are not read by doxygen.
 
-EXTENSION_MAPPING      = 
+EXTENSION_MAPPING      = .no_extension=C++
 
 # If the MARKDOWN_SUPPORT tag is enabled then doxygen pre-processes all comments
 # according to the Markdown format, which allows for more readable
@@ -343,7 +343,7 @@ SIP_SUPPORT            = NO
 # should set this option to NO.
 # The default value is: YES.
 
-IDL_PROPERTY_SUPPORT   = YES
+IDL_PROPERTY_SUPPORT   = NO
 
 # If member grouping is used in the documentation and the DISTRIBUTE_GROUP_DOC
 # tag is set to YES then doxygen will reuse the documentation of the first
@@ -351,14 +351,14 @@ IDL_PROPERTY_SUPPORT   = YES
 # all members of a group must be documented explicitly.
 # The default value is: NO.
 
-DISTRIBUTE_GROUP_DOC   = NO
+DISTRIBUTE_GROUP_DOC   = YES
 
 # If one adds a struct or class to a group and this option is enabled, then also
 # any nested class or struct is added to the same group. By default this option
 # is disabled and one has to add nested compounds explicitly via \ingroup.
 # The default value is: NO.
 
-GROUP_NESTED_COMPOUNDS = NO
+GROUP_NESTED_COMPOUNDS = YES
 
 # Set the SUBGROUPING tag to YES to allow class member groups of the same type
 # (for instance a group of public functions) to be put as a subgroup of that
@@ -367,7 +367,7 @@ GROUP_NESTED_COMPOUNDS = NO
 # \nosubgrouping command.
 # The default value is: YES.
 
-SUBGROUPING            = YES
+SUBGROUPING            = NO
 
 # When the INLINE_GROUPED_CLASSES tag is set to YES, classes, structs and unions
 # are shown inside the group in which they are included (e.g. using \ingroup)
@@ -444,7 +444,7 @@ EXTRACT_PACKAGE        = NO
 # included in the documentation.
 # The default value is: NO.
 
-EXTRACT_STATIC         = NO
+EXTRACT_STATIC         = YES
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES, classes (and structs) defined
 # locally in source files will be included in the documentation. If set to NO,
@@ -542,13 +542,13 @@ SHOW_INCLUDE_FILES     = YES
 # which file to include in order to use the member.
 # The default value is: NO.
 
-SHOW_GROUPED_MEMB_INC  = NO
+SHOW_GROUPED_MEMB_INC  = YES
 
 # If the FORCE_LOCAL_INCLUDES tag is set to YES then doxygen will list include
 # files with double quotes in the documentation rather than with sharp brackets.
 # The default value is: NO.
 
-FORCE_LOCAL_INCLUDES   = NO
+FORCE_LOCAL_INCLUDES   = YES
 
 # If the INLINE_INFO tag is set to YES then a tag [inline] is inserted in the
 # documentation for inline members.
@@ -581,14 +581,14 @@ SORT_BRIEF_DOCS        = NO
 # detailed member documentation.
 # The default value is: NO.
 
-SORT_MEMBERS_CTORS_1ST = NO
+SORT_MEMBERS_CTORS_1ST = YES
 
 # If the SORT_GROUP_NAMES tag is set to YES then doxygen will sort the hierarchy
 # of group names into alphabetical order. If set to NO the group names will
 # appear in their defined order.
 # The default value is: NO.
 
-SORT_GROUP_NAMES       = NO
+SORT_GROUP_NAMES       = YES
 
 # If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by
 # fully-qualified names, including namespaces. If set to NO, the class list will
@@ -809,48 +809,9 @@ INPUT_ENCODING         = UTF-8
 # *.vhd, *.vhdl, *.ucf, *.qsf, *.as and *.js.
 
 FILE_PATTERNS          = *.c \
-                         *.cc \
-                         *.cxx \
                          *.cpp \
-                         *.c++ \
-                         *.java \
-                         *.ii \
-                         *.ixx \
-                         *.ipp \
-                         *.i++ \
-                         *.inl \
-                         *.idl \
-                         *.ddl \
-                         *.odl \
                          *.h \
-                         *.hh \
-                         *.hxx \
-                         *.hpp \
-                         *.h++ \
-                         *.cs \
-                         *.d \
-                         *.php \
-                         *.php4 \
-                         *.php5 \
-                         *.phtml \
-                         *.inc \
-                         *.m \
-                         *.markdown \
-                         *.md \
-                         *.mm \
-                         *.dox \
-                         *.py \
-                         *.pyw \
-                         *.f90 \
-                         *.f \
-                         *.for \
-                         *.tcl \
-                         *.vhd \
-                         *.vhdl \
-                         *.ucf \
-                         *.qsf \
-                         *.as \
-                         *.js
+                         *.hpp
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.
@@ -1658,7 +1619,7 @@ EXTRA_SEARCH_MAPPINGS  =
 # If the GENERATE_LATEX tag is set to YES, doxygen will generate LaTeX output.
 # The default value is: YES.
 
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
