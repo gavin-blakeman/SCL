@@ -69,4 +69,4 @@ HEADERS += \
     Include/binaryTree.h \
     Include/circularbuffer.hpp \
     Include/valarray_mt.hpp \
-    Include/vectorStatic.hpp
+#    Include/vectorStatic.hpp
