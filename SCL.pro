@@ -4,13 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       -= core gui
-
 TARGET = SCL
 TEMPLATE = lib
 CONFIG += staticlib
 
-QMAKE_CXXFLAGS += -std=c++20 -static -static-libgcc #-save-temps=obj
+QT       -= core gui
+
+QMAKE_CXXFLAGS += -std=c++17 -static -static-libgcc #-save-temps=obj
 QMAKE_LFLAGS += -fopenmp
 
 OBJECTS_DIR = "objects"
