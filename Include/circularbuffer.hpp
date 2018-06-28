@@ -1,4 +1,4 @@
-#ifndef CIRCULARBUFFER_HPP
+﻿#ifndef CIRCULARBUFFER_HPP
 #define CIRCULARBUFFER_HPP
 
   // SCL Libraries
@@ -241,7 +241,7 @@ namespace SCL
 
     void incrementTail() noexcept
     {
-      ++tailIndex;      
+      ++tailIndex;
       if (tailIndex == bufferExtent)
       {
         tailIndex = 0;
@@ -420,7 +420,6 @@ namespace SCL
         throw std::out_of_range("Circular Buffer empty, cannot access back() element.");
       }
     }
-
 
     /// @brief Clears the circular buffer.
     /// @param[in] size- The size of the buffer to create.

@@ -10,7 +10,7 @@ TARGET = SCL
 TEMPLATE = lib
 CONFIG += staticlib
 
-QMAKE_CXXFLAGS += -std=c++20 -static -static-libgcc #-save-temps=obj
+QMAKE_CXXFLAGS += -std=c++17 -static -static-libgcc #-save-temps=obj
 QMAKE_LFLAGS += -fopenmp
 
 OBJECTS_DIR = "objects"
@@ -64,9 +64,11 @@ HEADERS += \
     Include/config.h \
     Include/valarray2DP.h \
     Include/algorithm.hpp \
-    Include/array2DP.h \
     Include/array1DP.h \
     Include/binaryTree.h \
     Include/circularbuffer.hpp \
     Include/valarray_mt.hpp \
-    Include/vectorStatic.hpp
+    Include/vectorStatic.hpp \
+    Include/Array2DT.hpp \
+    Include/vector2Dvalarray.hpp \
+    Include/valarray_r.hpp

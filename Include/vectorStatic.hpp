@@ -34,8 +34,8 @@
 //
 //**********************************************************************************************************************************
 
-#ifndef SCL_ARRAY2DT_H
-#define SCL_ARRAY2DT_H
+#ifndef SCL_VECTORSTATIC_H
+#define SCL_VECTORSTATIC_H
 
 #include "common.h"
 
@@ -52,6 +52,7 @@ namespace SCL
   /// @brief This implements a static vector. IE a fixed size vector.
   /// @details This class is used for storing a static vector. This is a fixed length vector. The length of the vector cannot be
   ///          changed after the class is created.
+  /// @todo Complete this class.
 
 
   template<typename T,
@@ -251,6 +252,6 @@ namespace SCL
 
 }	// namespace SCL
 
-#endif // SCL_ARRAY2DT_H
+#endif // SCL_VECTORSTATIC_H
 
 
