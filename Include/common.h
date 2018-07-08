@@ -47,7 +47,7 @@
 
   // Miscellaneous libraries
 
-#include "../GCL/Include/Error.h"    // This is the GCL::Error.h
+#include "../GCL/include/Error.h"    // This is the GCL::Error.h
 
 namespace SCL
 {
