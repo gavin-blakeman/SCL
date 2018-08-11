@@ -8,11 +8,8 @@ TARGET = SCL
 TEMPLATE = lib
 CONFIG += staticlib
 
-<<<<<<< HEAD
-=======
 QT       -= core gui
 
->>>>>>> a0f29eaa97861317c1567072a6378390cd2ff61a
 QMAKE_CXXFLAGS += -std=c++17 -static -static-libgcc #-save-temps=obj
 QMAKE_LFLAGS += -fopenmp
 
@@ -71,11 +68,8 @@ HEADERS += \
     Include/binaryTree.h \
     Include/circularbuffer.hpp \
     Include/valarray_mt.hpp \
-<<<<<<< HEAD
     Include/vectorStatic.hpp \
     Include/Array2DT.hpp \
     Include/vector2Dvalarray.hpp \
     Include/valarray_r.hpp
-=======
 #    Include/vectorStatic.hpp
->>>>>>> a0f29eaa97861317c1567072a6378390cd2ff61a
