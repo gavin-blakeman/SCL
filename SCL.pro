@@ -64,9 +64,12 @@ HEADERS += \
     Include/config.h \
     Include/valarray2DP.h \
     Include/algorithm.hpp \
-    Include/array2DP.h \
     Include/array1DP.h \
     Include/binaryTree.h \
     Include/circularbuffer.hpp \
     Include/valarray_mt.hpp \
+    Include/vectorStatic.hpp \
+    Include/Array2DT.hpp \
+    Include/vector2Dvalarray.hpp \
+    Include/valarray_r.hpp
 #    Include/vectorStatic.hpp
