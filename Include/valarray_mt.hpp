@@ -47,6 +47,9 @@
 
 namespace SCL
 {
+
+
+
   template<typename T>
   class valarray_mt : public std::valarray
   {
@@ -59,9 +62,11 @@ namespace SCL
   };
 
   /// @brief Thread function called by SCL::valarray_mt::sum(...) to determine the sum of an array
+  /// @param[in] indexStart: The starting index in the valarray of this thread.
+  /// @param[in] indexEnd: The ending index of this thread.
+  /// @param[out] sum: The sum calculated by this thread.
   /// @throws None.
-  //
-  // 2014-01-13/GGB - Function created.
+  /// @version 2014-01-13/GGB - Function created.
 
   template<typename T>
   void valarray_mt::sumThread(size_t indexStart, size_t indexEnd, T &sum)
@@ -76,8 +81,8 @@ namespace SCL
   }
 
   /// @brief Multi-threaded sum function for valarray_mt.
-  //
-  // 2014-01-14/GGB - Function created.
+  /// @throws none.
+  /// @version 2014-01-14/GGB - Function created.
 
   template<typename T>
   T valarray_mt::sum() const
@@ -98,9 +103,13 @@ namespace SCL
 
       numberOfThreads = count / 1000;
       if (numberOfThreads == 0)
+      {
         numberOfThreads = 1;
+      }
       else if (numberOfThreads > maxThreads)
+      {
         numberOfThreads = maxThreads;
+      };
 
       stepSize = count / numberOfThreads;
 
@@ -112,9 +121,14 @@ namespace SCL
       {
         indexBegin = indexEnd;
         if (threadNumber == (numberOfThreads - 1) )
+        {
           indexEnd = count;
+        }
         else
+        {
           indexEnd += stepSize;
+        };
+
         thread = new boost::thread(&sumThread<T>, boost::cref(*this), indexBegin, indexEnd, boost::ref(sums[threadNumber]));
         threadGroup.add_thread(thread);
         thread = nullptr;
@@ -122,8 +136,12 @@ namespace SCL
 
       threadGroup.join_all();     // Wait for all the threads to finish.
 
+        // Sum all the results.
+
       for(index = 0; index < numberOfThreads; index++)
+      {
         returnValue += sums[index];
+      };
 
       return returnValue;
   }
