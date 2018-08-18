@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 
+QT       -= core gui
+
 TARGET = SCL
 TEMPLATE = lib
 CONFIG += staticlib
-
-QT       -= core gui
 
 QMAKE_CXXFLAGS += -std=c++17 -static -static-libgcc #-save-temps=obj
 QMAKE_LFLAGS += -fopenmp
@@ -56,20 +56,16 @@ HEADERS += \
     Include/List.h \
     Include/Base.h \
     Include/AVLTree.h \
+    Include/Array2DT.hpp \
     Include/Array.h \
-#    Include/valarray_mt.hpp \
+    Include/valarray_mt.hpp \
     Include/any.h \
     SCL \
     Include/common.h \
     Include/config.h \
     Include/valarray2DP.h \
     Include/algorithm.hpp \
+    Include/array2DP.h \
     Include/array1DP.h \
     Include/binaryTree.h \
-    Include/circularbuffer.hpp \
-    Include/valarray_mt.hpp \
-    Include/vectorStatic.hpp \
-    Include/Array2DT.hpp \
-    Include/vector2Dvalarray.hpp \
-    Include/valarray_r.hpp
-#    Include/vectorStatic.hpp
+    Include/circularbuffer.hpp

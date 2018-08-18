@@ -1,4 +1,4 @@
-﻿//**********************************************************************************************************************************
+//**********************************************************************************************************************************
 //
 // PROJECT:							Storage Class Library
 // FILE:                SCL
@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman (GGB).
 // LICENSE:             GPLv2
 //
-//                      Copyright 2010, 2013-2018 Gavin Blakeman.
+//                      Copyright 2010, 2013-2017 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -76,7 +76,7 @@
  * @section Legal
  * @author Gavin Blakeman (GGB)
  * @version 2013.09
- * @copyright 2005-2018 Gavin Blakeman
+ * @copyright 2005-2017 Gavin Blakeman
  * @par Licence
  * The Storage Class Library is licensed under the GPLv2. The full text of the GPLv2 can be found in the file license.txt that
  * is distributed with the source of the library.<br>
@@ -90,15 +90,13 @@
 
 #include "Include/any.h"
 #include "Include/array1DP.h"
-#include "Include/Array2DT.hpp"
 #include "Include/array2DP.h"
-//#include "Include/vectorStatic.hpp"
+#include "Include/Array2DT.hpp"
 #include "Include/Base.h"
 #include "Include/circularbuffer.hpp"
 #include "Include/common.h"
 #include "Include/config.h"
 #include "Include/AVLTree.h"
-#include "Include/valarray_mt.hpp"
 #include "Include/VectorSorted.hpp"
 
 #endif // SCL_H

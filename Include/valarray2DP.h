@@ -1,4 +1,4 @@
-﻿//**********************************************************************************************************************************
+//*************************************************************************************************
 //
 // PROJECT:							Storage Class Library
 // FILE:								valarray2DP
@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017-2018 Gavin Blakeman.
+//                      Copyright 2015, 2017 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -33,7 +33,7 @@
 // HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
 //                      2015-07-07 GGB - File Created
 //
-//**********************************************************************************************************************************
+//*************************************************************************************************
 
 #ifndef SCL_ARRAYT_H
 #define SCL_ARRAYT_H
