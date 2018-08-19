@@ -1,17 +1,17 @@
 ﻿//*********************************************************************************************************************************
 //
-// PROJECT:							Storage Class Library (SCL)
-// FILE:								Config
-// SUBSYSTEM:						Configuration file
+// PROJECT:							Storage Class Library
+// FILE:								error
+// SUBSYSTEM:						Error Definitions
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	None.
+// LIBRARY DEPENDANCE:	GCL.
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017 Gavin Blakeman.
-//                      This file is part of the Storage Class Library (SCL)
+//                      Copyright 2018 Gavin Blakeman.
+//                      This file is part of the Storage Class Library (PCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General
 //                      Public License as published by the Free Software Foundation, either version 2 of the License, or
@@ -25,24 +25,35 @@
 //                      see <http://www.gnu.org/licenses/>.
 //
 //
-// OVERVIEW:						Configuration values and typedefs for the library.
+// OVERVIEW:						Common definitions that can be used by multiple files
 //
 //
 // CLASSES INCLUDED:		None
 //
 // CLASS HIERARCHY:     None.
 //
-//
-// HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
-//                      2015-07-02 GGB - File created.
+// HISTORY:             2018-08-18 GGB - File Created
 //
 //*********************************************************************************************************************************
 
-#include "../Include/config.h"
+#ifndef SCL_ERROR_H
+#define SCL_ERROR_H
 
-#include <thread>
+  // Standard libraries
+
+#include <cstdint>
+#include <string>
+
+  // Miscellaneous libraries
+
+#include "include/Error.h"      //!!! If the full GCL package is included at this point, it creates cicular references and errors.
 
 namespace SCL
 {
-  size_t maxThreads = std::thread::hardware_concurrency();       // Maximum number of threads that an object will spawn.
+
+#define SCL_ERROR(ERR) (ERROR(SCL, ERR))
+#define SCL_CODE_ERROR CODE_ERROR(SCL)
+
 }
+
+#endif // SCL_COMMON_H

@@ -1,17 +1,17 @@
 ﻿//*********************************************************************************************************************************
 //
-// PROJECT:							Storage Class Library
-// FILE:								common
-// SUBSYSTEM:						Common definitions
+// PROJECT:							Storage Class Library (SCL)
+// FILE:								Config
+// SUBSYSTEM:						Configuration file
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	GCL.
+// LIBRARY DEPENDANCE:	None.
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
 //                      Copyright 2015, 2017-2018 Gavin Blakeman.
-//                      This file is part of the Storage Class Library (PCL)
+//                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General
 //                      Public License as published by the Free Software Foundation, either version 2 of the License, or
@@ -25,45 +25,24 @@
 //                      see <http://www.gnu.org/licenses/>.
 //
 //
-// OVERVIEW:						Common definitions that can be used by multiple files
+// OVERVIEW:						Configuration values and typedefs for the library.
 //
 //
 // CLASSES INCLUDED:		None
 //
 // CLASS HIERARCHY:     None.
 //
+//
 // HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
-//                      2015-06-29 GGB - File Created
+//                      2015-07-02 GGB - File created.
 //
 //*********************************************************************************************************************************
 
-#ifndef SCL_COMMON_H
-#define SCL_COMMON_H
+#include "../include/config.h"
 
-  // Standard libraries
-
-#include <cstdint>
-#include <string>
-
-  // Miscellaneous libraries
-
-#include "../GCL/Include/Error.h"    // This is the GCL::Error.h
+#include <thread>
 
 namespace SCL
 {
-
-  typedef std::uint8_t base_t;
-
-  std::string const SCL_LIBNAME       = "SCL";
-
-  std::string getVersionString();
-
-  void loadErrorMessages();
-
-#define SCL_ERROR(ERR) (ERROR(SCL, ERR))
-#define SCL_CODE_ERROR CODE_ERROR(SCL)
-
-
+  size_t maxThreads = std::thread::hardware_concurrency();       // Maximum number of threads that an object will spawn.
 }
-
-#endif // SCL_COMMON_H

@@ -41,31 +41,33 @@ INCLUDEPATH += \
   "../MCL"
 
 SOURCES += \
-    Source/Array.cpp \
-    Source/AVLTree.cpp \
-    Source/Vector.cpp \
-    Source/common.cpp \
-    Source/config.cpp \
-    Source/valarray2DP.cpp \
-    Source/array2DP.cpp \
-    Source/array1DP.cpp \
+    source/Array.cpp \
+    source/AVLTree.cpp \
+    source/Vector.cpp \
+    source/common.cpp \
+    source/config.cpp \
+    source/valarray2DP.cpp \
+    source/array2DP.cpp \
+    source/array1DP.cpp \
+    source/error.cpp
 
 HEADERS += \
-    Include/VectorSorted.hpp \
-    Include/Vector.h \
-    Include/List.h \
-    Include/Base.h \
-    Include/AVLTree.h \
-    Include/Array2DT.hpp \
-    Include/Array.h \
-    Include/valarray_mt.hpp \
-    Include/any.h \
-    SCL \
-    Include/common.h \
-    Include/config.h \
-    Include/valarray2DP.h \
-    Include/algorithm.hpp \
-    Include/array2DP.h \
-    Include/array1DP.h \
-    Include/binaryTree.h \
-    Include/circularbuffer.hpp
+    include/VectorSorted.hpp \
+    include/Vector.h \
+    include/List.h \
+    include/Base.h \
+    include/AVLTree.h \
+    include/Array2DT.hpp \
+    include/Array.h \
+    include/valarray_mt.hpp \
+    include/any.h \
+    include/common.h \
+    include/config.h \
+    include/valarray2DP.h \
+    include/algorithm.hpp \
+    include/array2DP.h \
+    include/array1DP.h \
+    include/binaryTree.h \
+    include/circularbuffer.hpp \
+    include/error.h \
+    SCL

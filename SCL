@@ -1,4 +1,4 @@
-//**********************************************************************************************************************************
+﻿//**********************************************************************************************************************************
 //
 // PROJECT:							Storage Class Library
 // FILE:                SCL
@@ -88,15 +88,16 @@
  * <a href="http://www.gnu.org/licenses/">The GNU Project</a>
  */
 
-#include "Include/any.h"
-#include "Include/array1DP.h"
-#include "Include/array2DP.h"
-#include "Include/Array2DT.hpp"
-#include "Include/Base.h"
-#include "Include/circularbuffer.hpp"
-#include "Include/common.h"
-#include "Include/config.h"
-#include "Include/AVLTree.h"
-#include "Include/VectorSorted.hpp"
+#include "include/any.h"
+#include "include/array1DP.h"
+#include "include/array2DP.h"
+#include "include/Array2DT.hpp"
+#include "include/Base.h"
+#include "include/circularbuffer.hpp"
+#include "include/common.h"
+#include "include/config.h"
+#include "include/AVLTree.h"
+//#include "include/valarray_mt.hpp"
+#include "include/VectorSorted.hpp"
 
 #endif // SCL_H

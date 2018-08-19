@@ -43,7 +43,7 @@
 #ifndef SCL_AVLTREE_H
 #define SCL_AVLTREE_H
 
-#include "../Include/Base.h"
+#include "../include/Base.h"
 
 namespace SCL
 {

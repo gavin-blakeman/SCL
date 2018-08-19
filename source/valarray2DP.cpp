@@ -1,4 +1,4 @@
-//*************************************************************************************************
+﻿//*************************************************************************************************
 //
 // PROJECT:							Storage Class Library
 // FILE:								valarray2DP
@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015 Gavin Blakeman.
+//                      Copyright 2015, 2018 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -35,19 +35,16 @@
 //
 //*************************************************************************************************
 
-#include "../Include/valarray2DP.h"
+#include "../include/valarray2DP.h"
 
   // SCL Library
 
-#include "../Include/algorithm.hpp"
+#include "../include/algorithm.hpp"
 
-  // GCL Library
+  // Miscellaneous libraries
 
 #include <GCL>
-
-  // MCL Library
-
-#include "../MCL/Include/Statistics/mean.hpp"
+#include <MCL>
 
 namespace SCL
 {
@@ -57,8 +54,7 @@ namespace SCL
   /// @param[in] ny - New y-dimension of the array
   /// @throws std::bad_alloc
   /// @note Calls stride() to determine the size of the data elements. Size can throw RUNTIME_ASSERT.
-  //
-  // 2015-07-07/GGB - Function created.
+  /// @version 2015-07-07/GGB - Function created.
 
   CValarray2DP::CValarray2DP(size_t nx, size_t ny, MCL::ENumericType dt) : data(nullptr), dimX(nx), dimY(ny), dataType(dt)
   {
@@ -68,8 +64,7 @@ namespace SCL
   /// @brief Copy constructor.
   /// @throws std::bad_alloc
   /// @note Uses the mult-threaded copy_mt() function.
-  //
-  // 2011-03-13/GGB - Function created.
+  /// @version 2011-03-13/GGB - Function created.
 
   CValarray2DP::CValarray2DP(const CValarray2DP &toCopy) : data(nullptr), dimX(toCopy.dimX), dimY(toCopy.dimY),
     dataType(toCopy.dataType)
@@ -82,8 +77,7 @@ namespace SCL
   /// @brief Destructor for the class.
   /// @details Ensures that the dynamically allocated array is correctly deleted.
   /// @throws None.
-  //
-  // 2015-07-07/GGB - Function created.
+  /// @version 2015-07-07/GGB - Function created.
 
   CValarray2DP::~CValarray2DP()
   {
@@ -96,8 +90,7 @@ namespace SCL
 
   /// @brief Subscript operator for class.
   /// @throws 0x0001 - Index out of bounds.
-  //
-  // 2015-07-09/GGB - Function created.
+  /// @version 2015-07-09/GGB - Function created.
 
   MCL::CNumeric CValarray2DP::operator() (size_t x, size_t y) const
   {

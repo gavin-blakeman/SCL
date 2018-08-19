@@ -1,4 +1,4 @@
-//*************************************************************************************************
+﻿//**********************************************************************************************************************************
 //
 // PROJECT:             Storage Class Library (SCL)
 // FILE:                Base.h
@@ -7,7 +7,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2010, 2013-2017 Gavin Blakeman.
+//                      Copyright 2010, 2013-2018 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -30,15 +30,20 @@
 //                      2013-01-20 GGB - astroManager 0000.00 release.
 //                      2010-04-28 GGB - Unscrabble Application Release 1.00
 //
-//*************************************************************************************************
+//**********************************************************************************************************************************
 
 #ifndef SCL_BASE_H
 #define SCL_BASE_H
 
+  // Standard C++ library header files.
+
 #include <ostream>
 #include <typeinfo>
 
+  // SCL header files.
+
 #include "common.h"
+#include "error.h"
 
 namespace SCL
 {

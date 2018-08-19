@@ -1,7 +1,7 @@
-//**********************************************************************************************************************************
+﻿//**********************************************************************************************************************************
 //
 // PROJECT:							Storage Class Library
-// FILE:								array2DP
+// FILE:								array1DP
 // SUBSYSTEM:						Polymorphic 2D array
 // LANGUAGE:						C++
 // TARGET OS:						None.
@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017 Gavin Blakeman.
+//                      Copyright 2015, 2017-2018 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -35,12 +35,11 @@
 //
 //**********************************************************************************************************************************
 
-
-#include "../Include/array2DP.h"
+#include "../include/array1DP.h"
 
   // SCL Library
 
-#include "../Include/algorithm.hpp"
+#include "../include/algorithm.hpp"
 
 namespace SCL
 {

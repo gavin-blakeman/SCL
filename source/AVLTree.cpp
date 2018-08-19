@@ -39,7 +39,7 @@
 //
 //*********************************************************************************************************************************
 
-#include "../Include/AVLTree.h"
+#include "../include/AVLTree.h"
 
   // Standard libraries
 
@@ -48,7 +48,7 @@
 
   // SCL header files
 
-#include "../Include/common.h"
+#include "../include/common.h"
 
 namespace SCL
 {

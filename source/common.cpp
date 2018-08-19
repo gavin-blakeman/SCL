@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017 Gavin Blakeman.
+//                      Copyright 2015, 2017-2018 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -39,7 +39,7 @@
 //
 //*********************************************************************************************************************************
 
-#include "../Include/common.h"
+#include "../include/common.h"
 
   // Standard libraries
 
@@ -73,28 +73,5 @@ namespace SCL
     boost::algorithm::to_upper(returnValue);
 
     return returnValue;
-  }
-
-  void loadErrorMessage()
-  {
-    std::vector<std::pair<GCL::TErrorCode, std::string>> errors =
-    {
-      {0x0001, std::string("Index out of bounds")},
-      {0x0002, std::string("Variable not initialised") },
-      {0x0003, std::string("Null Package") },
-      {0x0004, std::string("Container is empty.") },
-      {0x0100, std::string("Array: Index out of bounds") },
-      {0x0200, std::string("CAny: PackageDate == nullptr") },
-      {0x0300, std::string("ARRAY2D: stride value cannot be zero.") },
-      {0x0301, std::string("ARRAY2D: Dimensions cannot be zero.") },
-      {0x0302, std::string("ARRAY2D: Index out of bounds")},
-      {0x0400, std::string("ARRAY1DP: Arrays are not the same dimensions.")},
-      {0x1000, std::string("AVLTree: Index out of Bounds") },
-      {0x2000, std::string("VectorSorted: Incorrect iterator for object.")},
-      {0x2001, std::string("VectorSorted: Index out of bounds [0; size()].")}
-    };
-
-    std::for_each(errors.begin(), errors.end(),
-                  [] (std::pair<GCL::TErrorCode, std::string> p) { GCL::CError::addErrorMessage("SCL", p.first, p.second); });
   }
 }

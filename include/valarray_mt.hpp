@@ -47,9 +47,6 @@
 
 namespace SCL
 {
-
-
-
   template<typename T>
   class valarray_mt : public std::valarray
   {
@@ -69,7 +66,7 @@ namespace SCL
   /// @version 2014-01-13/GGB - Function created.
 
   template<typename T>
-  void valarray_mt::sumThread(size_t indexStart, size_t indexEnd, T &sum)
+  void valarray_mt<T>::sumThread(size_t indexStart, size_t indexEnd, T &sum)
   {
     size_t index;
     sum = 0;
