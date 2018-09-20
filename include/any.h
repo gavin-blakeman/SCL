@@ -31,7 +31,7 @@
 #ifndef SCL_ANY_H
 #define SCL_ANY_H
 
-#include "Base.h"
+  // Standard C++ library header files.
 
 #include <ostream>
 #include <sstream>
@@ -39,7 +39,7 @@
 
   // SCL header files
 
-#include "error.h"
+#include "Base.h"
 
 namespace SCL
 {
@@ -95,7 +95,7 @@ namespace SCL
       }
       else
       {
-        SCL_ERROR(0x0200);    // Null package.
+        ERROR("SCL", 0x0200);    // Null package.
       }
     }
 

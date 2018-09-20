@@ -45,6 +45,8 @@
 #include <string>
 #include <vector>
 
+#include <GCL>
+
 namespace SCL
 {
 

@@ -46,14 +46,13 @@
 
   // Miscellaneous libraries
 
-#include "include/Error.h"      //!!! If the full GCL package is included at this point, it creates cicular references and errors.
+#include "../GCL/include/error.h" //!!! If the full GCL package is included at this point, it creates cicular references and errors.
 
 namespace SCL
 {
-
-#define SCL_ERROR(ERR) (ERROR(SCL, ERR))
-#define SCL_CODE_ERROR CODE_ERROR(SCL)
-
+  #define SCL_ERROR(errorNo) (ERROR(SCL, errorNo))
+  #define SCL_CODE_ERROR CODE_ERROR(SCL)
+  #define SCL_RUNTIME_ASSERT(EXPRESSION, MESSAGE) (RUNTIME_ASSERT(SCL, EXPRESSION, MESSAGE))
 }
 
 #endif // SCL_COMMON_H

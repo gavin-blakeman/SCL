@@ -1,5 +1,34 @@
-#ifndef CIRCULARBUFFER_HPP
-#define CIRCULARBUFFER_HPP
+﻿//*********************************************************************************************************************************
+//
+// PROJECT:             Storage Class Library (SCL)
+// FILE:                Circular Buffer
+// TARGET OS:           All
+// AUTHOR:              Gavin Blakeman
+// LICENSE:             GPLv2
+//
+//                      Copyright 2017-2018 Gavin Blakeman.
+//                      This file is part of the Storage Class Library (SCL)
+//
+//                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+//                      License as published by the Free Software Foundation, either version 2 of the License, or (at your option)
+//                      any later version.
+//
+//                      SCL is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//                      warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+//                      more details.
+//
+//                      You should have received a copy of the GNU General Public License along with SCL.  If not, see
+//                      <http://www.gnu.org/licenses/>.
+//
+// OVERVIEW:            1. Items are inserted into the binary tree in the correct sorted position
+//                      2. The binary tree iterator will iterate the tree in the correct order. (Asc and Desc)
+//
+// HISTORY:             2017-07-21/GGB - File Created.
+//
+//*********************************************************************************************************************************
+
+#ifndef SCL_CIRCULARBUFFER_HPP
+#define SCL_CIRCULARBUFFER_HPP
 
   // SCL Libraries
 
@@ -241,7 +270,7 @@ namespace SCL
 
     void incrementTail() noexcept
     {
-      ++tailIndex;      
+      ++tailIndex;
       if (tailIndex == bufferExtent)
       {
         tailIndex = 0;
@@ -580,9 +609,7 @@ namespace SCL
     return std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
   }
 
-
-
 } // namespace SCL
 
-#endif // CIRCULARBUFFER_HPP
+#endif // SCL_CIRCULARBUFFER_HPP
 

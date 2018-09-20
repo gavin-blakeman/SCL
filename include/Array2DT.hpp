@@ -1,4 +1,4 @@
-//*************************************************************************************************
+﻿//*************************************************************************************************
 //
 // PROJECT:							Storage Class Library
 // FILE:								CArray2DT
@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2011-2017 Gavin Blakeman.
+//                      Copyright 2011-2018 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public

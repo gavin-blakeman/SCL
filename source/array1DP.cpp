@@ -286,62 +286,64 @@ namespace SCL
   }
 
   /// @brief Calculate the mean of the data in the array.
-  //
+  /// @returns The mean value
+  /// @throws None
+  /// @version 2018-09-20/GGB - Changed return value to a std::optional
 
-  boost::optional<MCL::FP_t> CArray1DP::mean() const
+  std::optional<MCL::FP_t> CArray1DP::mean() const
   {
-    boost::optional<MCL::FP_t> returnValue;
+    std::optional<MCL::FP_t> returnValue;
 
     switch (dataType)
     {
       case MCL::NT_uint8:
       {
-        //returnValue = MCL::mean(static_cast<std::uint8_t *>(data), size());
+        returnValue = MCL::mean(static_cast<std::uint8_t *>(data_), size());
         break;
       };
       case MCL::NT_uint16:
       {
-        //returnValue = MCL::mean(reinterpret_cast<std::uint16_t *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<std::uint16_t *>(data_), size());
         break;
       };
       case MCL::NT_uint32:
       {
-        //returnValue = MCL::mean(reinterpret_cast<std::uint32_t *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<std::uint32_t *>(data_), size());
         break;
       };
       case MCL::NT_uint64:
       {
-        //returnValue = MCL::mean(reinterpret_cast<std::uint64_t *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<std::uint64_t *>(data_), size());
         break;
       };
       case MCL::NT_int8:
       {
-        //returnValue = MCL::mean(reinterpret_cast<std::int8_t *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<std::int8_t *>(data_), size());
         break;
       };
       case MCL::NT_int16:
       {
-        //returnValue = MCL::mean(reinterpret_cast<std::int16_t *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<std::int16_t *>(data_), size());
         break;
       };
       case MCL::NT_int32:
       {
-        //returnValue = MCL::mean(reinterpret_cast<std::int32_t *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<std::int32_t *>(data_), size());
         break;
       };
       case MCL::NT_int64:
       {
-        //returnValue = MCL::mean(reinterpret_cast<std::int64_t *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<std::int64_t *>(data_), size());
         break;
       };
       case MCL::NT_float:
       {
-        //returnValue = MCL::mean(reinterpret_cast<float *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<float *>(data_), size());
         break;
       };
       case MCL::NT_double:
       {
-        //returnValue = MCL::mean(reinterpret_cast<double *>(data), size());
+        returnValue = MCL::mean(reinterpret_cast<double *>(data_), size());
         break;
       };
     }
@@ -362,6 +364,7 @@ namespace SCL
 
   /// @version 2015-08-23/GGB - Function created.
   ///
+
   std::tuple<MCL::FP_t, MCL::FP_t> CArray1DP::minmax() const
   {
     MCL::FP_t min = static_cast<MCL::FP_t>(get(0));
@@ -479,9 +482,12 @@ namespace SCL
     newArray = nullptr;
   }
 
-  boost::optional<MCL::FP_t> CArray1DP::stdev() const
+  /// @brief Calculates the stddev of the array.
+  /// @version 2018-09-20/GGB - Changed return value to a std::optional.
+
+  std::optional<MCL::FP_t> CArray1DP::stdev() const
   {
-    boost::optional<MCL::FP_t> returnValue;
+    std::optional<MCL::FP_t> returnValue;
 
     return returnValue;
   }

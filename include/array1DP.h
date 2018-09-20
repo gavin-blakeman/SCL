@@ -43,21 +43,19 @@
 #include <algorithm>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <tuple>
 
   // SCL Library
 
 #include "Base.h"
 #include "common.h"
+#include "error.h"
 
   // Miscellaneous Libraries
 
 #include <GCL>
 #include <MCL>
-
-// Boost library
-
-#include "boost/optional.hpp"
 
 namespace SCL
 {
@@ -171,8 +169,8 @@ namespace SCL
     virtual MCL::ENumericType base() const { return dataType;}
 
     std::tuple<MCL::FP_t, MCL::FP_t> minmax() const;
-    boost::optional<MCL::FP_t> mean() const;
-    boost::optional<MCL::FP_t> stdev() const;
+    std::optional<MCL::FP_t> mean() const;
+    std::optional<MCL::FP_t> stdev() const;
   };
 
   typedef std::shared_ptr<CArray1DP> PArray1DP;

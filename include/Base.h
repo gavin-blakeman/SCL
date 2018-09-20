@@ -47,7 +47,6 @@
 
 namespace SCL
 {
-
   class CPackage
   {
   private:

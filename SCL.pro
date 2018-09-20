@@ -10,7 +10,7 @@ TARGET = SCL
 TEMPLATE = lib
 CONFIG += staticlib
 
-QMAKE_CXXFLAGS += -std=c++17 -static -static-libgcc #-save-temps=obj
+QMAKE_CXXFLAGS += -std=c++17 #-static -static-libgcc -save-temps
 QMAKE_LFLAGS += -fopenmp
 
 OBJECTS_DIR = "objects"
@@ -41,9 +41,7 @@ INCLUDEPATH += \
   "../MCL"
 
 SOURCES += \
-    source/Array.cpp \
     source/AVLTree.cpp \
-    source/Vector.cpp \
     source/common.cpp \
     source/config.cpp \
     source/valarray2DP.cpp \
@@ -53,12 +51,9 @@ SOURCES += \
 
 HEADERS += \
     include/VectorSorted.hpp \
-    include/Vector.h \
-    include/List.h \
     include/Base.h \
     include/AVLTree.h \
     include/Array2DT.hpp \
-    include/Array.h \
     include/valarray_mt.hpp \
     include/any.h \
     include/common.h \
