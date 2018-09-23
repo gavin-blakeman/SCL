@@ -5,3 +5,5 @@ Makefile
 /documentation/html/
 /documentation/latex/
 *.filters
+
+*.bak

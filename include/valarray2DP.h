@@ -49,7 +49,7 @@
 
   // MCL Library
 
-#include "../MCL/Include/numeric.h"
+#include "../MCL/include/numeric.h"
 
 // Boost library
 
