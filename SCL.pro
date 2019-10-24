@@ -1,22 +1,49 @@
-#-------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------
 #
-# Project created by QtCreator 2013-06-16T08:12:57
+# PROJECT:            Storage Class Library
+# FILE:								SCL.pro
+# SUBSYSTEM:          Project File
+# LANGUAGE:						C++
+# TARGET OS:          All
+# LIBRARY DEPENDANCE:	None.
+# NAMESPACE:          N/A
+# AUTHOR:							Gavin Blakeman.
+# LICENSE:            GPLv2
 #
-#-------------------------------------------------
+#                     Copyright 2010, 2013-2019 Gavin Blakeman.
+#                     This file is part of the Storage Class Library (SCL)
+#
+#                     SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+#                     License as published by the Free Software Foundation, either version 2 of the License, or (at your option)
+#                     any later version.
+#
+#                     SCL is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+#                     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#                     more details.
+#
+#                     You should have received a copy of the GNU General Public License along with SCL.  If not,
+#                     see <http://www.gnu.org/licenses/>.
+#
+# OVERVIEW:
+#
+# HISTORY:            2015-09-22 GGB - astroManager 2015.09 release
+#                     2013-06-16 GGB - Project file created.
+#
+#-----------------------------------------------------------------------------------------------------------------------------------
 
-QT       -= core gui
+#QT              -= core gui
 
-TARGET = SCL
-TEMPLATE = lib
-CONFIG += staticlib
+TARGET          = SCL
+TEMPLATE        = lib
+CONFIG          += staticlib
 
-QMAKE_CXXFLAGS += -std=c++17 #-static -static-libgcc -save-temps
-QMAKE_LFLAGS += -fopenmp
+QMAKE_CXXFLAGS  += -std=c++17 #-static -static-libgcc -save-temps
+#QMAKE_LFLAGS    += -fopenmp
 
-OBJECTS_DIR = "objects"
-UI_DIR = "objects/ui"
-MOC_DIR = "objects/moc"
-RCC_DIR = "objects/rcc"
+OBJECTS_DIR     = "objects"
+UI_DIR          = "objects/ui"
+MOC_DIR         = "objects/moc"
+RCC_DIR         = "objects/rcc"
 
 win32:CONFIG(release, debug|release) {
   DESTDIR = "../Library/win32/release"
@@ -36,9 +63,9 @@ else:unix:CONFIG(debug, debug|release) {
 }
 
 INCLUDEPATH += \
-  "../boost 1.62" \
   "../GCL" \
-  "../MCL"
+  "../MCL" \
+  "/home/gavin/Documents/Projects/software/Library/Boost/boost_1_71_0"
 
 SOURCES += \
     source/AVLTree.cpp \
@@ -65,4 +92,10 @@ HEADERS += \
     include/binaryTree.h \
     include/circularbuffer.hpp \
     include/error.h \
-    SCL
+    SCL \
+    include/hierarchyBuilder.hpp
+
+DISTFILES += \
+    license.txt \
+    Doxyfile \
+    changelog.txt

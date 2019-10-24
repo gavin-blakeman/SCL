@@ -43,19 +43,17 @@
 #include <algorithm>
 #include <cstdint>
 #include <memory>
+#include <optional>
 
-  // SCL Library
+  // Miscellaneous library header files
+
+#include "../MCL/include/numeric.h"
+#include "boost/optional.hpp"
+
+// SCL Library
 
 #include "Base.h"
 #include "common.h"
-
-  // MCL Library
-
-#include "../MCL/include/numeric.h"
-
-// Boost library
-
-#include "boost/optional.hpp"
 
 namespace SCL
 {

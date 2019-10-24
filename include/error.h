@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2018 Gavin Blakeman.
+//                      Copyright 2018-2019 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (PCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -26,7 +26,6 @@
 //
 //
 // OVERVIEW:						Common definitions that can be used by multiple files
-//
 //
 // CLASSES INCLUDED:		None
 //
@@ -46,13 +45,25 @@
 
   // Miscellaneous libraries
 
+#include "config.h"
+
+#ifdef USE_GCL
 #include "../GCL/include/error.h" //!!! If the full GCL package is included at this point, it creates cicular references and errors.
+#else
+#include <stdexcept>
+#endif
 
 namespace SCL
 {
+#ifdef USE_GCL
   #define SCL_ERROR(errorNo) (ERROR(SCL, errorNo))
   #define SCL_CODE_ERROR CODE_ERROR(SCL)
   #define SCL_RUNTIME_ASSERT(EXPRESSION, MESSAGE) (RUNTIME_ASSERT(SCL, EXPRESSION, MESSAGE))
+#else
+#define SCL_ERROR(errorNo) {throw std::runtime_error(std::to_string((errorNo))); }
+#define SCL_CODE_ERROR {throw std::runtime_error("Code Error");}
+#define SCL_RUNTIME_ASSERT(EXPRESSION, MESSAGE) if (!(EXPRESSION)) { throw std::runtime_error("SCL " + #EXPRESSION + __FILE__ + std::to_string((size_t) __LINE__) + MESSAGE); }
+#endif
 }
 
 #endif // SCL_COMMON_H

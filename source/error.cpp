@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2018 Gavin Blakeman.
+//                      Copyright 2018-2019 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -44,6 +44,8 @@
 
 #include <string>
 #include <vector>
+
+#ifdef USE_GCL
 
 #include <GCL>
 
@@ -89,3 +91,5 @@ namespace SCL
                   [] (std::pair<GCL::TErrorCode, std::string> p) { GCL::CError::addErrorMessage("SCL", p.first, p.second); });
   }
 }
+
+#endif

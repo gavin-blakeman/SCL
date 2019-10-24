@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2012-2018 Gavin Blakeman.
+//                      Copyright 2012-2019 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -48,9 +48,9 @@
 
   // SCL header files
 
+#include "../include/config.h"
 #include "../include/common.h"
-
-#include <GCL>
+#include "../include/error.h"
 
 namespace SCL
 {
@@ -270,7 +270,7 @@ namespace SCL
 
     if ( index >= size() )
     {
-      ERROR("SCL", 0x1000);
+      SCL_ERROR(0x1000);
     }
     else
     {

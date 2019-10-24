@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017-2018 Gavin Blakeman.
+//                      Copyright 2015, 2017-2019 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -35,17 +35,17 @@
 //
 //**********************************************************************************************************************************
 
-
 #include "../include/array2DP.h"
+
+  // Miscellaneous Libraries
+
+#include <MCL>
 
   // SCL Library
 
 #include "../include/algorithm.hpp"
 
-  // Miscellaneous Libraries
 
-#include <GCL>
-#include <MCL>
 
 namespace SCL
 {
