@@ -6,7 +6,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2017-2018 Gavin Blakeman.
+//                      Copyright 2017-2019 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -65,7 +65,6 @@ namespace SCL
     typedef typename CBType::const_reference                    const_reference;
     typedef typename CBType::difference_type                    difference_type;
 
-
   private:
     CBType *circularBuffer;
     size_t index_;
@@ -79,6 +78,7 @@ namespace SCL
       : circularBuffer(other.circularBuffer), index_(other.index_) {}
 
     elem_type &operator*() { return (*circularBuffer)[index_]; }
+
     elem_type *operator->() { return *(operator*()); }
 
     self_type &operator++()
@@ -421,7 +421,9 @@ namespace SCL
 
     reference back()
     {
+#ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
+#endif
       if (!empty())
       {
         return bufferArray[tailIndex];
@@ -439,7 +441,9 @@ namespace SCL
 
     const_reference back() const
     {
+#ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
+#endif
       if (!empty())
       {
         return bufferArray[tailIndex];
@@ -452,14 +456,14 @@ namespace SCL
 
 
     /// @brief Clears the circular buffer.
-    /// @param[in] size- The size of the buffer to create.
-    /// @throws std::bad_alloc
     /// @note 1. The buffer indexes are simply reset to zero and the data is deleted.
     /// @version 2017-07-18/GGB - Function created.
 
     void clear() noexcept
     {
+ #ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
+ #endif
       destroyAllElements();
       headIndex = tailIndex = 0;
       elementCount = 0;
@@ -472,7 +476,9 @@ namespace SCL
 
     reference front()
     {
+#ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
+#endif
       if (!empty())
       {
         return bufferArray[headIndex];
@@ -490,7 +496,9 @@ namespace SCL
 
     const_reference front() const
     {
+#ifdef SCL_THREAD    
       std::lock_guard<std::mutex> lg(classMutex_);
+#endif
       if (!empty())
       {
         return bufferArray[headIndex];
@@ -502,7 +510,7 @@ namespace SCL
     }
 
     /// @brief Returns a copy of the allocator object associated with the circular buffer.
-    /// @returns The allocator.
+    /// @returns A copy of the  allocator.
     /// @throws None.
     /// @version 2017-07-19/GGB - Function created.
 
@@ -523,7 +531,7 @@ namespace SCL
     }
 
     /// @brief Pushes a new value into the circular buffer.
-    /// @param[in] element - Thje element to add to the circular buffer.
+    /// @param[in] element: The element to add to the circular buffer.
     /// @throws None.
     /// @version 2017-07-19/GGB - Function created.
 

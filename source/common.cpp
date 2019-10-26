@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017-2018 Gavin Blakeman.
+//                      Copyright 2015, 2017-2019 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -54,7 +54,7 @@
 namespace SCL
 {
 
-  unsigned int const SCL_MAJORVERSION = 2017;           ///< The Major version number (yyyy)
+  unsigned int const SCL_MAJORVERSION = 2019;           ///< The Major version number (yyyy)
   unsigned int const SCL_MINORVERSION = 9;              ///< The Minor version number (mm)
   unsigned int const SCL_BUILDNUMBER  = 0x000F;         ///< The build numnber - incremented on each build.
 
