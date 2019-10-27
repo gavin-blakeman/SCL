@@ -402,13 +402,14 @@ namespace SCL
           // Item has a parent and we have found it.
           // Add the item to the child.
 
-        (*nodeFound).second.children.emplace(itemIndex, SNode{parentIndex, item});
+        auto emplaceValue = (*nodeFound).second.children.emplace(itemIndex, SNode{parentIndex, item});
 
           // Now see if there are any unfound items that can be added to the node that has just been inserted.
 
         while ((unfoundNode = unfound_.find(itemIndex)) != unfound_.end())
         {
-          (*nodeFound).second.children.emplace((*unfoundNode).second.parentIndex, SNode{itemIndex, std::move((*unfoundNode).second.item)});
+        (*emplaceValue.first).second.children.emplace((*unfoundNode).second.parentIndex,
+                                                      SNode{itemIndex, std::move((*unfoundNode).second.item)});
           unfound_.erase(unfoundNode);
         };
       }
