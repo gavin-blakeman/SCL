@@ -39,6 +39,7 @@
 #include <mutex>
 #include <stack>
 #include <stdexcept>
+#include <tuple>
 #include <utility>
 #include <iostream>
 
@@ -135,21 +136,23 @@ namespace SCL
 
     hierarchyIterator(hierarchyIterator<I, T, T> const &other)
     {
-
+      throw std::exception("hierarchyIterator Copy constructor not implemented");
     }
 
     /// @brief Implements the indirection operator.
-    /// @returns A std::pair<size_type, elem_type>. The first value is the hierarchy level, the second value if the item value.
+    /// @returns A std::tuple<size_type, I, elem_type>. The first value is the hierarchy level,
+    ///                                                 The second value is the index of the item
+    ///                                                 the third value is the item.
     /// @throws
     /// @version 2019-10-26/GGB - Function created.
 
-    std::pair<size_type, elem_type> operator*()
+    std::tuple<size_type, I, elem_type> operator*()
     {
       assert(*this != hierarchy_->end());     // For debugging.
 
       if (*this != hierarchy_->end())
       {
-        return std::make_pair(hierarchyLevel_, currentChildIterator_->second.item);
+        return { hierarchyLevel_, currentChildIterator_->first, currentChildIterator_->second.item };
       }
       else
       {
@@ -163,7 +166,7 @@ namespace SCL
 
     std::pair<size_type, elem_type> operator->()
     {
-      return (operator*());
+      throw std::exception("hierarchyBuilder operator-> not implemented.");
     }
 
     /// @brief Implements the ++operator for the class.
@@ -371,7 +374,7 @@ namespace SCL
 #ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
 #endif
-      destroyAllElements;
+      destroyAllElements();
       elementCount_ = 0;
     }
 
