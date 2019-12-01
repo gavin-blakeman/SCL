@@ -51,10 +51,6 @@
 
 #include "../MCL/include/numeric.h"
 
-// Boost library
-
-#include "boost/optional.hpp"
-
 namespace SCL
 {
   /// @brief The CValarray2DP array is an encapsulated 2-dimensional array dynamic array.
@@ -90,13 +86,13 @@ namespace SCL
 
     virtual void resize(size_t, size_t, bool = false);
 
-    boost::optional<MCL::FP_t> mean() const;
+    std::optional<MCL::FP_t> mean() const;
   };
 
   /// @brief Function to resize the array. A new array is created, and the information copied into the
-  /// new array at the same coordinates.
+  ///        new array at the same coordinates.
   //
-  // 2011-03-13/GGB - Function created.
+  /// @version 2011-03-13/GGB - Function created.
 
 /*  template<typename T>
   void CValarray2DP<T>::resize(size_t newx, size_t newy, bool copy)

@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017-2018 Gavin Blakeman.
+//                      Copyright 2015, 2017-2019 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -48,7 +48,6 @@
   // Miscellaneous library header files
 
 #include "../MCL/include/numeric.h"
-#include "boost/optional.hpp"
 
 // SCL Library
 
@@ -92,7 +91,7 @@ namespace SCL
 
     virtual void resize(size_t, size_t, bool = false);
 
-    boost::optional<MCL::FP_t> mean() const;
+    std::optional<MCL::FP_t> mean() const;
   };
 
   typedef std::shared_ptr<CArray2DP> PArray2DP;

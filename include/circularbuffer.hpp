@@ -227,10 +227,14 @@ namespace SCL
     template<typename f_iter>
     void assignInto(f_iter from, f_iter to)
     {
-      if (size()) clear();
+      if (size()) 
+      {
+	      clear();
+	    };
+	    
       while (from != to)
       {
-        push_back(*from);;
+        push_back(*from);
         ++from;
       };
     }
@@ -238,7 +242,11 @@ namespace SCL
     template<typename f_iter>
     void assignIntoReserving(f_iter from, f_iter to)
     {
-      if (elementCount) clear();
+      if (elementCount) 
+      {
+      	clear();
+      };
+      
       while (from != to)
       {
         if (elementCount == bufferExtent)
@@ -339,7 +347,9 @@ namespace SCL
 
     ~TCircularBuffer()
     {
+#ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
+#endif
       destroyAllElements();
       alloc_.deallocate(bufferArray, bufferExtent);
     }

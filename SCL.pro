@@ -80,7 +80,6 @@ HEADERS += \
     include/VectorSorted.hpp \
     include/Base.h \
     include/AVLTree.h \
-    include/Array2DT.hpp \
     include/valarray_mt.hpp \
     include/any.h \
     include/common.h \
@@ -93,7 +92,8 @@ HEADERS += \
     include/circularbuffer.hpp \
     include/error.h \
     SCL \
-    include/hierarchyBuilder.hpp
+    include/hierarchyBuilder.hpp \
+    include/array2D.hpp
 
 DISTFILES += \
     license.txt \

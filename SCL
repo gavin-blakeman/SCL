@@ -36,9 +36,9 @@
 /*!
  * @mainpage Storage Class Library (SCL).
  * @section Introduction
- * The Storage Class Library implements a number of classes that have been developed as storage classes.
+ * The Storage Class Library implements a number of classes that have been developed as storage classes.<br>
  * The library is written in C++17.<br>
- * The library is written as an operating system independent library.
+ * The library is written as an operating system independent library.<br>
  *
  * @section Dependencies
  * The following open source libraries are required by the Storage Class library.
@@ -65,17 +65,12 @@
  * All C string functions will be phased out over time. Any new code should not include C string functions, but should rather use
  * the C++ std::string classes.
  * @par Reporting Bugs
- * Bugs are tracked on the bugzilla database used by <a href="https://bugzilla.theroboticobservatory.org">The Robotic
- * Observatory project.</a>. The bugs should be entered against the ACL project.
+ *
  * @par Source Code
- * The source code can be downloaded as a zipped file from the <a href="https://bugzilla.theroboticobservatory.org">The Robotic
- * Observatory project.</a>.<br>
- * The source code is also included in the source package for the <a href="http://www.astroManager.net">astroManager Project</a>. Where it
- * can be downloaded from the project site, or from the project site on Launchpad.
  *
  * @section Legal
  * @author Gavin Blakeman (GGB)
- * @version 2013.09
+ * @version 2019.09
  * @copyright 2005-2019 Gavin Blakeman
  * @par Licence
  * The Storage Class Library is licensed under the GPLv2. The full text of the GPLv2 can be found in the file license.txt that
@@ -91,7 +86,7 @@
 #include "include/any.h"
 #include "include/array1DP.h"
 #include "include/array2DP.h"
-#include "include/Array2DT.hpp"
+#include "include/array2D.hpp"
 #include "include/Base.h"
 #include "include/circularbuffer.hpp"
 #include "include/common.h"

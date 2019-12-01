@@ -46,7 +46,6 @@
 #include "../include/algorithm.hpp"
 
 
-
 namespace SCL
 {
 
@@ -126,9 +125,9 @@ namespace SCL
   /// @brief Calculate the mean of the data in the array.
   //
 
-  boost::optional<MCL::FP_t> CArray2DP::mean() const
+  std::optional<MCL::FP_t> CArray2DP::mean() const
   {
-    boost::optional<MCL::FP_t> returnValue;
+    std::optional<MCL::FP_t> returnValue;
 
     switch (dataType)
     {

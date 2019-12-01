@@ -5,6 +5,7 @@
 // SUBSYSTEM:           Hierarchy Storage
 // TARGET OS:           All
 // AUTHOR:              Gavin Blakeman
+// NAMESPACE:           SCL
 // LICENSE:             GPLv2
 //
 //                      Copyright 2019 Gavin Blakeman.
