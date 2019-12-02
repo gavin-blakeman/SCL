@@ -267,11 +267,11 @@ namespace SCL
     /// @version 2017-06-25/GGB - Updated to use new GCL error handling.
     /// @version 2011-03-13/GGB - Function created.
 
-    const T &operator[](std::pair<size_type, size_type> index) const
+    const T &operator()(size_type row, size_type col) const
     {
-      if ( (index.first < xExtent_) && (index.second <  yExtent_) )
+      if ( (row < xExtent_) && (col <  yExtent_) )
       {
-        return dataStorage_[indexToSubscript(index.first , index.second)];
+        return dataStorage_[indexToSubscript(row , col)];
       }
       else
       {
@@ -290,11 +290,11 @@ namespace SCL
     /// @version 2017-06-25/GGB - Updated to use new GCL error handling.
     /// @version 2011-03-13/GGB - Function created.
 
-    T & operator[] (std::pair<size_type, size_type> index)
+    T & operator()(size_type row, size_type col)
     {
-      if ( (index.first < xExtent_) && (index.second < yExtent_) )
+      if ( (row < xExtent_) && (col < yExtent_) )
       {
-        return dataStorage_[indexToSubscript(index.first, index.second)];
+        return dataStorage_[indexToSubscript(row, col)];
       }
       else
       {
@@ -374,18 +374,7 @@ namespace SCL
   };    // Class vector2D
 
 
-  /// @brief Operator overload that allows the magic to happen with the array indexing function.
-  /// @tparam T: The templated type.
-  /// @param[in] row: The row to address
-  /// @param[in] col: The column to address.
-  /// @throws
-  /// @version 2019-12-01/GGB - Function created.
-
-  template<typename T>
-  std::pair<T, T> operator,(T row, T col) { return std::make_pair(row, col); }
-
-
-
 }	// namespace SCL
+
 
 #endif // SCL_ARRAY2DT_H
