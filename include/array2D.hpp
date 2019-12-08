@@ -1,11 +1,11 @@
 ﻿//*********************************************************************************************************************************
 //
 // PROJECT:							Storage Class Library
-// FILE:								arrayD
+// FILE:								array2D
 // SUBSYSTEM:						Templated classes for image arrays
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	SCL
+// LIBRARY DEPENDANCE:	None.
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
@@ -26,8 +26,9 @@
 //
 // OVERVIEW:            An STL style two dimensional array that can be sized at runtime. The array cannot be resized once it has
 //                      been initialised.
+//                      The type of the array must be default constructable.
 //
-// CLASSES INCLUDED:    arrayD - Two dimensional temnplated array
+// CLASSES INCLUDED:    array2D - Two dimensional templated array
 //
 // HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
 //                      2013-09-30 GGB - astroManager 2013.09 release.
@@ -92,37 +93,6 @@ namespace SCL
     T column() const noexcept { return column_; }
   };
 
-  /// @class Iterator class.
-  /// @tparam T: Array2D class.
-
-  template<typename T,
-           typename T_nonconst>
-  class vector2DIterator
-  {
-  public:
-    typedef typename T::elem_type                               elem_type;
-    typedef vector2DIterator<T, T_nonconst>                     self_type;
-    typedef T                                                   vector2DType;
-    typedef std::input_iterator_tag                             iterator_category;
-    typedef typename vector2DType::value_type                   value_type;
-    typedef typename vector2DType::size_type                    size_type;
-    typedef typename vector2DType::pointer                      pointer;
-    typedef typename vector2DType::const_pointer                const_pointer;
-    typedef typename vector2DType::reference                    reference;
-    typedef typename vector2DType::const_reference              const_reference;
-    typedef typename vector2DType::difference_type              difference_type;
-
-  private:
-    vector2DType *array2D_;
-    size_type xIndex_;
-    size_type yIndex_;
-
-  public:
-    friend class vector2DIterator<T const, T>;
-
-  };
-
-
   /// @class A templated 2-dimensional vector type container. The container is always rectangular.
   /// @tparam T: Type to use as the data to store in the hierarchy.
   /// @note 1: Reallocation can be an expensive operation as the copy operation needs to be operated with reference to each
@@ -133,24 +103,21 @@ namespace SCL
   class array2D
   {
   public:
-    typedef array2D<T, Alloc_>                                              self_type;
-    typedef T                                                               elem_type;
+//    typedef array2D<T, Alloc_>                                              self_type;
+//    typedef T                                                               elem_type;
     typedef Alloc_                                                          allocator_type;
-    typedef typename Alloc_::value_type                                     value_type;
+//    typedef typename Alloc_::value_type                                     value_type;
     typedef typename Alloc_::pointer                                        pointer;
-    typedef typename Alloc_::const_pointer                                  const_pointer;
-    typedef typename Alloc_::reference                                      reference;
-    typedef typename Alloc_::const_reference                                const_reference;
-    typedef typename Alloc_::difference_type                                difference_type;
+//    typedef typename std::allocator_traits<allocator_type>::const_pointer   const_pointer;
+//    typedef T&                                                              reference;
+//    typedef typename Alloc_::const_reference                                const_reference;
+//    typedef typename Alloc_::difference_type                                difference_type;
     typedef typename Alloc_::size_type                                      size_type;
-    typedef vector2DIterator<self_type, self_type>                          iterator;
-    typedef vector2DIterator<const self_type, self_type>                    const_iterator;
 
   private:
-    allocator_type alloc_;
+    Alloc_ alloc_;
     size_type xExtent_, yExtent_;         ///< Number of rows and columns in the 2D vector.
     pointer dataStorage_;                 ///< The underlying storage.
-    size_type xCount_, yCount_;           ///< The number of elements contained.
     size_type headIndex_;
     size_type tailIndex_;
 
@@ -159,8 +126,8 @@ namespace SCL
 #endif
 
     inline size_type indexToSubscript(size_type x, size_type y) const noexcept { return (x + y * xExtent_); }
-    inline size_type vectorExtent() const noexcept { return xExtent_ * yExtent_; }
-    inline size_type vectorSize() const noexcept { return xCount_ * yCount_; }
+    inline size_type arrayExtent() const noexcept { return xExtent_ * yExtent_; }
+
 
     /// @brief Copies elements from one container to another container.
     /// @tparam f_iter: The iterator type.
@@ -172,11 +139,6 @@ namespace SCL
     template<typename f_iter>
     void assignInto(f_iter from, f_iter to)
     {
-      if (size())
-      {
-        clear();
-      };
-
       while (from != to)
       {
         push_back(*from);
@@ -190,29 +152,37 @@ namespace SCL
 
     void destroyAllElements()
     {
-      size_type const elementCount = vectorExtent();
+      size_type const elementCount = arrayExtent();
 
       for (size_type i = 0; i < elementCount; ++i)
       {
-        alloc_.destroy(dataStorage_[i]);
+        alloc_.destroy(&dataStorage_[i]);
       }
     }
 
   public:
 
-    /// @brief Constructor
-    /// @param[in] xExtent: The number of x elements to allocate initially (rows)
-    /// @param[in] yExtent: The number of y elements to allocate initially (columns)
+    /// @brief Initialiser constructor
+    /// @param[in] xExtent: The number of x elements to allocate (rows)
+    /// @param[in] yExtent: The number of y elements to allocate (columns)
+    /// @param[in] value: The value to initialise.
+    /// @param[in] alloc: The allocator to utilise.
+    /// @throws std::bad_alloc
     /// @throws
-    /// @version 2019-11-30/GGB - Converted to STL type container.
+    /// @version 2019-12-08/GGB - Function created.
 
-    explicit array2D(size_type xExtent = 64, size_type yExtent = 64, Alloc_ const &alloc = Alloc_())
-      : alloc_(alloc), xExtent_(xExtent), yExtent_(yExtent), dataStorage_(alloc_.allocate(vectorExtent()))
-      , xCount_(0), yCount_(0), headIndex_(0), tailIndex_(0)
+    explicit array2D(size_type xExtent = 64, size_type yExtent = 64, T const &value = T(), Alloc_ const &alloc = Alloc_())
+    : alloc_(alloc), xExtent_(xExtent), yExtent_(yExtent), dataStorage_(alloc_.allocate(arrayExtent()))
+    , headIndex_(0), tailIndex_(0)
 #ifdef SCL_THREAD
-    , classMutex_()
+  , classMutex_()
 #endif
-    {}
+    {
+      for (size_type i = 0; i < arrayExtent(); ++i)
+      {
+        dataStorage_[i] = value;
+      };
+    }
 
     /// @brief Copy constructor.
     /// @param[in] toCopy - The instance to create a copy of.
@@ -220,8 +190,7 @@ namespace SCL
     /// @version 2011-03-13/GGB - Function created.
 
     explicit array2D(array2D const &toCopy) : dataStorage_(alloc_.allocate(toCopy.xExtent_ * toCopy.yExtent_)),
-      xExtent_(toCopy.xExtent_), yExtent_(toCopy.yExtent_), xCount_(toCopy.xCount_), yCount_(toCopy.yCount_),
-      headIndex_(toCopy.headIndex_), tailIndex_(toCopy.tailIndex_)
+      xExtent_(toCopy.xExtent_), yExtent_(toCopy.yExtent_), headIndex_(toCopy.headIndex_), tailIndex_(toCopy.tailIndex_)
 #ifdef SCL_THREAD
     , classMutex_()
 #endif
@@ -254,22 +223,21 @@ namespace SCL
       std::lock_guard<std::mutex> lg(classMutex_);
 #endif
       destroyAllElements();
-      alloc_.deallocate(dataStorage_, vectorExtent());
+      alloc_.deallocate(dataStorage_, arrayExtent());
     }
 
     /// @brief Subscript operator for class.
-    /// @param[in] index: Pair containing the row and column numbers.
-    /// @throws std::out_of_range
-    /// @note 1. The "," operator is overloaded below the class definition this allows the operator[] to be called as
-    ///          'T value = instance[x, y];'
-    /// @note 2. Performs range checking. IE does the value fall within the defined range.
+    /// @param[in] row: The row number of the element
+    /// @param[in] column: The column number of the element.
+    /// @throws std::out_of_range: If the subscript is out of range.
+    /// @note 1. Performs range checking. IE does the value fall within the defined range.
     /// @version 2019-11-30/GGB - Updated to STL style container.
     /// @version 2017-06-25/GGB - Updated to use new GCL error handling.
     /// @version 2011-03-13/GGB - Function created.
 
-    const T &operator()(size_type row, size_type col) const
+    T const &operator()(size_type row, size_type col) const
     {
-      if ( (row < xExtent_) && (col <  yExtent_) )
+      if ( (row < xExtent_) && (col < yExtent_) )
       {
         return dataStorage_[indexToSubscript(row , col)];
       }
@@ -281,16 +249,15 @@ namespace SCL
 
 
     /// @brief Subscript operator for class.
-    /// @param[in] index: Pair containing the row and column numbers.
+    /// @param[in] row: The row number of the element
+    /// @param[in] column: The column number of the element.
     /// @throws std::out_of_range
-    /// @note 1. The "," operator is overloaded below the class definition this allows the operator[] to be called as
-    ///          'T value = instance[x, y];'
-    /// @note 2. Performs range checking. IE does the value fall within the defined range.
+    /// @note 1. Performs range checking. IE does the value fall within the defined range.
     /// @version 2019-11-30/GGB - Updated to STL style container.
     /// @version 2017-06-25/GGB - Updated to use new GCL error handling.
     /// @version 2011-03-13/GGB - Function created.
 
-    T & operator()(size_type row, size_type col)
+    T &operator()(size_type row, size_type col)
     {
       if ( (row < xExtent_) && (col < yExtent_) )
       {
@@ -302,34 +269,26 @@ namespace SCL
       };
     }
 
-    virtual void resize(size_t, size_t, bool = false);
+    /// @brief Returns the element at the corresponding position.
+    /// @param[in] row: The row number of the element
+    /// @param[in] column: The column number of the element.
+    /// @throws std::out_of_range
+    /// @version 2019-12-03/GGB - Function created.
 
-    /// @brief Removes all the elements from the vector.
-    /// @throws None.
-    /// @version 2019-11-30/GGB - Function created.
-
-    void clear() noexcept
+    T &at(size_type row, size_type column)
     {
-#ifdef SCL_THREAD
-      std::lock_guard<std::mutex> lg(classMutex_);
-#endif
-
-      destroyAllElements();
-      headIndex_ = tailIndex_ = 0;
-      xCount_ = yCount_ = 0;
+      return (*this)(row, column);
     }
 
-    /// @brief Resizes the vector to at least the size requested. Note this is done in two dimensions and after the resize
-    ///        all elements will be in the same position (x, y) as before.
-    ///
-    /// @param[in] x: New x size
-    /// @param[in] y: new y size.
+    /// @brief Returns the element at the corresponding position.
+    /// @param[in] row: The row number of the element
+    /// @param[in] column: The column number of the element.
+    /// @throws std::out_of_range
+    /// @version 2019-12-03/GGB - Function created.
 
-    void reserve(size_type x, size_type y)
+    T const &at(size_type row, size_type column) const
     {
-#ifdef SCL_THREAD
-      std::lock_guard<std::mutex> lg(classMutex_);
-#endif
+      return (*this)(row, column);
     }
 
     /// @brief Tests if the vector is empty.
@@ -342,10 +301,10 @@ namespace SCL
 #ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
 #endif
-      return (xCount_ == 0) || (yCount_ == 0);
+      return (xExtent_ == 0) || (yExtent_ == 0);
     }
 
-    /// @brief Returns the size of the array. (Number of elments currently allocated.)
+    /// @brief Returns the size of the array.
     /// @returns The size of the array.
     /// @throws None.
     /// @version 2019-11-30/GGB - Function created.
@@ -355,22 +314,20 @@ namespace SCL
 #ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
 #endif
-      return std::make_pair(xCount_, yCount_);
-    }
-
-    std::pair<size_type, size_type> capacity() const noexcept
-    {
-#ifdef SCL_THREAD
-      std::lock_guard<std::mutex> lg(classMutex_);
-#endif
       return std::make_pair(xExtent_, yExtent_);
     }
 
+    /// @brief Returns the maximum number of elements the array can hold. As the array is a fixed size container once created,
+    ///        this returns the same value as size()
+    /// @throws None.
+    /// @version 2019-12-03/GGB - Function created.
+
+    std::pair<size_type, size_type> max_size() const noexcept
+    {
+      return size();
+    }
 
 
-    size_type xCount() const;
-    void setXCount(const size_type &xCount);
-    size_type yCount() const;
   };    // Class vector2D
 
 
