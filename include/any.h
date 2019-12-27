@@ -36,6 +36,7 @@
 #include <ostream>
 #include <sstream>
 #include <typeinfo>
+#include <type_traits>
 
   // SCL header files
 
@@ -63,12 +64,30 @@ namespace SCL
         return dynamic_cast<CPackage *>(returnValue);
       }
 
+      /// @brief Converts the value type to a string output. This is done by calling the insertion operator for the type.
+      /// @returns The value as a std::string
+      /// @throws
+      /// @note 1. For 'char' types, the char is converted to a short before output. This ensure the value, not the char is
+      ///          output.
+      /// @version 2019-12-08/GGB - Updated to output char types as values.
+
       virtual std::string stringOutput() const
       {
         std::ostringstream valueStream;
         std::string returnValue;
 
-        valueStream << (*data);
+        if constexpr(std::is_same<std::uint8_t, T>::value)
+        {
+          valueStream << static_cast<std::uint16_t>(*data);
+        }
+        else if constexpr(std::is_same<std::int8_t, T>::value)
+        {
+          valueStream << static_cast<std::int16_t>(*data);
+        }
+        else
+        {
+          valueStream << (*data);
+        };
 
         returnValue = valueStream.str();
         return returnValue;
@@ -76,6 +95,7 @@ namespace SCL
 
       virtual std::type_info const &type() const noexcept { return typeid(T); }
     };
+
 
   private:
     CPackage *packageData = nullptr;

@@ -38,7 +38,6 @@ TEMPLATE        = lib
 CONFIG          += staticlib
 
 QMAKE_CXXFLAGS  += -std=c++17 #-static -static-libgcc -save-temps
-#QMAKE_LFLAGS    += -fopenmp
 
 OBJECTS_DIR     = "objects"
 UI_DIR          = "objects/ui"
