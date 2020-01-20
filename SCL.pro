@@ -31,8 +31,6 @@
 #
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-#QT              -= core gui
-
 TARGET          = SCL
 TEMPLATE        = lib
 CONFIG          += staticlib
@@ -40,9 +38,6 @@ CONFIG          += staticlib
 QMAKE_CXXFLAGS  += -std=c++17 #-static -static-libgcc -save-temps
 
 OBJECTS_DIR     = "objects"
-UI_DIR          = "objects/ui"
-MOC_DIR         = "objects/moc"
-RCC_DIR         = "objects/rcc"
 
 win32:CONFIG(release, debug|release) {
   DESTDIR = "../Library/win32/release"
