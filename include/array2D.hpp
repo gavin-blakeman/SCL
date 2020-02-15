@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2011-2019 Gavin Blakeman.
+//                      Copyright 2011-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -118,8 +118,6 @@ namespace SCL
     Alloc_ alloc_;
     size_type xExtent_, yExtent_;         ///< Number of rows and columns in the 2D vector.
     pointer dataStorage_;                 ///< The underlying storage.
-    size_type headIndex_;
-    size_type tailIndex_;
 
 #ifdef SCL_THREAD
     std::mutex classMutex_;
@@ -157,10 +155,29 @@ namespace SCL
       for (size_type i = 0; i < elementCount; ++i)
       {
         alloc_.destroy(&dataStorage_[i]);
-      }
+      };
     }
 
   public:
+
+    /// @brief Initialiser constructor
+    /// @param[in] xExtent: The number of x elements to allocate (rows)
+    /// @param[in] yExtent: The number of y elements to allocate (columns)
+    /// @throws std::bad_alloc
+    /// @throws
+    /// @version 2020-02-15/GGB - Function created.
+
+    explicit array2D(size_type xExtent, size_type yExtent) : alloc_(), xExtent_(xExtent), yExtent_(yExtent),
+      dataStorage_(alloc_.allocate(arrayExtent()))
+#ifdef SCL_THREAD
+  , classMutex_()
+#endif
+    {
+      for (size_type i = 0; i < arrayExtent(); ++i)
+      {
+        dataStorage_[i] = T();
+      };
+    }
 
     /// @brief Initialiser constructor
     /// @param[in] xExtent: The number of x elements to allocate (rows)
@@ -171,9 +188,8 @@ namespace SCL
     /// @throws
     /// @version 2019-12-08/GGB - Function created.
 
-    explicit array2D(size_type xExtent = 64, size_type yExtent = 64, T const &value = T(), Alloc_ const &alloc = Alloc_())
+    explicit array2D(size_type xExtent, size_type yExtent, T const &value, Alloc_ const &alloc = Alloc_())
     : alloc_(alloc), xExtent_(xExtent), yExtent_(yExtent), dataStorage_(alloc_.allocate(arrayExtent()))
-    , headIndex_(0), tailIndex_(0)
 #ifdef SCL_THREAD
   , classMutex_()
 #endif
@@ -185,12 +201,12 @@ namespace SCL
     }
 
     /// @brief Copy constructor.
-    /// @param[in] toCopy - The instance to create a copy of.
+    /// @param[in] toCopy: The instance to create a copy of.
     /// @version 2019-11-30/GGB - Converted to STL type container.
     /// @version 2011-03-13/GGB - Function created.
 
     explicit array2D(array2D const &toCopy) : dataStorage_(alloc_.allocate(toCopy.xExtent_ * toCopy.yExtent_)),
-      xExtent_(toCopy.xExtent_), yExtent_(toCopy.yExtent_), headIndex_(toCopy.headIndex_), tailIndex_(toCopy.tailIndex_)
+      xExtent_(toCopy.xExtent_), yExtent_(toCopy.yExtent_)
 #ifdef SCL_THREAD
     , classMutex_()
 #endif
@@ -328,7 +344,7 @@ namespace SCL
     }
 
 
-  };    // Class vector2D
+  };    // Class array2D
 
 
 }	// namespace SCL

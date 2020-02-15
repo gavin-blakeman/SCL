@@ -5,12 +5,12 @@
 // SUBSYSTEM:						Common Include file for the storage class library.
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	None.
+// LIBRARY DEPENDANCE:	GCL, MCL.
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman (GGB).
 // LICENSE:             GPLv2
 //
-//                      Copyright 2010, 2013-2019 Gavin Blakeman.
+//                      Copyright 2010, 2013-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -43,25 +43,26 @@
  * @section Dependencies
  * The following open source libraries are required by the Storage Class library.
  * @arg Boost Library <a href="http//www.boost.org">Boost C++ Libraries</a>
- * @arg GCL <a href="http://www.theroboticobservatory.org">General Class Library</a>
+ * @arg GCL <a href="http://https://github.com/gavin-blakeman/GCL">General Class Library</a>
+ * @arg MCL <a href="http://https://github.com/gavin-blakeman/MCL">Math Class Library</a>
  *
  * @section Compilation Control
  * The following macros control how the code will be compiled for various applications.
  * @li @b SCL_NOMT - Do not use multi-threading. This should only be used on platforms where multi-threading is not available. By
- *									 default, multi-threading support is enabled.
+ *									 default, multi-threading support is enabled. If multi-threading is available, the library will use all
+ *                   available processors (1 thread = 1 processor) to perform multi-threaded concurrent operations.
  *
  * @section Projects
  * The Storage Class Library is used as the Astronomy Library by the following projects.
  * @li Astronomical Image Reduction and Data Analysis Software.  (<a href="http://www.astroManager.net">astroManager</a>)
- * @li The Robotic Observatory Project (<a href="http://www.theroboticobservatory.org">The Robotic Observatory</a>)
+
  *
  * @section Development
- * The library is still under active development and is being expanded and improved along with the development of the astroManager
- * application.
+ * The library is still under active development and is being expanded and improved.
  * @par Note
  * The classes within this library have been in development from 2005. As a result, all the code is not written using the
- * C++14 functionality. There is an opportunity to "clean" up the code by updating the code to reflect the C++14 standard.
- * All new code that is being developed is written to the C++14 standard.<br>
+ * C++17 functionality. There is an opportunity to "clean" up the code by updating the code to reflect the C++17 standard.
+ * All new code that is being developed is written to the C++17 standard.<br>
  * All C string functions will be phased out over time. Any new code should not include C string functions, but should rather use
  * the C++ std::string classes.
  * @par Reporting Bugs
@@ -71,7 +72,7 @@
  * @section Legal
  * @author Gavin Blakeman (GGB)
  * @version 2019.09
- * @copyright 2005-2019 Gavin Blakeman
+ * @copyright 2005-2020 Gavin Blakeman
  * @par Licence
  * The Storage Class Library is licensed under the GPLv2. The full text of the GPLv2 can be found in the file license.txt that
  * is distributed with the source of the library.<br>
