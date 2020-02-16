@@ -87,7 +87,9 @@ HEADERS += \
     include/error.h \
     SCL \
     include/hierarchyBuilder.hpp \
-    include/array2D.hpp
+    include/array2D.hpp \
+    include/vector2D.hpp \
+    include/index2D.hpp
 
 DISTFILES += \
     license.txt \

@@ -1,0 +1,4 @@
+﻿2020-02
+-------
+ADD:      index2D class and associated header file.
+REVERTED: vector2D. Implemented as a lookup table approach.

@@ -26,7 +26,8 @@
 //
 // OVERVIEW:
 //
-// HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
+// HISTORY:             2020-02-16 GGB - Added vector2D and index2D for use with warGame.wt
+//                      2015-09-22 GGB - astroManager 2015.09 release
 //
 //**********************************************************************************************************************************
 
@@ -93,7 +94,8 @@
 #include "include/common.h"
 #include "include/config.h"
 #include "include/AVLTree.h"
-//#include "include/valarray_mt.hpp"
+#include "include/index2D.hpp"
+#include "include/vector2D.hpp"
 #include "include/VectorSorted.hpp"
 #include "include/hierarchyBuilder.hpp"
 
