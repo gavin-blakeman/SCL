@@ -368,6 +368,84 @@ namespace SCL
     reference &operator[] (index_type index);
     const_reference &operator[] (index_type) const;
 
+    /// @brief Constructs an object in-place.
+    /// @param[in] row: The row to insert th item into the container.
+    /// @param[in] column: The column to insert the item into the container.
+    /// @param[in] value: The object to insert.
+    /// @returns An pair containing an iterator to the inserted object and a bool indicating if the insertion occurred.
+    /// @version 2020-02-18/GGB - Function created.
+
+    std::pair<iterator, bool> insert(size_type row, size_type column, T &&value)
+    {
+      return insert(index_type(row, column), std::move(value));
+    }
+
+    /// @brief Constructs an object in-place.
+    /// @param[in] index: The index to insert into the container.
+    /// @param[in] value: The object to insert.
+    /// @returns An pair containing an iterator to the inserted object and a bool indicating if the insertion occurred.
+    /// @version 2020-02-18/GGB - Function created.
+
+    std::pair<iterator, bool> insert(index_type index, T &&value)
+    {
+      size_type insertSlot;
+      bool valueInserted = false;
+
+      if (unusedSlots_.empty())
+      {
+          // No unused slots, insert at the end of the vector.
+
+        dataArray_.push_back(std::move(value));
+        insertSlot = dataArray_.size() - 1;
+        lookupIndex_.insert_or_assign(index, insertSlot);
+        valueInserted = true;
+      }
+      else
+      {
+          // Utilise an unused slot for the insertion.
+      }
+    }
+
+    /// @brief Emplace implementation taking an index_type as the argument.
+    /// @param[in] row: The row to emplace insert the item.
+    /// @param[in] column: The row to emplace insert the item.
+    /// @param[in] args: The arguments for the constructor.
+    /// @throws std::bad_alloc
+    /// @version 2020-02-20/GGB - Function created.
+
+    template<class... Args>
+    std::pair<iterator, bool> emplace(size_type row, size_type column, Args&&... args)
+    {
+      return emplace(index_type(row, column), std::forward<Args>(args)...);
+    }
+
+    /// @brief Emplace implementation taking an index_type as the argument.
+    /// @param[in] index: The index to emplace insert the item.
+    /// @param[in] args: The arguments for the constructor.
+    /// @throws std::bad_alloc
+    /// @version 2020-02-20/GGB - Function created.
+
+    template<class... Args>
+    std::pair<iterator, bool> emplace(index_type index, Args&&... args)
+    {
+      size_type insertSlot;
+      bool valueInserted = false;
+
+      if (unusedSlots_.empty())
+      {
+          // No unused slots, insert at the end of the vector.
+
+        dataArray_.emplace_back(std::forward<Args>(args)...);
+        insertSlot = dataArray_.size() - 1;
+        lookupIndex_.insert_or_assign(index, insertSlot);
+        valueInserted = true;
+      }
+      else
+      {
+          // Utilise an unused slot for the insertion.
+      }
+    }
+
 
   };
 

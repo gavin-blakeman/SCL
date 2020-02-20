@@ -37,6 +37,7 @@
 
   // Standard C++ library header files.
 
+#include <functional>
 #include <type_traits>
 
 namespace SCL
@@ -82,8 +83,8 @@ namespace std
 
     std::size_t operator()(SCL::index2D<T> const &index) const noexcept
     {
-      std::size_t h1 = std::hash<T>(index.row());
-      std::size_t h2 = std::hash<T>(index.column());
+      std::size_t h1 = std::hash<T>{}(index.row());
+      std::size_t h2 = std::hash<T>{}(index.column());
       return h1 ^ (h2 << 1);
     }
   };
