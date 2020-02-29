@@ -54,15 +54,12 @@
 
 namespace SCL
 {
-  template<typename T,
-           typename T_nonconst,
-           typename elem_type = typename T::value_type>
+  template<typename T>
   class vector2DIterator
   {
   public:
-    typedef vector2DIterator<T, T_nonconst, elem_type>          self_type;
+    typedef vector2DIterator<T>                                 self_type;
     typedef T                                                   VECTYPE;
-    typedef std::random_access_iterator_tag                     iterator_category;
     typedef typename VECTYPE::value_type                        value_type;
     typedef typename VECTYPE::size_type                         size_type;
     typedef typename VECTYPE::pointer                           pointer;
@@ -70,27 +67,52 @@ namespace SCL
     typedef typename VECTYPE::reference                         reference;
     typedef typename VECTYPE::const_reference                   const_reference;
     typedef typename VECTYPE::difference_type                   difference_type;
+    typedef typename VECTYPE::index_type                        index_type;
+    using iterator_category = std::random_access_iterator_tag;
+    using elem_type = typename T::value_type;
 
   private:
-    VECTYPE *vector2D;
-    size_t index_;
+    VECTYPE &vector2D_;
+    index_type index_;
 
   protected:
   public:
-    friend class vector2DIterator<const T, T, const elem_type>;
+    //friend class vector2DIterator<const T, T, const elem_type>;
 
-    vector2DIterator(VECTYPE *bt, size_t n) : vector2D(bt), index_(n) {}
-    vector2DIterator(vector2DIterator<T_nonconst, T_nonconst, typename T_nonconst::value_type> const &other)
-      : vector2D(other.vector2D), index_(other.index_) {}
+    vector2DIterator(VECTYPE &v2d) : vector2D_(v2d), index_() {}
+    vector2DIterator(vector2DIterator<T> const &other) : vector2D_(other.vector2D_), index_(other.index_) {}
 
-    elem_type &operator*() { return (*vector2D)[index_]; }
+    elem_type &operator*() { return (*vector2D_).at(index_); }
     elem_type *operator->() { return *(operator*()); }
+
+    /// @brief prefix increment operator
+    /// @returns Iterator after increment
+    /// @throws None.
+    /// @version 2020-02-29/GGB - Function created.
 
     self_type &operator++()
     {
-      index_ += 1;
-      return *this;
+      index_.column()++;
+      if (index_.column() > vector2D_.vectorSize().column())
+      {
+        if (index_.row() >= vector2D_.vectorSize().row())
+        {
+          (*this) = vector2D_.end();
+        }
+        else
+        {
+          index_.column() = 0;
+          index_.row()++;
+        };
+      };
+
+      return (*this);
     }
+
+    /// @brief postfix increment operator
+    /// @returns Iterator before increment
+    /// @throws None.
+    /// @version 2020-02-29/GGB - Function created.
 
     self_type operator++(int)
     {
@@ -99,16 +121,43 @@ namespace SCL
       return tmp;
     }
 
+    /// @brief prefix decrement operator
+    /// @returns Iterator after decrement
+    /// @throws std::out_of_range - if an attempt is made to decrement before the start of the container.
+    /// @version 2020-02-29/GGB - Function created.
+
     self_type &operator--()
     {
-      index_ -= 1;
-      return *this;
+      if (index_.column() == 0)
+      {
+        if (index_.row() == 0)
+        {
+          throw std::out_of_range("Attempt to decrement from beginning of container");
+        }
+        else
+        {
+          index_.column() = vector2D_.vectorSize_.column();
+          index_.row()--;
+        };
+      }
+      else
+      {
+        index_.column()--;
+      };
+
+      return (*this);
     }
+
+    /// @brief postfix decrement operator
+    /// @returns Iterator before decrement
+    /// @throws std::out_of_range - if an attempt is made to decrement before the start of the container.
+    /// @version 2020-02-29/GGB - Function created.
 
     self_type operator--(int)
     {
       self_type tmp(*this);
       --(*this);
+
       return tmp;
     }
 
@@ -145,11 +194,17 @@ namespace SCL
 
     bool operator==(const self_type &other) const
     {
-      return index_ == other.index_ && vector2D == other.vector2D;
+      return index_ == other.index_ && vector2D_ == other.vector2D_;
     }
+
+    /// @brief Not equals operator. Tests if *this is equal to another iterator.
+    /// @param[in] other: The instance to test
+    /// @returns true if not equal.
+    /// @version 2020-02-29/GGB - Function created.
+
     bool operator!=(const self_type &other) const
     {
-      return index_ != other.index_ && vector2D == other.vector2D;
+      return index_ != other.index_ && vector2D_ == other.vector2D_;
     }
 
     bool operator>(const self_type &other) const
@@ -216,7 +271,7 @@ namespace SCL
     typedef typename Alloc_::difference_type                                        difference_type;
     typedef typename Alloc_::size_type                                              size_type;
     typedef typename SCL::index2D<size_type>                                        index_type;
-    typedef vector2D<self_type, self_type>                                          iterator;
+    typedef vector2DIterator<self_type>                                             iterator;
     //typedef vector2D<const self_type, self_type, const value_type>                  const_iterator;
     typedef std::reverse_iterator<iterator>                                         reverse_iterator;
     //typedef std::reverse_iterator<const_iterator>                                   const_reverse_iterator;
@@ -273,11 +328,12 @@ namespace SCL
     {
     }
 
-    vector2D(const vector2D &);
+    vector2D(vector2D const &);
     vector2D(vector2D &&) noexcept;
     vector2D(vector2D &&, Alloc_ const &alloc);
 
     /// @brief Class destructor. Ensures all elements are destroyed and the class is ready for destruction.
+    /// @throws None.
     /// @version 2020-02-16/GGB - Function created.
 
     virtual ~vector2D()
@@ -313,8 +369,9 @@ namespace SCL
 
     /// @brief Returns a reference to the element at the specified index, with bounds checking.
     /// @returns std::optional Reference to the element at the specified index.
-    /// @returns If no element exists at the specified index, the optional returs false.
+    /// @returns If no element exists at the specified index, the optional returns false.
     /// @throws std::out_of_range if index falls outside of the current bounds of the vector.
+    /// @throws std::out_of_range if there is no element at the index.
     /// @version 2020-02-16/GGB - Function created.
 
     reference at(index_type index)
@@ -341,6 +398,7 @@ namespace SCL
     /// @returns std::optional Reference to the element at the specified index.
     /// @returns If no element exists at the specified index, the optional returs false.
     /// @throws std::out_of_range if index falls outside of the current bounds of the vector.
+    /// @throws std::out_of_range if there is no element at the index.
     /// @version 2020-02-16/GGB - Function created.
 
     const_reference at(index_type index) const
@@ -390,6 +448,7 @@ namespace SCL
     {
       size_type insertSlot;
       bool valueInserted = false;
+      iterator validIterator(*this);
 
       if (unusedSlots_.empty())
       {
@@ -403,7 +462,9 @@ namespace SCL
       else
       {
           // Utilise an unused slot for the insertion.
-      }
+      };
+
+      return std::make_pair(validIterator, valueInserted);
     }
 
     /// @brief Emplace implementation taking an index_type as the argument.
@@ -430,6 +491,7 @@ namespace SCL
     {
       size_type insertSlot;
       bool valueInserted = false;
+      iterator validIterator(*this);
 
       if (unusedSlots_.empty())
       {
@@ -443,7 +505,9 @@ namespace SCL
       else
       {
           // Utilise an unused slot for the insertion.
-      }
+      };
+
+      return std::make_pair(validIterator, valueInserted);
     }
 
 
