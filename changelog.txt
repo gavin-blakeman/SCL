@@ -1,4 +1,8 @@
-﻿2020-02
+﻿2020-03
+-------
+ADD:      negation operator for angle.
+
+2020-02
 -------
 ADD:      index2D class and associated header file.
 REVERTED: vector2D. Implemented as a lookup table approach.
