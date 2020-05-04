@@ -39,7 +39,7 @@
 //
 //*********************************************************************************************************************************
 
-#include "../include/common.h"
+#include "include/common.h"
 
   // Standard libraries
 
@@ -54,9 +54,9 @@
 namespace SCL
 {
 
-  unsigned int const SCL_MAJORVERSION = 2019;           ///< The Major version number (yyyy)
+  unsigned int const SCL_MAJORVERSION = 2020;           ///< The Major version number (yyyy)
   unsigned int const SCL_MINORVERSION = 9;              ///< The Minor version number (mm)
-  unsigned int const SCL_BUILDNUMBER  = 0x000F;         ///< The build numnber - incremented on each build.
+  unsigned int const SCL_BUILDNUMBER  = 0x0000;         ///< The build numnber - incremented on each build.
 
   /// @brief Returns the library version and build number that was used for editing the library.
   /// @returns A string with the application name, version, build.

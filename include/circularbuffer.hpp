@@ -6,7 +6,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2017-2019 Gavin Blakeman.
+//                      Copyright 2017-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -227,11 +227,11 @@ namespace SCL
     template<typename f_iter>
     void assignInto(f_iter from, f_iter to)
     {
-      if (size()) 
+      if (size())
       {
-	      clear();
-	    };
-	    
+        clear();
+      };
+
       while (from != to)
       {
         push_back(*from);
@@ -242,11 +242,11 @@ namespace SCL
     template<typename f_iter>
     void assignIntoReserving(f_iter from, f_iter to)
     {
-      if (elementCount) 
+      if (elementCount)
       {
-      	clear();
+        clear();
       };
-      
+
       while (from != to)
       {
         if (elementCount == bufferExtent)
@@ -306,7 +306,7 @@ namespace SCL
   public:
 
     /// @brief Constructor for the circular buffer class.
-    /// @param[in] extent - The extent of the buffer to create. IE how many elements can it hold.
+    /// @param[in] extent: The extent of the buffer to create. IE how many elements can it hold.
     /// @throws std::bad_alloc
     /// @version 2017-07-18/GGB - Function created.
 
@@ -363,7 +363,7 @@ namespace SCL
     }
 
     /// @brief Swaps the contents of two circular buffers.
-    /// @param[in] other - The other buffer to swap.
+    /// @param[in] other: The other buffer to swap.
     /// @throws None.
     /// @version 2017-07-21/GGB - Function created.
 
@@ -378,7 +378,7 @@ namespace SCL
     }
 
     /// @brief Returns a reference to the element at the given position in the circularBuffer.
-    /// @param[in] n - Number of the element to get. Note this is referenced to the headIndex, not the start of the buffer.
+    /// @param[in] n: Number of the element to get. Note this is referenced to the headIndex, not the start of the buffer.
     /// @returns Reference to the element
     /// @throws std::out_of_range
     /// @version 2017-07-20/GGB - Function created.
@@ -389,7 +389,7 @@ namespace SCL
     }
 
     /// @brief Returns a reference to the element at the given position in the circularBuffer.
-    /// @param[in] n - Number of the element to get. Note this is referenced to the headIndex, not the start of the buffer.
+    /// @param[in] n: Number of the element to get. Note this is referenced to the headIndex, not the start of the buffer.
     /// @returns Reference to the element
     /// @throws std::out_of_range
     /// @version 2017-07-21/GGB - Function created.
@@ -506,7 +506,7 @@ namespace SCL
 
     const_reference front() const
     {
-#ifdef SCL_THREAD    
+#ifdef SCL_THREAD
       std::lock_guard<std::mutex> lg(classMutex_);
 #endif
       if (!empty())
@@ -565,7 +565,7 @@ namespace SCL
     }
 
     /// @brief Pushes a new value into the circular buffer.
-    /// @param[in] element - Thje element to add to the circular buffer.
+    /// @param[in] element: The element to add to the circular buffer.
     /// @throws None.
     /// @version 2017-07-19/GGB - Function created.
 

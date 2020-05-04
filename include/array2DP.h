@@ -5,7 +5,6 @@
 // SUBSYSTEM:						Polymorphic 2D array
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	SCL
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2

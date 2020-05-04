@@ -5,12 +5,11 @@
 // SUBSYSTEM:						Sorted Vector implementation
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	None
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2012-2019 Gavin Blakeman.
+//                      Copyright 2012-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -173,11 +172,11 @@ namespace SCL
       };
     }
 
-    /// Erases a range of elements.
-    /// EXCEPTIONS: 0x2000 - VectorSorted: Incorrect iterator for object.
+    /// @brief Erases a range of elements.
+    /// @throws 0x2000 - VectorSorted: Incorrect iterator for object.
     /// @version 2017-06-25/GGB - Updated to use new GCL error handling.
-    // 2013-04-21/GGB - When erasing to end of array elements are not null constructed. Just left as they where.
-    // 2013-01-01/GGB - Function created.
+    /// @version 2013-04-21/GGB - When erasing to end of array elements are not null constructed. Just left as they where.
+    /// @version 2013-01-01/GGB - Function created.
 
     virtual iterator erase(iterator eraseBegin, iterator eraseEnd)
     {
@@ -230,9 +229,9 @@ namespace SCL
       };
     }
 
-    /// Finds the element = val. If no element is found, then the end() is returned.
-    //
-    // 2013-01-01/GGB - Function created.
+    /// @brief Finds the element = val. If no element is found, then the end() is returned.
+    /// @throws
+    /// @version 2013-01-01/GGB - Function created.
 
     virtual iterator find(T const &val)
     {
@@ -244,7 +243,9 @@ namespace SCL
       index =  s / 2;
 
       if (empty())
+      {
         return end();     // Trivial case, return the last element
+      }
       else
       {
         while ( (!found) && (index != lastIndex) )

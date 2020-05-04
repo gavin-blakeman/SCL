@@ -93,7 +93,6 @@
 #include "include/circularbuffer.hpp"
 #include "include/common.h"
 #include "include/config.h"
-#include "include/AVLTree.h"
 #include "include/index2D.hpp"
 #include "include/vector2D.hpp"
 #include "include/VectorSorted.hpp"

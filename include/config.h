@@ -5,7 +5,6 @@
 // SUBSYSTEM:						Configuration file
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	None.
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2

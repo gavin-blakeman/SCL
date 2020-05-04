@@ -7,7 +7,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017-2019 Gavin Blakeman.
+//                      Copyright 2015, 2017-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -47,9 +47,9 @@
 namespace SCL
 {
   /// @brief Multi-threaded copy function.
-  /// @param[in] src - Source to copy from.
-  /// @param[in] dest - Destination to cop to.
-  /// @param[in] len - Number of elements to copy.
+  /// @param[in] src: Source to copy from.
+  /// @param[in] dest: Destination to cop to.
+  /// @param[in] len: Number of elements to copy.
   /// @throws None.
   /// @note This function will not work correctly if the memory areas are aliased.
   /// @version 2015-07-07/GGB - Function created.

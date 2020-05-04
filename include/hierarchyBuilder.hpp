@@ -8,7 +8,7 @@
 // NAMESPACE:           SCL
 // LICENSE:             GPLv2
 //
-//                      Copyright 2019 Gavin Blakeman.
+//                      Copyright 2019-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -265,16 +265,16 @@ namespace SCL
   /// @tparam T: Type to use as the data to store in the hierarchy.
   /// @tparam nullValue: The type to use as NULL value (top level value)
   /// @tparam sort: If true, the hierarchy will be sorted by index. If false, items will just be added at the end.
+  /// @tparam Alloc_: The allocator type to use.
 
   template<typename I,
            class T,
-           I nullValue,
            bool sort = true,
            class Alloc_ = std::allocator<T>>
   class hierarchy
   {
   public:
-    typedef hierarchy<I, T, nullValue, sort, Alloc_>                                self_type;
+    typedef hierarchy<I, T, sort, Alloc_>                                           self_type;
     typedef T                                                                       elem_type;
     typedef Alloc_                                                                  allocator_type;
     typedef typename Alloc_::value_type                                             value_type;
@@ -296,6 +296,7 @@ namespace SCL
     typedef typename std::multimap<I, node_type>                unfoundStorage_t;
     typedef typename std::multimap<I, node_type>::iterator      unfoundIterator_t;
 
+    I rootValue_;
     allocator_type alloc_;
     childCollection_type root_;                 // The root node.
     unfoundStorage_t unfound_;
@@ -313,7 +314,6 @@ namespace SCL
       root_.clear();
       unfound_.clear();
     }
-
 
     /// @brief Searches the entire tree for a node with the given index.
     /// @param[in] searchMap: The map to search.
@@ -348,11 +348,41 @@ namespace SCL
       };
     }
 
+    hierarchy() = delete;
+    hierarchy(hierarchy const &other) = delete;
+    hierarchy(hierarchy &&) = delete;
+    hierarchy &operator=(self_type const &other) = delete;
+
   protected:
   public:
-    explicit hierarchy() : root_(), unfound_(), elementCount_(0), classMutex_() {}
-    hierarchy(hierarchy const &other) = delete;
-    hierarchy &operator=(self_type const &other) = delete;
+    /// @brief Class constructor. Emulates a default constructor for a default constructable object.
+    /// @param[in] rootValue: The index value to use as the root value.
+    /// @throws
+    /// @version 2020-04-03/GGB - Function created.
+
+    explicit hierarchy(I rootValue = I()) : rootValue_(rootValue), root_(), unfound_(), elementCount_(0), classMutex_() {}
+
+    /// @brief Function called to set/change the root value.
+    /// @param[in] rootValue: The new root value.
+    /// @throws std::runtime_error if the class already contains any items.
+    /// @pre The class must be empty. empty() == true.
+    /// @version 2020-05-04/GGB - Function created.
+
+    void setRootValue(I rootValue)
+    {
+#ifdef SCL_THREAD
+      std::lock_guard<std::mutex> lg(classMutex_);
+#endif
+
+      if (empty())
+      {
+        rootValue_ = rootValue;
+      }
+      else
+      {
+        throw std::runtime_error("SCL::hierarchy - Instance must have empty() == true before calling setRootValue()");
+      };
+    }
 
     /// @brief Destructor for the hierarchy class.
     /// @throws None.
@@ -395,7 +425,7 @@ namespace SCL
       childCollection_iterator nodeFound;
       unfoundIterator_t unfoundNode;
 
-      if (parentIndex == nullValue)
+      if (parentIndex == rootValue_)
       {
           // Item has no parent, stick it in the root node.
 

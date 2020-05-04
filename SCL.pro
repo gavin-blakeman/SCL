@@ -62,7 +62,6 @@ INCLUDEPATH += \
   "/home/gavin/Documents/Projects/software/Library/Boost/boost_1_71_0"
 
 SOURCES += \
-    source/AVLTree.cpp \
     source/common.cpp \
     source/config.cpp \
     source/valarray2DP.cpp \
@@ -73,7 +72,6 @@ SOURCES += \
 HEADERS += \
     include/VectorSorted.hpp \
     include/Base.h \
-    include/AVLTree.h \
     include/valarray_mt.hpp \
     include/any.h \
     include/common.h \
@@ -82,7 +80,6 @@ HEADERS += \
     include/algorithm.hpp \
     include/array2DP.h \
     include/array1DP.h \
-    include/binaryTree.h \
     include/circularbuffer.hpp \
     include/error.h \
     SCL \

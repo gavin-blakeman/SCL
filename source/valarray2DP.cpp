@@ -5,7 +5,6 @@
 // SUBSYSTEM:						Polymorphic valarray
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	SCL
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
@@ -49,8 +48,8 @@ namespace SCL
 {
 
   /// @brief Constructor for the class.
-  /// @param[in] nx - New x-dimension of the array
-  /// @param[in] ny - New y-dimension of the array
+  /// @param[in] nx: New x-dimension of the array
+  /// @param[in] ny: New y-dimension of the array
   /// @throws std::bad_alloc
   /// @note Calls stride() to determine the size of the data elements. Size can throw RUNTIME_ASSERT.
   /// @version 2015-07-07/GGB - Function created.

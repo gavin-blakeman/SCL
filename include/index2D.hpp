@@ -5,7 +5,6 @@
 // SUBSYSTEM:						2D index class
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	None
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2

@@ -5,7 +5,6 @@
 // SUBSYSTEM:						2D vector
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	SCL
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2

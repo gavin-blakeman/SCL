@@ -5,12 +5,11 @@
 // SUBSYSTEM:						Polymorphic 2D array
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	SCL
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017-2019 Gavin Blakeman.
+//                      Copyright 2015, 2017-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -35,17 +34,17 @@
 //
 //**********************************************************************************************************************************
 
-#include "../include/array1DP.h"
+#include "include/array1DP.h"
 
   // SCL Library
 
-#include "../include/algorithm.hpp"
+#include "include/algorithm.hpp"
 
 namespace SCL
 {
 
   /// @brief Constructor for the class.
-  /// @param[in] nd - New dimension of the array
+  /// @param[in] nd: New dimension of the array
   /// @throws std::bad_alloc
   /// @note Calls stride() to determine the size of the data elements. Size can throw RUNTIME_ASSERT.
   /// @version 2015-07-07/GGB - Function created.
@@ -257,7 +256,7 @@ namespace SCL
   }
 
   /// @brief Function to get a stored value from the array.
-  /// @param[in] i - Index to return value from.
+  /// @param[in] i: Index to return value from.
   /// @throws GCL::CRuntimeAssert
 
   MCL::CNumeric CArray1DP::get(size_t i) const
@@ -380,7 +379,7 @@ namespace SCL
   }
 
   /// @brief Converts the data array to the new base type.
-  /// @param[in] nt - New base type.
+  /// @param[in] nt: New base type.
   /// @throws std::bad_alloc
   /// @version 2015-08-23/GGB - Function created.
 
@@ -453,8 +452,8 @@ namespace SCL
   }
 
   /// @brief Function to resize the array.
-  /// @param[in] nd - New dimension
-  /// @param[in] copy - Copy flag. True = copy contents. False = do not copy contents.
+  /// @param[in] nd: New dimension
+  /// @param[in] copy: Copy flag. True = copy contents. False = do not copy contents.
   /// @throws std::bad_alloc
   /// @throws GCL::CRuntimeAssert
   /// @details A new array is created, and the information copied into the new array at the same coordinates.

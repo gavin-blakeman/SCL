@@ -5,12 +5,11 @@
 // SUBSYSTEM:						Configuration file
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	None.
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2017-2019 Gavin Blakeman.
+//                      Copyright 2015, 2017-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -39,6 +38,8 @@
 //*********************************************************************************************************************************
 
 #include "../include/config.h"
+
+  // Standard C++ library header files.
 
 #include <thread>
 

@@ -5,12 +5,11 @@
 // SUBSYSTEM:						Polymorphic 1D array
 // LANGUAGE:						C++
 // TARGET OS:						None.
-// LIBRARY DEPENDANCE:	SCL
 // NAMESPACE:						SCL
 // AUTHOR:							Gavin Blakeman.
 // LICENSE:             GPLv2
 //
-//                      Copyright 2015, 2018-2019 Gavin Blakeman.
+//                      Copyright 2015, 2018-2020 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -94,8 +93,8 @@ namespace SCL
     MCL::CNumeric get(size_t) const;
 
     /// @brief Value setter funtion
-    /// @param[in] index - The index to set to the value. (This is limit checked)
-    /// @param[in] value - The value to load into the array
+    /// @param[in] index: The index to set to the value. (This is limit checked)
+    /// @param[in] value: The value to load into the array
     /// @throws GCL::CCodeError
     /// @version 2015-08-14/GGB - Function created.
 
