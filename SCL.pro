@@ -35,7 +35,7 @@ TARGET          = SCL
 TEMPLATE        = lib
 CONFIG          += staticlib
 
-QMAKE_CXXFLAGS  += -std=c++17 #-static -static-libgcc -save-temps
+QMAKE_CXXFLAGS  += -std=c++17
 
 OBJECTS_DIR     = "objects"
 
@@ -73,7 +73,6 @@ HEADERS += \
     include/VectorSorted.hpp \
     include/Base.h \
     include/valarray_mt.hpp \
-    include/any.h \
     include/common.h \
     include/config.h \
     include/valarray2DP.h \
@@ -86,7 +85,8 @@ HEADERS += \
     include/hierarchyBuilder.hpp \
     include/array2D.hpp \
     include/vector2D.hpp \
-    include/index2D.hpp
+    include/index2D.hpp \
+    include/any.hpp
 
 DISTFILES += \
     license.txt \

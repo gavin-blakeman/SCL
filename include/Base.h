@@ -47,12 +47,15 @@
 
 namespace SCL
 {
+  /// @brief A base base class for other classes to utilise.
+  /// @note 1. This is used by the CAny class.
+
   class CPackage
   {
   private:
   protected:
   public:
-    CPackage(){}
+    CPackage() {}
     virtual  ~CPackage() {}
     virtual CPackage *createCopy() const { return nullptr; }
 
@@ -62,9 +65,9 @@ namespace SCL
 
     virtual std::type_info const &type() const noexcept { return typeid(CPackage); }
   };
-  typedef CPackage *PPackage;
+  [[deprecated]] typedef CPackage *PPackage;
 
-  class CSortablePackage : public CPackage
+  class [[deprecated]] CSortablePackage : public CPackage
   {
   private:
   protected:
@@ -75,9 +78,10 @@ namespace SCL
     virtual bool operator<(CSortablePackage const &) const { SCL_CODE_ERROR; }
     virtual bool operator==(CSortablePackage const &) const { SCL_CODE_ERROR; }
   };
-  typedef CSortablePackage *PSortablePackage;
 
-  class CContainer
+  [[deprecated]] typedef CSortablePackage *PSortablePackage;
+
+  class [[deprecated]] CContainer
   {
   public:
     typedef unsigned long size_type;
@@ -107,7 +111,7 @@ namespace SCL
     inline bool empty() const { return lPackageCount == 0; }
   };
 
-  class CUnsortedContainer : public CContainer
+  class [[deprecated]] CUnsortedContainer : public CContainer
   {
   private:
   protected:
@@ -116,7 +120,7 @@ namespace SCL
     virtual ~CUnsortedContainer() {}
   };
 
-  class CSortedContainer : public CContainer
+  class [[deprecated]]CSortedContainer : public CContainer
   {
   private:
   protected:
@@ -126,7 +130,7 @@ namespace SCL
 
   };
 
-  class CIterator
+  class [[deprecated]] CIterator
   {
   private:
     bool bEOC;

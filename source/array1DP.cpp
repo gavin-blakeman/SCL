@@ -537,6 +537,7 @@ namespace SCL
       case MCL::NT_int16:
       {
         returnValue = sizeof(std::int16_t);
+        break;
       };
       case MCL::NT_int32:
       {

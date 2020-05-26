@@ -1,11 +1,21 @@
-﻿2020-04
+﻿2020-05
+------
+DEPRECATED: PPackage
+DEPRECATED: CSortablePackage
+DEPRECATED: PSortablePackage
+DEPRECATED: CContainer
+DEPRECATED: CUnsortedContainer
+DEPRECATED: CSortedContainer
+DEPRECATED: CIterator
+
+2020-04
 -------
-REMOVE:   binaryTree
-REMOVE:   AVL tree
-ADD:      hierarchy::setRootValue()
-CHANGE:   hierarchy to use a rootValue_ variable. and change template definition to remove null value.
+REMOVE:     binaryTree
+REMOVE:     AVL tree
+ADD:        hierarchy::setRootValue()
+CHANGE:     hierarchy to use a rootValue_ variable. and change template definition to remove null value.
 
 2020-02
 -------
-ADD:      index2D class and associated header file.
-REVERTED: vector2D. Implemented as a lookup table approach.
+ADD:        index2D class and associated header file.
+REVERTED:   vector2D. Implemented as a lookup table approach.
