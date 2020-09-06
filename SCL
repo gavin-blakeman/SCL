@@ -26,7 +26,8 @@
 //
 // OVERVIEW:
 //
-// HISTORY:             2020-02-16 GGB - Added vector2D and index2D for use with warGame.wt
+// HISTORY:             2020-09-04 GGB - Updated vector_sorted to full STL compliance.
+//                      2020-02-16 GGB - Added vector2D and index2D for use with warGame.wt
 //                      2015-09-22 GGB - astroManager 2015.09 release
 //
 //**********************************************************************************************************************************
@@ -38,8 +39,22 @@
  * @mainpage Storage Class Library (SCL).
  * @section Introduction
  * The Storage Class Library implements a number of classes that have been developed as storage classes.<br>
- * The library is written in C++17.<br>
+ * The library is written in C++20.<br>
  * The library is written as an operating system independent library.<br>
+ *
+ * @section Containers
+ * A number of STL-like containers are provided. Some of these are extensions to the STL offering tailored features that are not
+ * available in the STL.
+ *
+ *                  123456789   123456789   123456789
+ * Container Name | Insertion |  Removal  |  Search   | Comments
+ * -------------- | :-------: | :------:  | :-------: |
+ * vector         | 1         | O(n)      | O(n)      | STL container
+ * map            | O(log n)  | O(log n)  | O(log n)  | STL container
+ * mapAsVector    | O(n)      | O(n)      | O(log N)  | Efficient storage, fast traversal.
+ * set            | O(log n)  | O(log n)  | O(log n)  | STL container
+ * vector_sorted  | O(n)      | O(n)      | O(log n)  | Efficient storage, fast transversal.
+ *
  *
  * @section Dependencies
  * The following open source libraries are required by the Storage Class library.
@@ -62,9 +77,9 @@
  * The library is still under active development and is being expanded and improved.
  * @par Note
  * The classes within this library have been in development from 2005. As a result, all the code is not written using the
- * C++17 functionality. There is an opportunity to "clean" up the code by updating the code to reflect the C++17 standard.
- * All new code that is being developed is written to the C++17 standard.<br>
- * All C string functions will be phased out over time. Any new code should not include C string functions, but should rather use
+ * C++20 functionality. There is an opportunity to "clean" up the code by updating the code to reflect the C++20 standard.
+ * All new code that is being developed is written to the C++20 standard.<br>
+ * Any C string functions will be phased out over time. Any new code should not include C string functions, but should rather use
  * the C++ std::string classes.
  * @par Reporting Bugs
  *
@@ -94,8 +109,9 @@
 #include "include/common.h"
 #include "include/config.h"
 #include "include/index2D.hpp"
+#include "include/mapAsVector.hpp"
 #include "include/vector2D.hpp"
-#include "include/VectorSorted.hpp"
+#include "include/vectorSorted.hpp"
 #include "include/hierarchyBuilder.hpp"
 
 #endif // SCL_H

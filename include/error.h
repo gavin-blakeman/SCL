@@ -56,12 +56,8 @@ namespace SCL
 {
 #ifdef USE_GCL
   #define SCL_ERROR(errorNo) (ERROR(SCL, errorNo))
-  #define SCL_CODE_ERROR CODE_ERROR(SCL)
-  #define SCL_RUNTIME_ASSERT(EXPRESSION, MESSAGE) (RUNTIME_ASSERT(SCL, EXPRESSION, MESSAGE))
 #else
 #define SCL_ERROR(errorNo) {throw std::runtime_error(std::to_string((errorNo))); }
-#define SCL_CODE_ERROR {throw std::runtime_error("Code Error");}
-#define SCL_RUNTIME_ASSERT(EXPRESSION, MESSAGE) if (!(EXPRESSION)) { throw std::runtime_error("SCL " + #EXPRESSION + __FILE__ + std::to_string((size_t) __LINE__) + MESSAGE); }
 #endif
 }
 

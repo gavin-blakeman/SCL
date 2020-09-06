@@ -101,7 +101,7 @@ namespace SCL
     template<typename T>
     void set(size_t index, T const &value)
     {
-      RUNTIME_ASSERT(SCL, index < dim_, "Parameter index >= dim");
+      RUNTIME_ASSERT(index < dim_, "Parameter index >= dim");
 
       switch(dataType)
       {
@@ -157,7 +157,7 @@ namespace SCL
         };
         default:
         {
-          SCL_CODE_ERROR;
+          CODE_ERROR;
         };
       }
     }

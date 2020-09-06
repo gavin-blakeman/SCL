@@ -1,4 +1,8 @@
-﻿2020-05
+﻿2020-09
+-------
+CHANGE:     TVectorSorted to vector_sorted and update implementation to be STL like.
+
+2020-05
 ------
 DEPRECATED: PPackage
 DEPRECATED: CSortablePackage

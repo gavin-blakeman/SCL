@@ -261,7 +261,7 @@ namespace SCL
 
   MCL::CNumeric CArray1DP::get(size_t i) const
   {
-    RUNTIME_ASSERT(SCL, i < dim_, "Paramter i >= dim_");
+    RUNTIME_ASSERT(i < dim_, "Paramter i >= dim_");
 
     MCL::CNumeric returnValue;
 
@@ -506,7 +506,7 @@ namespace SCL
     {
       case MCL::NT_none:
       {
-        SCL_CODE_ERROR;
+        CODE_ERROR;
         break;
       };
       case MCL::NT_uint8:
@@ -561,7 +561,7 @@ namespace SCL
       };
       default:
       {
-        SCL_CODE_ERROR;
+        CODE_ERROR;
         break;
       };
     };

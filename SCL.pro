@@ -70,7 +70,6 @@ SOURCES += \
     source/error.cpp
 
 HEADERS += \
-    include/VectorSorted.hpp \
     include/Base.h \
     include/valarray_mt.hpp \
     include/common.h \
@@ -86,7 +85,9 @@ HEADERS += \
     include/array2D.hpp \
     include/vector2D.hpp \
     include/index2D.hpp \
-    include/any.hpp
+    include/any.hpp \
+    include/vectorSorted.hpp \
+    include/mapAsVector.hpp
 
 DISTFILES += \
     license.txt \

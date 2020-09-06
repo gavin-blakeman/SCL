@@ -224,6 +224,7 @@ namespace SCL
     friend std::ostream & operator<<(std::ostream &strm, any const &op) { strm << (op.packageData->stringOutput()); return strm; }
 
   };  // class any
+
 } // namespace SCL
 
 #endif // SCL_ANY_H

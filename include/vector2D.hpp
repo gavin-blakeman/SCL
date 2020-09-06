@@ -237,10 +237,10 @@ namespace SCL
 //    return vector2DIterator_t(a) - b;
 //  }
 
-  /// @brief    The vector2D is an STI-like 2D vector implementation.
+  /// @brief    The vector2D is an STL-like 2D vector implementation.
   /// @details  The class is used for storing two dimensional vectors. The vector size is not specified at creation or compile time.
   ///           The vector behaves like a std::vector, supporting resizing on the fly. This is done by having a look-up-table
-  ///           approach and storing the data in a flat data structure. The vector2D specifically breaks the data is contiguous
+  ///           approach and storing the data in a flat data structure. The vector2D specifically breaks the 'data is contiguous'
   ///           guarantee that std::vector provides. As a result, the vector2D does not provide access to the underlying data
   ///           storage.
   ///           The lookup mechanism is done by using a SCL::index2D<size_t> as the index and using an unordered_map to
