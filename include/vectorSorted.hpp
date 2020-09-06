@@ -117,7 +117,7 @@ namespace SCL
     vector_sorted(std::initializer_list<value_type> init, Compare const &comp = Compare(), Allocator const &alloc = Allocator());
     vector_sorted(std::initializer_list<value_type> init, Allocator const &alloc);
 
-    ~vector_sorted();
+    ~vector_sorted() {}
 
     constexpr vector_sorted &operator=(vector_sorted const &other);
     constexpr vector_sorted &operator=(vector_sorted &&other) noexcept(std::allocator_traits<Allocator>::is_always_equal::value
