@@ -309,10 +309,10 @@ namespace SCL
       return data_.cend();
     }
 
-    /// @brief Returns a const iterator to the end.
-    /// @returns An const iterator to the end.
-    /// @throws None.
-    /// @version 2020-09-04/GGB - Function created.
+    /// @brief      Returns a const iterator to the end.
+    /// @returns    An const iterator to the end.
+    /// @throws     None.
+    /// @version    2020-09-04/GGB - Function created.
 
     constexpr const_iterator cend() const noexcept
     {
@@ -327,31 +327,31 @@ namespace SCL
     constexpr const_reverse_iterator rend() const noexcept;
     constexpr const_reverse_iterator crend() const noexcept;
 
-    /// @brief Checks if the container has no elements. IE whether begin() == end().
-    /// @returns true if the container is empty, false otherwise.
-    /// @throws None.
-    /// @version 2020-09-04/GGB - Function created.
+    /// @brief      Checks if the container has no elements. IE whether begin() == end().
+    /// @returns    true if the container is empty, false otherwise.
+    /// @throws     None.
+    /// @version    2020-09-04/GGB - Function created.
 
     [[nodiscard]] bool empty() const noexcept
     {
       return data_.empty();
     }
 
-    /// @brief Returns the number of elements in the container. ie std::distance(begin(), end()).
-    /// @returns The number of elements in the container.
-    /// @throws None.
-    /// @version 2020-09-04/GGB - Function created.
+    /// @brief      Returns the number of elements in the container. ie std::distance(begin(), end()).
+    /// @returns    The number of elements in the container.
+    /// @throws     None.
+    /// @version    2020-09-04/GGB - Function created.
 
     constexpr size_type size() const noexcept
     {
       return data_.size();
     }
 
-    /// @brief Returns the maximum number of elements the container is able to hold due to system or library implementation
-    ///        limitations.
-    /// @returns The maximum number of elements the container can hold.
-    /// @throws None.
-    /// @version 2020-09-04/GGB - Function created.
+    /// @brief      Returns the maximum number of elements the container is able to hold due to system or library implementation
+    ///             limitations.
+    /// @returns    The maximum number of elements the container can hold.
+    /// @throws     None.
+    /// @version    2020-09-04/GGB - Function created.
 
     constexpr size_type max_size() const noexcept
     {

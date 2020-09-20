@@ -49,8 +49,8 @@
 
 namespace SCL
 {
-  /// @brief  The SCL::any Class allows any type of data to be stored. The class is a templatised class created on top of the
-  ///         CPackage class.
+  /// @brief    The SCL::any Class allows any type of data to be stored. The class is a templatised class created on top of the
+  ///           CPackage class.
   /// @details  CPackage is used as the base class for the templatised data class. (TData) This allows pointers to CPackage to
   ///           be stored and the virtual function mechanism to work with the correct class.
   ///           The class does not implement small buffer optimisation, instead allocating all objects as unique_ptr. SBO could be
@@ -67,22 +67,41 @@ namespace SCL
   class any
   {
     template<typename T>
-    class TData : public CPackage
+    class TData : public CPackage    // Derive from CPackage to get a common base class (non-templated) for CAny to operate on.
     {
+    private:
+      std::unique_ptr<T> data;    // Smart pointer to store the data.
+
     public:
-      std::unique_ptr<T> data;
+      /// @brief    Default constructor for the TData class.
+      /// @throws   None.
+      /// @version  2020-09-09/GGB - Function created.
+      /// @todo     Can this be deleted?
 
       constexpr TData() noexcept : data() {}
 
+      /// @brief      Move constructor for the TData class.
+      /// @param[in]  value: The value to move.
+      /// @throws     None.
+      /// @version    2020-09-09/GGB - Function created.
+
       TData(T &&value) : data(std::make_unique<T>(value)) {}
 
-      //TData(T const &toCopy) : data(new T(toCopy)) {}
+
+      /// @brief      Copy constructor for the TData class.
+      /// @param[in]  other: The value to copy.
+      /// @throws
+      /// @version    2020-09-09/GGB - Function created.
+
+      TData(T const &other) : data()
+      {
+        if (other.data)
+        {
+          data = std::make_unique<T>(other->data);
+        };
+      }
+
       virtual ~TData() {}
-//      virtual CPackage *createCopy() const
-//      {
-//        TData *returnValue = new TData(*data);
-//        return dynamic_cast<CPackage *>(returnValue);
-//      }
 
       /// @brief Converts the value type to a string output. This is done by calling the insertion operator for the type.
       /// @returns The value as a std::string
@@ -118,38 +137,58 @@ namespace SCL
 
 
   private:
-    std::unique_ptr<CPackage> packageData;
+    std::unique_ptr<CPackage> storedData;
 
   protected:
   public:
-    /// @brief Default constructor. Matches
-    constexpr any() noexcept {}
+    /// @brief      Default constructor.
+    /// @throws     None.
+    /// @version    2020-09-09/GGB - Function created.
 
-    any(any const &toCopy) : packageData(toCopy.packageData->createCopy()) {}
+    constexpr any() noexcept : storedData() {}
 
+    /// @brief      Copy constructor
+    /// @param[in]  other: The instance to make a copy of.
+    /// @throws
+    /// @version    2020-09-09/GGB - Function created.
 
+    any(any const &other) : storedData()
+    {
+        // Only copy if not a null pointer.
 
-    any(any &&other) noexcept : packageData()
+      if (other.has_value())
+      {
+        storedData.reset(other.storedData->createCopy());
+      };
+    }
+
+    /// @brief      Move constructor
+    /// @param[in]  other: The any class to move the data from.
+    /// @throws     None.
+    /// @version    2020-09-09/GGB - Function created.
+
+    any(any &&other) noexcept : storedData()
     {
       if (other.has_value())
       {
-        packageData = std::move(other.packageData);
+        storedData = std::move(other.storedData);
       }
     }
 
-    /// @brief rvalue (move) constructor.
-    /// @tparam valueType: The type fo the value to initialise into the any().
-    /// @param[in] value: The value to initialise the any() with.
+    /// @brief      rvalue (move) constructor.
+    /// @tparam     valueType: The type fo the value to initialise into the any().
+    /// @param[in]  value: The value to initialise the any() with.
+    /// @throws
+    /// @version    2020-09-09/GGB - Function created.
 
     template<class valueType>
-    any(valueType &&value) : packageData()
+    any(valueType &&value) : storedData()
     {
       if constexpr (std::is_same_v<valueType, SCL::any>)
       {
           // Creating another SCL::any class.
 
-        packageData = std::move(value.packageData);
-
+        storedData = std::move(value.storedData);
       }
       else
       {
@@ -169,18 +208,19 @@ namespace SCL
            * any does not need to be cv qualified.
            */
 
-        packageData = std::make_unique<TData<std::decay_t<valueType>>>(std::decay_t<valueType>(value));
-      };
+        storedData = std::make_unique<TData<std::decay_t<valueType>>>(std::decay_t<valueType>(value));
+      }
     }
 
-    /// @brief Constructs and object with initial content an object of type std::decay_t<valueType>, direct-non-list-initialised
-    ///        from std::forward<Args>(args)...
-    /// @tparam valueType: The type of the object to initialise.
-    /// @tparam Args...: The arguments type.
+    /// @brief    Constructs and object with initial content an object of type std::decay_t<valueType>, direct-non-list-initialised
+    ///           from std::forward<Args>(args)...
+    /// @tparam   valueType: The type of the object to initialise.
+    /// @tparam   Args...: The arguments type.
+    /// @version  2020-09-09/GGB - Function created.
 
     template<class valueType, class... Args>
     explicit any(std::in_place_type_t<valueType>, Args&&... args)
-      : packageData(std::make_unique<std::decay_t<valueType>>(std::forward<Args>(args)...))
+      : storedData(std::make_unique<std::decay_t<valueType>>(std::forward<Args>(args)...))
     {
     }
 
@@ -189,19 +229,32 @@ namespace SCL
     explicit any(std::in_place_type_t<valueType>, std::initializer_list<U> il, Args&&... args) {}
 
 
-    virtual ~any() { packageData.reset(); }
+    virtual ~any() { storedData.reset(); }
 
-    void reset() noexcept { packageData.reset(); }
+    void reset() noexcept { storedData.reset(); }
 
-    void swap(any &other) noexcept { packageData.swap(other.packageData); }
+    void swap(any &other) noexcept { storedData.swap(other.storedData); }
 
-    bool has_value() const noexcept { return static_cast<bool>(packageData); }
+    /// @brief      Test if there is a value stored in the any instance.
+    /// @returns    true = Value stored, false otherwise.
+    /// @throws     None.
+    /// @version    2020-09-09/GGB - Function created.
+
+    bool has_value() const noexcept
+    {
+      return static_cast<bool>(storedData);
+    }
+
+    /// @brief    Returns the typeId information for the stored type.
+    /// @returns  The typeId of the stored type.
+    /// @throws   None.
+    /// @version  2020-09-20/GGB - Function created.
 
     std::type_info const &type() const noexcept
     {
-      if (packageData)
+      if (storedData)
       {
-        return typeid(*packageData);
+        return storedData->type();
       }
       else
       {
@@ -211,9 +264,9 @@ namespace SCL
 
     virtual std::string stringOutput() const
     {
-      if (packageData)
+      if (storedData)
       {
-        return packageData->stringOutput();
+        return storedData->stringOutput();
       }
       else
       {
@@ -221,7 +274,7 @@ namespace SCL
       };
     }
 
-    friend std::ostream & operator<<(std::ostream &strm, any const &op) { strm << (op.packageData->stringOutput()); return strm; }
+    friend std::ostream & operator<<(std::ostream &strm, any const &op) { strm << (op.storedData->stringOutput()); return strm; }
 
   };  // class any
 
