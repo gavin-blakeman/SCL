@@ -37,13 +37,17 @@
 
   // Standard C++ library header files.
 
+#include <memory>
 #include <ostream>
 #include <typeinfo>
+
+  // Miscellaneous library header files
+
+#include <GCL>
 
   // SCL header files.
 
 #include "common.h"
-#include "error.h"
 
 namespace SCL
 {
@@ -57,7 +61,7 @@ namespace SCL
   public:
     CPackage() {}
     virtual  ~CPackage() {}
-    virtual CPackage *createCopy() const { return nullptr; }
+    virtual CPackage *createCopy()  { return nullptr; }
 
     inline virtual bool operator==(const CPackage &toTest) { return this == &toTest; }	// Check pointers equal.
 

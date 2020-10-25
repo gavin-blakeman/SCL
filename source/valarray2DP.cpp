@@ -34,15 +34,16 @@
 //
 //*************************************************************************************************
 
-#include "../include/valarray2DP.h"
+#include "include/valarray2DP.h"
 
   // Miscellaneous libraries
 
+#include "boost/locale.hpp"
 #include <MCL>
 
   // SCL Library
 
-#include "../include/algorithm.hpp"
+#include "include/algorithm.hpp"
 
 namespace SCL
 {
@@ -92,29 +93,24 @@ namespace SCL
 
   MCL::CNumeric CValarray2DP::operator() (size_t x, size_t y) const
   {
+    RUNTIME_ASSERT((x < dimX) && (y < dimY), boost::locale::translate("CValarray2DP: index out of bounds."));
+
     MCL::CNumeric returnValue;
 
-    if ( (x > dimX) || (y > dimY) )
+    switch (dataType)
     {
-      SCL_ERROR(0x0001);
-    }
-    else
-    {
-      switch (dataType)
+      case MCL::NT_uint8:
       {
-        case MCL::NT_uint8:
-        {
-          std::uint8_t *array = static_cast<std::uint8_t *>(data);
-          returnValue = array[index(x, y)];
-          break;
-        };
-        case MCL::NT_uint16:
-        {
-          std::uint16_t *array = reinterpret_cast<std::uint16_t *>(data);
-          returnValue = array[index(x, y)];
-          break;
-        }
+        std::uint8_t *array = static_cast<std::uint8_t *>(data);
+        returnValue = array[index(x, y)];
+        break;
       };
+      case MCL::NT_uint16:
+      {
+        std::uint16_t *array = reinterpret_cast<std::uint16_t *>(data);
+        returnValue = array[index(x, y)];
+        break;
+      }
     };
 
     return returnValue;

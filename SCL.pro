@@ -59,18 +59,17 @@ else:unix:CONFIG(debug, debug|release) {
 INCLUDEPATH += \
   "../GCL" \
   "../MCL" \
-  "/home/gavin/Documents/Projects/software/Library/Boost/boost_1_71_0"
 
 SOURCES += \
     source/common.cpp \
     source/config.cpp \
     source/valarray2DP.cpp \
     source/array2DP.cpp \
-    source/array1DP.cpp \
-    source/error.cpp
+    source/array1DP.cpp
 
 HEADERS += \
     include/Base.h \
+    include/any.hpp \
     include/valarray_mt.hpp \
     include/common.h \
     include/config.h \
@@ -79,13 +78,11 @@ HEADERS += \
     include/array2DP.h \
     include/array1DP.h \
     include/circularbuffer.hpp \
-    include/error.h \
     SCL \
     include/hierarchyBuilder.hpp \
     include/array2D.hpp \
     include/vector2D.hpp \
     include/index2D.hpp \
-    include/any.hpp \
     include/vectorSorted.hpp \
     include/mapAsVector.hpp
 

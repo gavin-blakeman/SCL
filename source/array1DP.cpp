@@ -36,6 +36,10 @@
 
 #include "include/array1DP.h"
 
+  // Miscellaneous library header files
+
+#include "boost/locale.hpp"
+
   // SCL Library
 
 #include "include/algorithm.hpp"
@@ -95,70 +99,67 @@ namespace SCL
     };
   }
 
+  /// @brief      Operator *=
+  /// @param      rhs:
   /// @version 2015-08-23/GGB - Function created.
 
   CArray1DP &CArray1DP::operator*=(CArray1DP const &rhs)
   {
-    if (dim_ != rhs.dim_)
+    RUNTIME_ASSERT(dim_ == rhs.dim_, boost::locale::translate("CArray1DP: Invalid container passed in parameter."));
+
+    for(size_t index = 0; index < dim_; index++)
     {
-      SCL_ERROR(0x0400);
-    }
-    else
-    {
-      for(size_t index = 0; index < dim_; index++)
+      switch (dataType)
       {
-        switch (dataType)
+        case MCL::NT_uint8:
         {
-          case MCL::NT_uint8:
-          {
-            reinterpret_cast<std::uint8_t *>(data_)[index] *= static_cast<std::uint8_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_uint16:
-          {
-            reinterpret_cast<std::uint16_t *>(data_)[index] *= static_cast<std::uint16_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_uint32:
-          {
-            reinterpret_cast<std::uint32_t *>(data_)[index] *= static_cast<std::uint32_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_uint64:
-          {
-            reinterpret_cast<std::uint64_t *>(data_)[index] *= static_cast<std::uint64_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_int8:
-          {
-            reinterpret_cast<std::int8_t *>(data_)[index] *= static_cast<std::int8_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_int16:
-          {
-            reinterpret_cast<std::int16_t *>(data_)[index] *= static_cast<std::int16_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_int32:
-          {
-            reinterpret_cast<std::int32_t *>(data_)[index] *= static_cast<std::int32_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_int64:
-          {
-            reinterpret_cast<std::int64_t *>(data_)[index] *= static_cast<std::int64_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_float:
-          {
-            reinterpret_cast<float *>(data_)[index] *= static_cast<float>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_double:
-          {
-            reinterpret_cast<double *>(data_)[index] *= static_cast<double>(rhs.get(index));
-            break;
-          };
+          reinterpret_cast<std::uint8_t *>(data_)[index] *= static_cast<std::uint8_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_uint16:
+        {
+          reinterpret_cast<std::uint16_t *>(data_)[index] *= static_cast<std::uint16_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_uint32:
+        {
+          reinterpret_cast<std::uint32_t *>(data_)[index] *= static_cast<std::uint32_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_uint64:
+        {
+          reinterpret_cast<std::uint64_t *>(data_)[index] *= static_cast<std::uint64_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_int8:
+        {
+          reinterpret_cast<std::int8_t *>(data_)[index] *= static_cast<std::int8_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_int16:
+        {
+          reinterpret_cast<std::int16_t *>(data_)[index] *= static_cast<std::int16_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_int32:
+        {
+          reinterpret_cast<std::int32_t *>(data_)[index] *= static_cast<std::int32_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_int64:
+        {
+          reinterpret_cast<std::int64_t *>(data_)[index] *= static_cast<std::int64_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_float:
+        {
+          reinterpret_cast<float *>(data_)[index] *= static_cast<float>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_double:
+        {
+          reinterpret_cast<double *>(data_)[index] *= static_cast<double>(rhs.get(index));
+          break;
         };
       };
     };
@@ -170,66 +171,61 @@ namespace SCL
 
   CArray1DP &CArray1DP::operator/=(CArray1DP const &rhs)
   {
-    if (dim_ != rhs.dim_)
+    RUNTIME_ASSERT(dim_ == rhs.dim_, boost::locale::translate("CArray1DP: Invalid container passed in parameter."));
+
+    for(size_t index = 0; index < dim_; index++)
     {
-      SCL_ERROR(0x0400);
-    }
-    else
-    {
-      for(size_t index = 0; index < dim_; index++)
+      switch (dataType)
       {
-        switch (dataType)
+        case MCL::NT_uint8:
         {
-          case MCL::NT_uint8:
-          {
-            reinterpret_cast<std::uint8_t *>(data_)[index] /= static_cast<std::uint8_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_uint16:
-          {
-            reinterpret_cast<std::uint16_t *>(data_)[index] /= static_cast<std::uint16_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_uint32:
-          {
-            reinterpret_cast<std::uint32_t *>(data_)[index] /= static_cast<std::uint32_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_uint64:
-          {
-            reinterpret_cast<std::uint64_t *>(data_)[index] /= static_cast<std::uint64_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_int8:
-          {
-            reinterpret_cast<std::int8_t *>(data_)[index] /= static_cast<std::int8_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_int16:
-          {
-            reinterpret_cast<std::int16_t *>(data_)[index] /= static_cast<std::int16_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_int32:
-          {
-            reinterpret_cast<std::int32_t *>(data_)[index] /= static_cast<std::int32_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_int64:
-          {
-            reinterpret_cast<std::int64_t *>(data_)[index] /= static_cast<std::int64_t>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_float:
-          {
-            reinterpret_cast<float *>(data_)[index] /= static_cast<float>(rhs.get(index));
-            break;
-          };
-          case MCL::NT_double:
-          {
-            reinterpret_cast<double *>(data_)[index] /= static_cast<double>(rhs.get(index));
-            break;
-          };
+          reinterpret_cast<std::uint8_t *>(data_)[index] /= static_cast<std::uint8_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_uint16:
+        {
+          reinterpret_cast<std::uint16_t *>(data_)[index] /= static_cast<std::uint16_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_uint32:
+        {
+          reinterpret_cast<std::uint32_t *>(data_)[index] /= static_cast<std::uint32_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_uint64:
+        {
+          reinterpret_cast<std::uint64_t *>(data_)[index] /= static_cast<std::uint64_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_int8:
+        {
+          reinterpret_cast<std::int8_t *>(data_)[index] /= static_cast<std::int8_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_int16:
+        {
+          reinterpret_cast<std::int16_t *>(data_)[index] /= static_cast<std::int16_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_int32:
+        {
+          reinterpret_cast<std::int32_t *>(data_)[index] /= static_cast<std::int32_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_int64:
+        {
+          reinterpret_cast<std::int64_t *>(data_)[index] /= static_cast<std::int64_t>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_float:
+        {
+          reinterpret_cast<float *>(data_)[index] /= static_cast<float>(rhs.get(index));
+          break;
+        };
+        case MCL::NT_double:
+        {
+          reinterpret_cast<double *>(data_)[index] /= static_cast<double>(rhs.get(index));
+          break;
         };
       };
     };

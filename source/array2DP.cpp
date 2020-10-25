@@ -38,6 +38,7 @@
 
   // Miscellaneous Libraries
 
+#include "boost/locale.hpp"
 #include <MCL>
 
   // SCL Library
@@ -93,29 +94,24 @@ namespace SCL
 
   MCL::CNumeric CArray2DP::operator() (size_t x, size_t y) const
   {
+    RUNTIME_ASSERT((x < dimX) && (y < dimY), boost::locale::translate("CArray2DP: index out of range"));
+
     MCL::CNumeric returnValue;
 
-    if ( (x > dimX) || (y > dimY) )
+    switch (dataType)
     {
-      SCL_ERROR(0x0001);
-    }
-    else
-    {
-      switch (dataType)
+      case MCL::NT_uint8:
       {
-        case MCL::NT_uint8:
-        {
-          std::uint8_t *array = static_cast<std::uint8_t *>(data);
-          returnValue = array[index(x, y)];
-          break;
-        };
-        case MCL::NT_uint16:
-        {
-          std::uint16_t *array = reinterpret_cast<std::uint16_t *>(data);
-          returnValue = array[index(x, y)];
-          break;
-        }
+        std::uint8_t *array = static_cast<std::uint8_t *>(data);
+        returnValue = array[index(x, y)];
+        break;
       };
+      case MCL::NT_uint16:
+      {
+        std::uint16_t *array = reinterpret_cast<std::uint16_t *>(data);
+        returnValue = array[index(x, y)];
+        break;
+      }
     };
 
     return returnValue;
