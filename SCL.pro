@@ -37,8 +37,6 @@ CONFIG          += staticlib
 
 QMAKE_CXXFLAGS  += -std=c++17
 
-OBJECTS_DIR     = "objects"
-
 win32:CONFIG(release, debug|release) {
   DESTDIR = "../Library/win32/release"
   OBJECTS_DIR = "../Library/win32/release/object/SCL"
