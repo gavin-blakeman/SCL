@@ -37,22 +37,7 @@ CONFIG          += staticlib
 
 QMAKE_CXXFLAGS  += -std=c++17
 
-win32:CONFIG(release, debug|release) {
-  DESTDIR = "../Library/win32/release"
-  OBJECTS_DIR = "../Library/win32/release/object/SCL"
-}
-else:win32:CONFIG(debug, debug|release) {
-  DESTDIR = "../Library/win32/debug"
-  OBJECTS_DIR = "../Library/win32/debug/object/SCL"
-}
-else:unix:CONFIG(release, debug|release) {
-  DESTDIR = "../Library/unix/release"
-  OBJECTS_DIR = "../Library/unix/release/object/SCL"
-}
-else:unix:CONFIG(debug, debug|release) {
-  DESTDIR = ""
-  OBJECTS_DIR = "objects"
-}
+DESTDIR = ""
 
 INCLUDEPATH += \
   "../GCL" \
