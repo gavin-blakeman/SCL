@@ -9,7 +9,7 @@
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2020 Gavin Blakeman.
+//                      Copyright 2020-2021 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -49,8 +49,8 @@
 namespace SCL
 {
 
-  /// @brief    The mapAsVector class is and STL-like implementation of a map type class offering more efficient storage and
-  ///           traversal than the std::map implementation. This offers O(N) insertion and deletiontime and O(log N) search time.
+  /// @brief    The mapAsVector class is and STL-like implementation of a map type class offering more efficient traversal than
+  ///           the std::map implementation. This offers O(N) insertion and deletiontime and O(log N) search time.
   ///           mapAsVector is a sorted associative container that contains key-value pairs with unique keys. Keys are sorted by
   ///           using the comparison function Compare.
   ///           Everywhere the standard library uses the Compare requirements, uniqueness is determined by using the equivalence
