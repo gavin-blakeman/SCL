@@ -8,7 +8,7 @@
 // NAMESPACE:           SCL
 // LICENSE:             GPLv2
 //
-//                      Copyright 2019-2020 Gavin Blakeman.
+//                      Copyright 2019-2021 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -105,7 +105,7 @@ namespace SCL
   public:
     friend class hierarchyIterator<I, T const, T>;
 
-    /// @brief Constructor fot the hierarchyIterator class.
+    /// @brief Constructor for the hierarchyIterator class.
     /// @throws
     /// @version 2019-10-26/GGB - Function created.
 

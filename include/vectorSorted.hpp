@@ -126,7 +126,24 @@ namespace SCL
 
     constexpr void assign(size_type count, T const &value);
     template<class InputIt>
-    constexpr void assign(InputIt first, InputIt last);
+
+    /// @brief Replaces the contents with copies of those in the range [first, last). The behavior is undefined if either
+    ///        argument is an iterator into *this.
+    /// @param[in] first:
+    /// @param[in] last:
+    /// @version 2021-11-30/GGB - Function created.
+
+    constexpr void assign(InputIt first, InputIt last)
+    {
+      clear();
+
+      while (first != last)dw
+      {
+        push_back(*first);
+        first++;
+      }
+    }
+
     constexpr void assign(std::initializer_list<T> iline);
 
     /// @brief Returns the allocator associated with the container.
