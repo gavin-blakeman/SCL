@@ -137,7 +137,7 @@ namespace SCL
     {
       clear();
 
-      while (first != last)dw
+      while (first != last)
       {
         push_back(*first);
         first++;
