@@ -8,7 +8,7 @@
 // NAMESPACE:           SCL
 // LICENSE:             GPLv2
 //
-//                      Copyright 2019-2021 Gavin Blakeman.
+//                      Copyright 2019-2022 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -418,10 +418,49 @@ namespace SCL
     ///          If the parent does not exist, the item will be added to the 'unfound' list of items.
     ///          Each time an item is sucesfully inserted, the 'unfound' list is checked to see if any items in the 'unfound' list
     ///          can now be inserted.
+    /// @version 2022-05-25/GGB - Bug 229:Corrected a logic error that would not iterate the unfound nodes correctly.
     /// @version 2019-10-13/GGB - Function created.
 
     void insert(I itemIndex, I parentIndex, T item)
     {
+      if (insertNode(itemIndex, parentIndex, item, false))
+      {
+        unfoundIterator_t unfoundNode = unfound_.begin();
+
+        while (unfoundNode != unfound_.end())
+        {
+          auto node = unfound_.extract(unfoundNode);
+
+          if (insertNode(node.mapped().parentIndex, node.key(), node.mapped().item, true))
+          {
+            unfoundNode = unfound_.insert(std::move(node));
+            unfound_.erase(unfoundNode);
+            unfoundNode = unfound_.begin();
+          }
+          else
+          {
+            unfoundNode++;
+          }
+        };
+      }
+    }
+
+    /// @brief      Insert a node.
+    /// @param[in]  itemIndex: The index of the item to insert.
+    /// @param[in]  parentIndex: The parent index of the item to insert.
+    /// @param[in]  item: The actual item to insert.
+    /// @param[in]  unfound: if false, the item will be inserted into the unfound list.
+    /// @details Inserts the specified item into the hieararchy. If the parentIndex == nullValue, then the item is inserted
+    ///          as a top-level item. If the parentIndex != nullValue then the item is inserted as a child of the parent.
+    ///          If the parent does not exist, the item will be added to the 'unfound' list of items.
+    ///          Each time an item is sucesfully inserted, the 'unfound' list is checked to see if any items in the 'unfound' list
+    ///          can now be inserted.
+    /// @version    2022-05-25/GGB - Function created.
+
+    bool insertNode(I itemIndex, I parentIndex, T item, bool unfound)
+    {
+      bool returnValue = false;
+
       childCollection_iterator nodeFound;
       unfoundIterator_t unfoundNode;
 
@@ -429,7 +468,16 @@ namespace SCL
       {
           // Item has no parent, stick it in the root node.
 
-        root_.emplace(itemIndex, SNode{parentIndex, item});
+        auto emplaceValue = root_.emplace(itemIndex, SNode{parentIndex, item});
+
+        while ((unfoundNode = unfound_.find(itemIndex)) != unfound_.end())
+        {
+          (*emplaceValue.first).second.children.emplace((*unfoundNode).second.parentIndex,
+                                                      SNode{itemIndex, std::move((*unfoundNode).second.item)});
+          unfound_.erase(unfoundNode);
+        };
+
+        returnValue = true;
       }
       else if (find(root_, parentIndex, nodeFound))
       {
@@ -442,10 +490,12 @@ namespace SCL
 
         while ((unfoundNode = unfound_.find(itemIndex)) != unfound_.end())
         {
-        (*emplaceValue.first).second.children.emplace((*unfoundNode).second.parentIndex,
+          (*emplaceValue.first).second.children.emplace((*unfoundNode).second.parentIndex,
                                                       SNode{itemIndex, std::move((*unfoundNode).second.item)});
           unfound_.erase(unfoundNode);
         };
+
+        returnValue = true;
       }
       else
       {
@@ -453,8 +503,13 @@ namespace SCL
           // The parentIndex and item index are reversed to allow the map to be searched easily when new items are added
           // to known nodes. (See above)
 
-        unfound_.emplace(parentIndex, SNode{itemIndex, item});
+        if (!unfound)
+        {
+          unfound_.emplace(parentIndex, SNode{itemIndex, item});
+        };
       };
+
+      return returnValue;
     }
 
     /// @brief Returns a copy of the allocator object associated with the hierarchy.

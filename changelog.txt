@@ -1,4 +1,8 @@
-﻿2020-09
+﻿2022-05
+-------
+BUGFIX:     #229: hierarchyBuilder - unfound nodes not being correctly added to hierarchy.
+
+2020-09
 -------
 CHANGE:     TVectorSorted to vector_sorted and update implementation to be STL like.
 
