@@ -35,7 +35,7 @@ TARGET          = SCL
 TEMPLATE        = lib
 CONFIG          += staticlib
 
-QMAKE_CXXFLAGS  += -std=c++17
+QMAKE_CXXFLAGS  += -std=c++20
 
 DESTDIR = ""
 
@@ -53,7 +53,6 @@ SOURCES += \
 
 HEADERS += \
     include/Base.h \
-    include/any.hpp \
     include/valarray_mt.hpp \
     include/common.h \
     include/config.h \

@@ -278,10 +278,10 @@ namespace SCL
     typedef T                                                                       elem_type;
     typedef Alloc_                                                                  allocator_type;
     typedef typename Alloc_::value_type                                             value_type;
-    typedef typename Alloc_::pointer                                                pointer;
-    typedef typename Alloc_::const_pointer                                          const_pointer;
-    typedef typename Alloc_::reference                                              reference;
-    typedef typename Alloc_::const_reference                                        const_reference;
+    using pointer = typename std::allocator_traits<std::allocator<T>>::pointer;
+    using const_pointer = typename std::allocator_traits<std::allocator<T>>::const_pointer;
+    using reference = elem_type &;
+    using const_reference = elem_type const &;
     typedef typename Alloc_::difference_type                                        difference_type;
     typedef typename Alloc_::size_type                                              size_type;
     typedef hierarchyIterator<I, self_type, self_type>                              iterator;
@@ -439,6 +439,7 @@ namespace SCL
           }
           else
           {
+            unfoundNode = unfound_.insert(std::move(node));
             unfoundNode++;
           }
         };

@@ -79,7 +79,7 @@ namespace SCL
     using container_type = std::vector<value_type>;
     using pointer = typename std::allocator_traits<Allocator>::pointer;
     using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
-    using reference = typename Allocator::reference;
+    using reference = value_type &;
     using size_type = typename container_type::size_type;
     using difference_type = typename Allocator::difference_type;
     using compare = Compare;
