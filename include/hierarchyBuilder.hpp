@@ -35,6 +35,7 @@
   // Standard C++ library header files.
 
 #include <cassert>
+#include <iostream>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -42,7 +43,10 @@
 #include <stdexcept>
 #include <tuple>
 #include <utility>
-#include <iostream>
+
+  // Miscellaneous library header files
+
+#include "boost/variant.hpp"
 
   // SCL library header files
 
@@ -51,33 +55,52 @@
 
 namespace SCL
 {
-  /// @brief Node storage class. Stores the node information.
-  /// @tparam I: The type used for the index.
-  /// @tparam T: The type used for the data.
-
-  template<typename I,
-           class T>
-  struct SNode                          // Struct is used for storing the data in the unfound list.
-  {
-    I parentIndex;                      // Parent index. What index owns this particular item
-    T item;                             // The actual item.
-    std::map<I, SNode> children;        // Children of (*this) node.
-
-    SNode(I pi, T i) : parentIndex(pi), item(i), children() {}
-    virtual ~SNode() { children.clear(); }
-  };
+  /* Note: Musings on how to get the sorting correct. Currrently (2022-07) the data sorts on the index. This only works if the
+   * indexes are in the correct sorting order.
+   *
+   * To get the items in the correct sorted order it is necessary to extend the class and add the sort order in some way.
+   *
+   * The data is a hierarchy containing a ParentID and sortOrder
+   * A value of parentID is set for the top level of the hierarchy.
+   *
+   * ID PID SO
+   * 1  0   0     -
+   * 4  1   0       -
+   * 6  1   1       -
+   * 5  1   2       -
+   * 2  0   1     -
+   * 3  0   2     -
+   *
+   * The storage uses a map of maps, with the key in each map being the ID. The maps then sort by ID. The hierarchy builds the P-C
+   * relationships correctly, just not in the correct order.
+   *
+   * void insert(I itemIndex, I parentIndex, T item)
+   *
+   * Option 1 - Change the PID to a composite type to allow the PID and SO to be passed.
+   * Option 2 - Extend the SNode, insert() and others to have an additional parameter for the SO.
+   * Option 3 - Add a template parameter for a sorting function.
+   * Option 4 - Change entire class to use a memory heavy approach.
+   *  - store all items as they arrive in a vector.
+   *    - store ID, vectorPos into a map for quick searching for individual items
+   *    - If a child, create node <PID, vectorPos>
+   *    - Store child in node with SO as map key and vectorPos as data.
+   *    - Can store all the back links in the vector if necessary
+   *
+   *
+   */
 
   /// @class Hierarchy iterator class
   /// @tparam T: Hierarchy class.
 
   template<typename I,
+           typename S,
            typename T,
            typename T_nonconst>
   class hierarchyIterator
   {
   public:
     typedef typename T::elem_type                               elem_type;
-    typedef hierarchyIterator<I, T, T_nonconst>                 self_type;
+    typedef hierarchyIterator<I, S, T, T_nonconst>              self_type;
     typedef T                                                   hierarchyType;
     typedef std::input_iterator_tag                             iterator_category;
     typedef typename hierarchyType::value_type                  value_type;
@@ -87,42 +110,42 @@ namespace SCL
     typedef typename hierarchyType::reference                   reference;
     typedef typename hierarchyType::const_reference             const_reference;
     typedef typename hierarchyType::difference_type             difference_type;
-
+    typedef typename hierarchyType::node_type                   node_type;
+    typedef typename hierarchyType::child_type                  child_type;
+    typedef typename hierarchyType::child_type::iterator        child_iterator;
 
   private:
-    typedef SNode<I, elem_type>                                 node_type;
-    typedef typename std::map<I, node_type>                     childCollection_type;
-    typedef typename childCollection_type::iterator             childCollection_iterator;
-
     hierarchyType *hierarchy_;
     size_type hierarchyLevel_;
-    std::stack<childCollection_type *> traverseMapStack_;
-    std::stack<childCollection_iterator>  traverseIteratorStack_;
-    childCollection_type *currentChildMap_;
-    childCollection_iterator currentChildIterator_;
+    std::stack<child_type *> traverseMapStack_;
+    std::stack<child_iterator>  traverseIteratorStack_;
+    child_type *currentChildMap_;
+    child_iterator currentChildIterator_;
 
   protected:
   public:
-    friend class hierarchyIterator<I, T const, T>;
+    friend class hierarchyIterator<I, S, T const, T>;
 
-    /// @brief Constructor for the hierarchyIterator class.
+    /// @brief      Constructor for the hierarchyIterator class.
     /// @throws
-    /// @version 2019-10-26/GGB - Function created.
+    /// @version    2019-10-26/GGB - Function created.
 
-    hierarchyIterator() : hierarchy_(nullptr), hierarchyLevel_(0), traverseMapStack_(),
-      traverseIteratorStack_(), currentChildMap_(), currentChildIterator_()
+    hierarchyIterator() : hierarchy_(nullptr), hierarchyLevel_(0), traverseMapStack_(), traverseIteratorStack_(),
+      currentChildMap_(), currentChildIterator_()
     {
 
     }
 
-    /// @brief Constructor for the hierarchyIterator class.
-    /// @param[in] heirarchy: The hierarchy to be iterated.
+    /// @brief      Constructor for the hierarchyIterator class.
+    /// @param[in]  hierarchy: The hierarchy to be iterated.
     /// @throws
-    /// @version 2019-10-26/GGB - Function created.
+    /// @version    2019-10-26/GGB - Function created.
 
     hierarchyIterator(hierarchyType *hierarchy, bool end = false) : hierarchy_(hierarchy), hierarchyLevel_(0), traverseMapStack_(),
       traverseIteratorStack_(), currentChildMap_(&hierarchy->root_), currentChildIterator_()
     {
+        // currentChildMap_ is initialised above.
+
       if (end)
       {
         currentChildIterator_ = currentChildMap_->end();
@@ -135,15 +158,16 @@ namespace SCL
 
     /// @brief Copy constructor. Needed for pushing/popping from the stack.
 
-    hierarchyIterator(hierarchyIterator<I, T, T> const &other)
+    hierarchyIterator(hierarchyIterator<I, S, T, T> const &other)
     {
       throw std::exception("hierarchyIterator Copy constructor not implemented");
     }
 
-    /// @brief Implements the indirection operator.
-    /// @returns A std::tuple<size_type, I, elem_type>. The first value is the hierarchy level,
-    ///                                                 The second value is the index of the item
-    ///                                                 the third value is the item.
+    /// @brief      Implements the indirection operator.
+    /// @returns    A std::tuple<size_type, I, elem_type>.
+    ///                 > The first value is the hierarchy level,
+    ///                 > The second value is the index of the item
+    ///                 > The third value is the item.
     /// @throws
     /// @version 2019-10-26/GGB - Function created.
 
@@ -153,7 +177,12 @@ namespace SCL
 
       if (*this != hierarchy_->end())
       {
-        return { hierarchyLevel_, currentChildIterator_->first, currentChildIterator_->second.item };
+        return
+        {
+          hierarchyLevel_,
+          std::get<0>(hierarchy_->items_[currentChildIterator_->second.indx]),
+          std::get<3>(hierarchy_->items_[currentChildIterator_->second.indx])
+        };
       }
       else
       {
@@ -181,7 +210,7 @@ namespace SCL
 
         // Moving forward through the hierarchy is done by stepping down then forward.
 
-      if ((*currentChildIterator_).second.children.empty())
+      if (!currentChildIterator_->second.child || currentChildIterator_->second.child->empty())
       {
           // Step forward one.
 
@@ -212,7 +241,7 @@ namespace SCL
 
         traverseMapStack_.push(currentChildMap_);
         traverseIteratorStack_.push(currentChildIterator_);
-        currentChildMap_ = &(traverseIteratorStack_.top()->second.children);
+        currentChildMap_ = (traverseIteratorStack_.top()->second.child).get();
         currentChildIterator_ = currentChildMap_->begin();
         hierarchyLevel_++;
       };
@@ -262,19 +291,21 @@ namespace SCL
 
   /// @class Template class for creating hierarchies of values.
   /// @tparam I: Type to use for the index. Must at least provide '=='.
+  /// @tparam S: The type to use for the sortOrder. Must provide std::less<S>
   /// @tparam T: Type to use as the data to store in the hierarchy.
   /// @tparam nullValue: The type to use as NULL value (top level value)
   /// @tparam sort: If true, the hierarchy will be sorted by index. If false, items will just be added at the end.
   /// @tparam Alloc_: The allocator type to use.
 
   template<typename I,
+           typename S,
            class T,
            bool sort = true,
            class Alloc_ = std::allocator<T>>
   class hierarchy
   {
   public:
-    typedef hierarchy<I, T, sort, Alloc_>                                           self_type;
+    using self_type = hierarchy<I, S, T, sort, Alloc_>;
     typedef T                                                                       elem_type;
     typedef Alloc_                                                                  allocator_type;
     typedef typename Alloc_::value_type                                             value_type;
@@ -284,69 +315,83 @@ namespace SCL
     using const_reference = elem_type const &;
     typedef typename Alloc_::difference_type                                        difference_type;
     typedef typename Alloc_::size_type                                              size_type;
-    typedef hierarchyIterator<I, self_type, self_type>                              iterator;
-    typedef hierarchyIterator<const self_type, self_type, const value_type>         const_iterator;
+    typedef hierarchyIterator<I, S, self_type, self_type>                              iterator;
+    typedef hierarchyIterator<S, const self_type, self_type, const value_type>         const_iterator;
+    using itemStorage_t = std::vector<std::tuple<I, I, S, T>>;
+    class node_type;
+    typedef std::map<S, node_type>                     child_type;
+    class node_type
+    {
+    public:
+      size_type indx;
+      std::unique_ptr<child_type> child;
 
-    friend class hierarchyIterator<I, self_type, self_type>;
+    };
+    using searchStorage_t = std::map<I, std::size_t>;
+    using parent_nodes = std::map<I, node_type *>;
+    typedef typename std::multimap<I, size_t>                 unfoundStorage_t;
+    typedef typename std::multimap<I, size_t>::iterator       unfoundIterator_t;
+
+
+    friend class hierarchyIterator<I, S, self_type, self_type>;
 
   private:
-    typedef SNode<I, value_type>                                node_type;
-    typedef typename std::map<I, node_type>                     childCollection_type;
-    typedef typename childCollection_type::iterator             childCollection_iterator;
-    typedef typename std::multimap<I, node_type>                unfoundStorage_t;
-    typedef typename std::multimap<I, node_type>::iterator      unfoundIterator_t;
-
-    I rootValue_;
+    I rootValue_;                       // The value to used to indicate the root index.
     allocator_type alloc_;
-    childCollection_type root_;                 // The root node.
+    itemStorage_t items_;               // The vector storing all the information tuple<itemIndex, ParentIndex, SortOrder, T>
+    child_type root_;                   // Root of the tree.
+    searchStorage_t search_;            // The map allowing fast finding (itemIndex, vectorIndx)
     unfoundStorage_t unfound_;
+    parent_nodes parents_;              // ItemIndex, Node
     size_type elementCount_;              // Number of elements stored in the hierarchy. Note: this includes the elements in unfound_
 #ifdef SCL_THREAD
     mutable std::mutex classMutex_;
 #endif
 
-    /// @brief Destroys all the allocated elements.
-    /// @throws None.
-    /// @version 2019-10-26/GGB - Function created.
+    /// @brief    Destroys all the allocated elements.
+    /// @throws   None.
+    /// @version  2022-07-20/GGB - Extended to include sorting parameter.
+    /// @version  2019-10-26/GGB - Function created.
 
     void destroyAllElements()
     {
       root_.clear();
       unfound_.clear();
+      search_.clear();
     }
 
-    /// @brief Searches the entire tree for a node with the given index.
-    /// @param[in] searchMap: The map to search.
-    /// @param[in] nodeIndex: The node index to search for.
-    /// @param[out] nodeFound: Iterator pointing at the found node.
-    /// @returns true - An node with the passed index was found.
-    /// @returns false - No node was found.
-    /// @version 2019-10-13/GGB - Function created.
+//    /// @brief      Searches the entire tree for a node with the given index.
+//    /// @param[in]  searchMap: The map to search.
+//    /// @param[in]  nodeIndex: The node index to search for.
+//    /// @param[out] nodeFound: Iterator pointing at the found node.
+//    /// @returns    true - An node with the passed index was found.
+//    /// @returns    false - No node was found.
+//    /// @version    2019-10-13/GGB - Function created.
 
-    bool find(std::map<I, node_type> &searchMap, I nodeIndex, childCollection_iterator &nodeFound)
-    {
-      if ((nodeFound = searchMap.find(nodeIndex)) != searchMap.end())
-      {
-        return true;
-      }
-      else
-      {
-          // The item was not found in the original map. We now need to iterate and search all the nodes.
-          // This is going to be done recursively by calling this function with the successive maps.
-          // The level of recursion should be limited to the depth of the tree. With reasonable depths this should not present
-          // a stack overflow issue.
+//    bool find(std::map<I, node_type> &searchMap, I nodeIndex, childCollection_iterator &nodeFound)
+//    {
+//      if ((nodeFound = searchMap.find(nodeIndex)) != searchMap.end())
+//      {
+//        return true;
+//      }
+//      else
+//      {
+//          // The item was not found in the original map. We now need to iterate and search all the nodes.
+//          // This is going to be done recursively by calling this function with the successive maps.
+//          // The level of recursion should be limited to the depth of the tree. With reasonable depths this should not present
+//          // a stack overflow issue.
 
-        bool returnValue = false;
-        childCollection_iterator mapIterator = searchMap.begin();
+//        bool returnValue = false;
+//        childCollection_iterator mapIterator = searchMap.begin();
 
-        while (mapIterator != searchMap.end() && !returnValue)
-        {
-          returnValue = find((*mapIterator).second.children, nodeIndex, nodeFound);
-          mapIterator++;
-        };
-        return returnValue;
-      };
-    }
+//        while (mapIterator != searchMap.end() && !returnValue)
+//        {
+//          returnValue = find((*mapIterator).second.children, nodeIndex, nodeFound);
+//          mapIterator++;
+//        };
+//        return returnValue;
+//      };
+//    }
 
     hierarchy() = delete;
     hierarchy(hierarchy const &other) = delete;
@@ -355,18 +400,18 @@ namespace SCL
 
   protected:
   public:
-    /// @brief Class constructor. Emulates a default constructor for a default constructable object.
-    /// @param[in] rootValue: The index value to use as the root value.
+    /// @brief      Class constructor. Emulates a default constructor for a default constructable object.
+    /// @param[in]  rootValue: The index value to use as the root value.
     /// @throws
-    /// @version 2020-04-03/GGB - Function created.
+    /// @version    2020-04-03/GGB - Function created.
 
     explicit hierarchy(I rootValue = I()) : rootValue_(rootValue), root_(), unfound_(), elementCount_(0), classMutex_() {}
 
-    /// @brief Function called to set/change the root value.
-    /// @param[in] rootValue: The new root value.
-    /// @throws std::runtime_error if the class already contains any items.
-    /// @pre The class must be empty. empty() == true.
-    /// @version 2020-05-04/GGB - Function created.
+    /// @brief      Function called to set/change the root value.
+    /// @param[in]  rootValue: The new root value.
+    /// @throws     std::runtime_error if the class already contains any items.
+    /// @pre        The class must be empty. empty() == true.
+    /// @version    2020-05-04/GGB - Function created.
 
     void setRootValue(I rootValue)
     {
@@ -384,9 +429,9 @@ namespace SCL
       };
     }
 
-    /// @brief Destructor for the hierarchy class.
-    /// @throws None.
-    /// @version 2019-10-26/GGB - Function created
+    /// @brief      Destructor for the hierarchy class.
+    /// @throws     None.
+    /// @version    2019-10-26/GGB - Function created
 
     virtual ~hierarchy()
     {
@@ -396,9 +441,9 @@ namespace SCL
       destroyAllElements();
     }
 
-    /// @brief Clears the structure. Removes all elements from the structure.
-    /// @throws None.
-    /// @version 2019-10-26/GGB - Function created.
+    /// @brief      Clears the structure. Removes all elements from the structure.
+    /// @throws     None.
+    /// @version    2019-10-26/GGB - Function created.
 
     void clear() noexcept
     {
@@ -409,91 +454,172 @@ namespace SCL
       elementCount_ = 0;
     }
 
-    /// @brief Insertion function for elements.
-    /// @param[in] itemIndex: The index of the item to insert.
-    /// @param[in] parentIndex: The parent index of the item to insert.
-    /// @param[in] item: The actual item to insert.
-    /// @details Inserts the specified item into the hieararchy. If the parentIndex == nullValue, then the item is inserted
-    ///          as a top-level item. If the parentIndex != nullValue then the item is inserted as a child of the parent.
-    ///          If the parent does not exist, the item will be added to the 'unfound' list of items.
-    ///          Each time an item is sucesfully inserted, the 'unfound' list is checked to see if any items in the 'unfound' list
-    ///          can now be inserted.
-    /// @version 2022-05-25/GGB - Bug 229:Corrected a logic error that would not iterate the unfound nodes correctly.
-    /// @version 2019-10-13/GGB - Function created.
+    /// @brief      Insertion function for elements.
+    /// @param[in]  itemIndex: The index of the item to insert.
+    /// @param[in]  parentIndex: The parent index of the item to insert.
+    /// @param[in]  sortOrder: The order to sort within the parentIndex.
+    /// @param[in]  item: The actual item to insert.
+    /// @details    Inserts the specified item into the hieararchy. If the parentIndex == nullValue, then the item is inserted
+    ///             as a top-level item. If the parentIndex != nullValue then the item is inserted as a child of the parent.
+    ///             If the parent does not exist, the item will be added to the 'unfound' list of items.
+    ///             Each time an item is sucesfully inserted, the 'unfound' list is checked to see if any items in the 'unfound'
+    ///             list can now be inserted.
+    /// @version    2022-07-20/GGB - Extended to include sorting parameter.
+    /// @version    2022-05-25/GGB - Bug 229:Corrected a logic error that would not iterate the unfound nodes correctly.
+    /// @version    2019-10-13/GGB - Function created.
 
-    void insert(I itemIndex, I parentIndex, T item)
+    void insert(I itemIndex, I parentIndex, S sortOrder, T item)
     {
-      if (insertNode(itemIndex, parentIndex, item, false))
+      items_.push_back(std::make_tuple(itemIndex, parentIndex, sortOrder, item));  // Store the item in the flat storage.
+      size_type indx = items_.size() - 1;
+      search_.emplace(itemIndex, indx);                                           // Store the index of the item in the searchStorage.
+
+      if (insertNode(itemIndex, parentIndex, sortOrder, indx, false))
       {
-        unfoundIterator_t unfoundNode = unfound_.begin();
+        auto unfoundIterator = unfound_.begin();
 
-        while (unfoundNode != unfound_.end())
+        while (unfoundIterator != unfound_.end())
         {
-          auto node = unfound_.extract(unfoundNode);
-
-          if (insertNode(node.mapped().parentIndex, node.key(), node.mapped().item, true))
+          if (parents_.contains(unfoundIterator->first))
           {
-            unfoundNode = unfound_.insert(std::move(node));
-            unfound_.erase(unfoundNode);
-            unfoundNode = unfound_.begin();
+            size_type nindex = unfoundIterator->second;
+
+            if (insertNode(std::get<0>(items_[nindex]),
+                           std::get<1>(items_[nindex]),
+                           std::get<2>(items_[nindex]),
+                           nindex,
+                           true))
+            {
+              unfound_.erase(unfoundIterator);
+              unfoundIterator = unfound_.begin();
+            }
+            else
+            {
+              ++unfoundIterator;
+            }
           }
           else
           {
-            unfoundNode = unfound_.insert(std::move(node));
-            unfoundNode++;
+            ++unfoundIterator;
           }
         };
-      }
+      };
     }
 
     /// @brief      Insert a node.
     /// @param[in]  itemIndex: The index of the item to insert.
     /// @param[in]  parentIndex: The parent index of the item to insert.
-    /// @param[in]  item: The actual item to insert.
+    /// @param[in]  sortOrder: The order to sort within the parentIndex.
+    /// @param[in]  indx: The actual item to insert.
     /// @param[in]  unfound: if false, the item will be inserted into the unfound list.
-    /// @details Inserts the specified item into the hieararchy. If the parentIndex == nullValue, then the item is inserted
-    ///          as a top-level item. If the parentIndex != nullValue then the item is inserted as a child of the parent.
-    ///          If the parent does not exist, the item will be added to the 'unfound' list of items.
-    ///          Each time an item is sucesfully inserted, the 'unfound' list is checked to see if any items in the 'unfound' list
-    ///          can now be inserted.
+    /// @details    Inserts the specified item into the hieararchy. If the parentIndex == nullValue, then the item is inserted
+    ///             as a top-level item. If the parentIndex != nullValue then the item is inserted as a child of the parent.
+    ///             If the parent does not exist, the item will be added to the 'unfound' list of items.
+    ///             Each time an item is sucesfully inserted, the 'unfound' list is checked to see if any items in the 'unfound'
+    ///             list can now be inserted.
+    /// @version    2022-07-20/GGB - Extended to include sorting parameter.
     /// @version    2022-05-25/GGB - Function created.
 
-    bool insertNode(I itemIndex, I parentIndex, T item, bool unfound)
+    bool insertNode(I itemIndex, I parentIndex, S sortOrder, size_type indx, bool unfound)
     {
       bool returnValue = false;
 
-      childCollection_iterator nodeFound;
-      unfoundIterator_t unfoundNode;
+//      DEBUGMESSAGE("\nParent Nodes");
+//      for (auto const &p : parents_)
+//      {
+//        DEBUGMESSAGE(std::to_string(p.first));
+//      }
+
+//      DEBUGMESSAGE("ItemIndex: " + std::to_string(itemIndex) + " ParentIndex: " + std::to_string(parentIndex) +
+//                   " SortOrder: " + std::to_string(sortOrder) + " unfound: " + (unfound?"True":"False"));
 
       if (parentIndex == rootValue_)
       {
-          // Item has no parent, stick it in the root node.
+          // Item is a root node
 
-        auto emplaceValue = root_.emplace(itemIndex, SNode{parentIndex, item});
-
-        while ((unfoundNode = unfound_.find(itemIndex)) != unfound_.end())
+        auto emplaceValue = root_.emplace(sortOrder, node_type{indx, std::unique_ptr<child_type>()});
+        parents_.emplace(itemIndex, &(emplaceValue.first->second));
+        if (!emplaceValue.second)
         {
-          (*emplaceValue.first).second.children.emplace((*unfoundNode).second.parentIndex,
-                                                      SNode{itemIndex, std::move((*unfoundNode).second.item)});
-          unfound_.erase(unfoundNode);
+          throw std::runtime_error("Unable to insert item:1");
+        }
+
+        if (unfound_.contains(itemIndex))
+        {
+          emplaceValue.first->second.child = std::make_unique<child_type>();
+          child_type *ptr = emplaceValue.first->second.child.get();
+
+          while (unfound_.contains(itemIndex))
+          {
+              // The node just inserted has unfound nodes ie children.
+              // This is split out for readability.
+
+            auto childNode = unfound_.find(itemIndex);  // iterator
+
+            size_type childIndx = childNode->second;
+            S childSort = std::get<2>(items_[childIndx]);
+
+            auto ev = ptr->emplace(childSort, node_type{childIndx, std::unique_ptr<child_type>()});
+            if (!ev.second)
+            {
+              throw std::runtime_error("Unable to insert item:2");
+            }
+            parents_.emplace(std::get<0>(items_[childIndx]), &(ev.first->second));
+            unfound_.erase(childNode);
+          };
         };
 
         returnValue = true;
       }
-      else if (find(root_, parentIndex, nodeFound))
+      else if (parents_.contains(parentIndex))
       {
-          // Item has a parent and we have found it.
-          // Add the item to the child.
+        if (!parents_[parentIndex]->child)
+        {
+          parents_[parentIndex]->child = std::make_unique<child_type>();
+        }
+        child_type *ptr = parents_[parentIndex]->child.get();
 
-        auto emplaceValue = (*nodeFound).second.children.emplace(itemIndex, SNode{parentIndex, item});
+        auto emplaceValue = ptr->emplace(sortOrder, node_type(indx, std::unique_ptr<child_type>()));
+        if (!emplaceValue.second)
+        {
+//          DEBUGMESSAGE("Parent Index: " + std::to_string(parentIndex));
+          throw std::runtime_error("Unable to insert item:3");
+        }
+        parents_.emplace(itemIndex, &(emplaceValue.first->second));
 
           // Now see if there are any unfound items that can be added to the node that has just been inserted.
 
-        while ((unfoundNode = unfound_.find(itemIndex)) != unfound_.end())
+        if (unfound_.contains(itemIndex))
         {
-          (*emplaceValue.first).second.children.emplace((*unfoundNode).second.parentIndex,
-                                                      SNode{itemIndex, std::move((*unfoundNode).second.item)});
-          unfound_.erase(unfoundNode);
+          if (!emplaceValue.first->second.child)
+          {
+            emplaceValue.first->second.child = std::make_unique<child_type>();
+          };
+          child_type *ptr = emplaceValue.first->second.child.get();
+
+          while (unfound_.contains(itemIndex))
+          {
+              // The node just inserted has unfound nodes ie children.
+              // This is split out for readability.
+
+            auto childNode = unfound_.find(itemIndex);  // iterator
+
+            size_type childIndx = childNode->second;
+            S childSort = std::get<2>(items_[childIndx]);
+
+//            DEBUGMESSAGE("Child Index: " + std::to_string(childIndx));
+//            DEBUGMESSAGE("Child Sort:" + std::to_string(childSort));
+
+            auto ev = ptr->emplace(childSort, node_type{childIndx, std::unique_ptr<child_type>()});
+            if (!ev.second)
+            {
+              DEBUGMESSAGE("ItemIndex: " + std::to_string(itemIndex));
+              throw std::runtime_error("Unable to insert item:4");
+            }
+            parents_.emplace(std::get<0>(items_[childIndx]), &(ev.first->second));
+
+            unfound_.erase(childNode);
+          };
         };
 
         returnValue = true;
@@ -501,12 +627,11 @@ namespace SCL
       else
       {
           // Have not found a parent yet. Add it to the list of not found items.
-          // The parentIndex and item index are reversed to allow the map to be searched easily when new items are added
-          // to known nodes. (See above)
+          // The parentIndex is stored as the key.
 
         if (!unfound)
         {
-          unfound_.emplace(parentIndex, SNode{itemIndex, item});
+          unfound_.emplace(parentIndex, indx);
         };
       };
 
