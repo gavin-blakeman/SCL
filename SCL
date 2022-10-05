@@ -87,8 +87,8 @@
  *
  * @section Legal
  * @author Gavin Blakeman (GGB)
- * @version 2019.09
- * @copyright 2005-2020 Gavin Blakeman
+ * @version 2022.07
+ * @copyright 2005-2022 Gavin Blakeman
  * @par Licence
  * The Storage Class Library is licensed under the GPLv2. The full text of the GPLv2 can be found in the file license.txt that
  * is distributed with the source of the library.<br>
@@ -108,10 +108,11 @@
 #include "include/circularbuffer.hpp"
 #include "include/common.h"
 #include "include/config.h"
+#include "include/hierarchyBuilder.hpp"
 #include "include/index2D.hpp"
 #include "include/mapAsVector.hpp"
 #include "include/vector2D.hpp"
 #include "include/vectorSorted.hpp"
-#include "include/hierarchyBuilder.hpp"
+#include "include/sortedHierarchyBuilder.hpp"
 
 #endif // SCL_H

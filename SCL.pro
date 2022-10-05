@@ -53,6 +53,8 @@ SOURCES += \
 
 HEADERS += \
     include/Base.h \
+    include/hierarchyBuilder.hpp \
+    include/sortedHierarchyBuilder.hpp \
     include/valarray_mt.hpp \
     include/common.h \
     include/config.h \
@@ -62,7 +64,6 @@ HEADERS += \
     include/array1DP.h \
     include/circularbuffer.hpp \
     SCL \
-    include/hierarchyBuilder.hpp \
     include/array2D.hpp \
     include/vector2D.hpp \
     include/index2D.hpp \
