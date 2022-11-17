@@ -502,7 +502,7 @@ namespace SCL
     {
       case MCL::NT_none:
       {
-        CODE_ERROR;
+        CODE_ERROR();
         break;
       };
       case MCL::NT_uint8:
@@ -557,7 +557,7 @@ namespace SCL
       };
       default:
       {
-        CODE_ERROR;
+        CODE_ERROR();
         break;
       };
     };

@@ -513,7 +513,7 @@ namespace SCL
         parents_.emplace(itemIndex, &(emplaceValue.first->second));
         if (!emplaceValue.second)
         {
-          throw std::runtime_error("Unable to insert item:1");
+          throw std::runtime_error("Unable to insert item: 1");
         }
 
         if (unfound_.contains(itemIndex))
@@ -534,7 +534,7 @@ namespace SCL
             auto ev = ptr->emplace(childSort, node_type{childIndx, std::unique_ptr<child_type>()});
             if (!ev.second)
             {
-              throw std::runtime_error("Unable to insert item:2");
+              throw std::runtime_error("Unable to insert item: 2");
             }
             parents_.emplace(std::get<0>(items_[childIndx]), &(ev.first->second));
             unfound_.erase(childNode);

@@ -79,8 +79,8 @@ namespace SCL
     CSortablePackage() {}
     virtual ~CSortablePackage() {}
 
-    virtual bool operator<(CSortablePackage const &) const { CODE_ERROR; }
-    virtual bool operator==(CSortablePackage const &) const { CODE_ERROR; }
+    virtual bool operator<(CSortablePackage const &) const { CODE_ERROR(); }
+    virtual bool operator==(CSortablePackage const &) const { CODE_ERROR(); }
   };
 
   [[deprecated]] typedef CSortablePackage *PSortablePackage;
@@ -103,9 +103,9 @@ namespace SCL
     CContainer() : lPackageCount(0), bOwnsPackages(true) {}
     virtual ~CContainer() {}
 
-    virtual bool insert(CPackage *) { CODE_ERROR; }  // Insert an object into the container.
-    virtual bool erase(CPackage *) { CODE_ERROR; }
-    virtual void clear() { CODE_ERROR; }
+    virtual bool insert(CPackage *) { CODE_ERROR(); }  // Insert an object into the container.
+    virtual bool erase(CPackage *) { CODE_ERROR(); }
+    virtual void clear() { CODE_ERROR(); }
 
     inline size_type size() const {return lPackageCount;}
 

@@ -157,7 +157,7 @@ namespace SCL
         };
         default:
         {
-          CODE_ERROR;
+          CODE_ERROR();
         };
       }
     }
