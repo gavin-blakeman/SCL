@@ -1,0 +1,4 @@
+#ifndef SPARSEARRAY_HPP
+#define SPARSEARRAY_HPP
+
+#endif // SPARSEARRAY_HPP

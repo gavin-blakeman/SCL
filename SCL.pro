@@ -41,8 +41,7 @@ DESTDIR = ""
 
 INCLUDEPATH += \
   "../GCL" \
-  "../MCL" \
-  "../WtExtensions"
+  "../MCL"
 
 SOURCES += \
     source/common.cpp \
@@ -55,6 +54,7 @@ HEADERS += \
     include/Base.h \
     include/hierarchyBuilder.hpp \
     include/sortedHierarchyBuilder.hpp \
+    include/sparseArray.hpp \
     include/valarray_mt.hpp \
     include/common.h \
     include/config.h \
