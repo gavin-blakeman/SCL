@@ -111,6 +111,10 @@ namespace SCL
         returnValue = array[index(x, y)];
         break;
       }
+      default:
+      {
+        CODE_ERROR();
+      }
     };
 
     return returnValue;
@@ -175,6 +179,10 @@ namespace SCL
         //returnValue = MCL::mean(reinterpret_cast<double *>(data), size());
         break;
       };
+      default:
+      {
+        CODE_ERROR();
+      }
     }
 
     return returnValue;

@@ -161,6 +161,10 @@ namespace SCL
           reinterpret_cast<double *>(data_)[index] *= static_cast<double>(rhs.get(index));
           break;
         };
+        default:
+        {
+          CODE_ERROR();
+        }
       };
     };
 
@@ -227,6 +231,10 @@ namespace SCL
           reinterpret_cast<double *>(data_)[index] /= static_cast<double>(rhs.get(index));
           break;
         };
+        default:
+        {
+          CODE_ERROR();
+        }
       };
     };
 
@@ -275,6 +283,11 @@ namespace SCL
         returnValue = array[i];
         break;
       }
+      default:
+      {
+        CODE_ERROR();
+      }
+
     };
 
     return returnValue;
@@ -341,6 +354,10 @@ namespace SCL
         returnValue = MCL::mean(reinterpret_cast<double *>(data_), size());
         break;
       };
+      default:
+      {
+        CODE_ERROR();
+      }
     }
 
     return returnValue;
@@ -439,6 +456,10 @@ namespace SCL
             reinterpret_cast<double *>(newData)[index] = static_cast<double>(get(index));
             break;
           };
+          default:
+          {
+            CODE_ERROR();
+          }
         };
       }
 

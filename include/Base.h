@@ -7,7 +7,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2010, 2013-2020 Gavin Blakeman.
+//                      Copyright 2010, 2013-2022 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -79,8 +79,8 @@ namespace SCL
     CSortablePackage() {}
     virtual ~CSortablePackage() {}
 
-    virtual bool operator<(CSortablePackage const &) const { CODE_ERROR(); }
-    virtual bool operator==(CSortablePackage const &) const { CODE_ERROR(); }
+    virtual  bool operator< [[noreturn]] (CSortablePackage const &) const { CODE_ERROR(); }
+    virtual bool operator== [[noreturn]] (CSortablePackage const &) const { CODE_ERROR(); }
   };
 
   [[deprecated]] typedef CSortablePackage *PSortablePackage;
@@ -103,8 +103,8 @@ namespace SCL
     CContainer() : lPackageCount(0), bOwnsPackages(true) {}
     virtual ~CContainer() {}
 
-    virtual bool insert(CPackage *) { CODE_ERROR(); }  // Insert an object into the container.
-    virtual bool erase(CPackage *) { CODE_ERROR(); }
+    virtual bool insert [[noreturn]] (CPackage *) { CODE_ERROR(); }  // Insert an object into the container.
+    virtual bool erase [[noreturn]] (CPackage *) { CODE_ERROR(); }
     virtual void clear() { CODE_ERROR(); }
 
     inline size_type size() const {return lPackageCount;}

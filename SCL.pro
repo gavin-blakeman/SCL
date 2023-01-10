@@ -38,6 +38,7 @@ CONFIG          += staticlib
 QMAKE_CXXFLAGS  += -std=c++20
 
 DESTDIR = ""
+OBJECTS_DIR = "objects"
 
 INCLUDEPATH += \
   "../GCL" \
