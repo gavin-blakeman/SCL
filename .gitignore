@@ -9,3 +9,11 @@ Makefile
 *.bak
 
 *.autosave
+
+*.cmake
+
+CMakeFiles/SCL.dir/
+
+*.a
+
+*.marks
