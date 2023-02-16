@@ -551,11 +551,11 @@ namespace SCL
         }
         child_type *ptr = parents_[parentIndex]->child.get();
 
-        auto emplaceValue = ptr->emplace(sortOrder, node_type(indx, std::unique_ptr<child_type>()));
+        //auto emplaceValue = ptr->emplace(sortOrder, node_type(indx, std::unique_ptr<child_type>()));
+        auto emplaceValue = ptr->emplace(sortOrder, node_type{indx, std::unique_ptr<child_type>()});
         if (!emplaceValue.second)
         {
-//          DEBUGMESSAGE("Parent Index: " + std::to_string(parentIndex));
-          throw std::runtime_error("Unable to insert item:3");
+          throw std::runtime_error("Unable to insert item: " + std::to_string(parentIndex) + ". Probably a duplicate.");
         }
         parents_.emplace(itemIndex, &(emplaceValue.first->second));
 
