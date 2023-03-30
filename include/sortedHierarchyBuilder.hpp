@@ -46,7 +46,9 @@
 
   // Miscellaneous library header files
 
-#include "boost/variant.hpp"
+//#include "boost/variant.hpp"
+#include "fmt/format.h"
+#include <GCL>
 
   // SCL library header files
 
@@ -555,6 +557,9 @@ namespace SCL
         auto emplaceValue = ptr->emplace(sortOrder, node_type{indx, std::unique_ptr<child_type>()});
         if (!emplaceValue.second)
         {
+          DEBUGMESSAGE(fmt::format("Unable to insert item: {:d}. Parent Index: {:d}. Sort Order: {:d}. Probably a duplicate.",
+                                   itemIndex, parentIndex, sortOrder));
+
           throw std::runtime_error("Unable to insert item: " + std::to_string(parentIndex) + ". Probably a duplicate.");
         }
         parents_.emplace(itemIndex, &(emplaceValue.first->second));
