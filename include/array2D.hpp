@@ -106,7 +106,7 @@ namespace SCL
 //    typedef T                                                               elem_type;
     typedef Alloc_                                                          allocator_type;
 //    typedef typename Alloc_::value_type                                     value_type;
-    typedef typename Alloc_::pointer                                        pointer;
+    using pointer = std::allocator_traits<Alloc_>::pointer;
 //    typedef typename std::allocator_traits<allocator_type>::const_pointer   const_pointer;
 //    typedef T&                                                              reference;
 //    typedef typename Alloc_::const_reference                                const_reference;
@@ -151,10 +151,9 @@ namespace SCL
     {
       size_type const elementCount = arrayExtent();
 
-      for (size_type i = 0; i < elementCount; ++i)
-      {
-        alloc_.destroy(&dataStorage_[i]);
-      };
+      std::destroy_n(dataStorage_, elementCount);
+
+      alloc_.deallocate(dataStorage_, elementCount);
     }
 
   public:
