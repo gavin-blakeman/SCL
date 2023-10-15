@@ -14,13 +14,16 @@ set(SOURCES
   source/array2DP.cpp
   source/common.cpp
   source/config.cpp
-  source/valarray2DP.cpp)
+  source/valarray2DP.cpp
+  )
 set(HEADERS
   include/array1DP.h
   include/array2DP.h
   include/config.h
   include/hierarchyBuilder.hpp
-  include/valarray2DP.h)
+  include/valarray2DP.h
+  SCL
+  )
 
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES} ${HEADERS})

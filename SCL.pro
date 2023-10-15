@@ -72,6 +72,7 @@ HEADERS += \
     include/mapAsVector.hpp
 
 DISTFILES += \
+    CMakeLists.txt \
     license.txt \
     Doxyfile \
     changelog.txt
