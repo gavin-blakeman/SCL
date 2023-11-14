@@ -22,7 +22,7 @@ set(HEADERS
   include/config.h
   include/hierarchyBuilder.hpp
   include/valarray2DP.h
-  SCL
+  include/vectorSorted.hpp
   )
 
 
