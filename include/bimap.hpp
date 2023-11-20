@@ -1,95 +1,54 @@
-﻿//*********************************************************************************************************************************
-//
-// PROJECT:							Storage Class Library
-// FILE:								mapAsVector.hpp
-// SUBSYSTEM:						Map implementation using vectors as the underlying storage structure.
-// LANGUAGE:						C++20
-// TARGET OS:						None.
-// NAMESPACE:						SCL
-// AUTHOR:							Gavin Blakeman (GGB)
-// LICENSE:             GPLv2
-//
-//                      Copyright 2020-2023 Gavin Blakeman.
-//                      This file is part of the Storage Class Library (SCL)
-//
-//                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
-//                      License as published by the Free Software Foundation, either version 2 of the License, or (at your option)
-//                      any later version.
-//
-//                      SCL is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-//                      warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-//                      more details.
-//
-//                      You should have received a copy of the GNU General Public License along with SCL.  If not, see
-//                      <http://www.gnu.org/licenses/>.
-//
-// OVERVIEW:						Implementation of a std::map drop in class that uses vectors for the underlying implementation. This
-//                      provides some efficiency gains over the std::map implementation, specically in memory usage. However there
-//                      is an insertion and deletion speed penalty that occurs.
-//
-// CLASSES INCLUDED:		mapAsVector - Implements an STL drop in map function.
-//
-//
-// HISTORY:             2020-09-05 GGB - File created.
-//
-//*********************************************************************************************************************************
-
-#ifndef MAP_AS_VECTOR_HPP
-#define MAP_AS_VECTOR_HPP
+#ifndef SCL_BIMAP_HPP
+#define SCL_BIMAP_HPP
 
   // Standard C++ library header files.
 
 #include <algorithm>
-#include <vector>
+#include <map>
 
   // SCL Library header files
 
-#include "vectorSorted.hpp"
 
 namespace SCL
 {
 
-  /// @brief    The mapAsVector class is and STL-like implementation of a map type class offering more efficient traversal than
-  ///           the std::map implementation. This offers O(N) insertion and deletiontime and O(log N) search time.
-  ///           mapAsVector is a sorted associative container that contains key-value pairs with unique keys. Keys are sorted by
-  ///           using the comparison function Compare.
-  ///           Everywhere the standard library uses the Compare requirements, uniqueness is determined by using the equivalence
-  ///           relation. In imprecise terms, two objects a and b are considered equivalent (not unique) if neither compares less
-  ///           than the other: !comp(a, b) && !comp(b, a).
-  ///           mapAsVector meets the requirements of Container, AllocatorAwareContainer, AssociativeContainer and
-  ///           ReversibleContainer.
-  /// @details  This is implmented as a std::vector that stores the objects and a vector_sorted that stores the keys. Sorting is
-  ///           performed on insertion.
-  ///           This will be fairly fast for both insertion and search and can always be extended to use more efficient storage and
-  ///           search methods if required.
-  ///           The std::vector is used to store the data in the original insertion order, the sorted_vector implements a
-  ///           permutation vector that links the Key to the values.
-  /// @tparam   reverseLookup: If true, reverse lookup from the value to key is available. This creates additional storage overhead.
-  /// @note     1. This is a drop-in for std::map
-  /// @note     2. Due to the design of the class guarantees are made that the data is available as sorted data, or in the original
-  ///              insertion order. This has advantages if the data set is a hierarchy that needs to be preserved as a hierarchy,
-  ///              while allowing O(log n) random access to elements identified by the Key value.
-  /// @note     3. This class works well where insertions can be in order or amortised over a large number of searches.
+  /// @brief    The bimap class is and STL-like implementation of a bi-directional map type class. This offers the same insert 
+  ///           and search times as a std::map, but includes the ability to search/retrieve on key or value.
+  /// @details  This is implmented as a std::list (a list preserves iterators) that stores the objects and a map that stores the 
+  ///           keys. Sorting is  on insertion.
+  ///           The std::vector is used to store the data in the original insertion order, the map implements a
+  ///           permutation map  that links the Key to the values.  
+  /// @note     1. This is a drop-in for std::map  
+  /// @note     2. This class works well where insertions can be in order or amortised over a large number of searches.
+  /// @note     3. operator < needs to be implemented for both the key and the value. 
 
-  template<class Key,
-           class T,
-           class Compare = std::less<Key>,
-           class Allocator = std::allocator<T>,
-           bool reverseLookup = false>
-  class mapAsVector
+  template<class KeyLeft,
+           class KeyRight,
+           class CompareLeft = std::less<KeyLeft>,
+           class CompareRight = std::less<KeyRight>
+           class Allocator = std::allocator<T>
+           >
+  class bimap
   {
   public:
-    using key_type = Key;
-    using mapped_type = T;
-    using value_type = std::pair<Key, T>;
-    using value_storage = std::vector<T>;
+    using keyLeft_type = KeyLeft;
+    using keyRight_type = KeyRight;
+    using value_type = std::pair<KeyLeft, KeyRight>;
+    using rvalue_type = std::pair<KeyRight, KeyLeft>;
+    using value_storage = std::list<value_type>;
+    using value_iterator = std::list<value_type>::iterator;
     using size_type = typename value_storage::size_type;
-    using key_storage = vector_sorted<std::pair<Key, size_type>, Compare>;
+    using keyLeft_storage = map<KeyLeft, value_iterator, Compare>;
+    using keyRight_storage = map<KeyRight, value_iterator>, Compare>;
+    
     using difference_type = typename value_storage::difference_type;
-    using key_compare = Compare;
+    using keyLeft_compare = CompareLeft;
+    using keyRight_compare = CompareRight;
     using allocator_type = Allocator;
     using reference = value_type &;
+    using rreference = rbalue_type &;
     using const_reference = value_type const &;
+    using const_rreference = rvalue_type const &;
     using pointer = typename std::allocator_traits<Allocator>::pointer;
     using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
     using iterator = typename key_storage::iterator;
@@ -104,50 +63,67 @@ namespace SCL
                                       };
 
   private:
-    value_storage valueData;
-    key_storage keyData;
-    Compare comparisonFunction;
+    value_storage valueData_;
+    keyLeft_storage keyLeftData_;
+    keyRight_storage keyRightData_
+    CompareLeft comparisonFunctionLeft_;
+    CompareRight comparisonFunctionRight+;
 
   public:
-    mapAsVector() : valueData(), keyData() {}
-    explicit mapAsVector(Compare const &comp, Allocator const &alloc = Allocator());
+    bimap() = default;
+    explicit bimap(Compare const &comp, Allocator const &alloc = Allocator());
 
     template< class InputIt >
-    mapAsVector(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
+    bimap(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
 
     template< class InputIt >
-    mapAsVector(InputIt first, InputIt last, const Allocator& alloc );
+    bimap(InputIt first, InputIt last, const Allocator& alloc );
 
-    mapAsVector(const mapAsVector& other );
+    bimap(const bimap& other );
 
-    mapAsVector( const mapAsVector& other, const Allocator& alloc );
-    mapAsVector( mapAsVector&& other );
-    mapAsVector( mapAsVector&& other, const Allocator& alloc );
-    mapAsVector( std::initializer_list<value_type> init,const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
+    bimap( const bimap& other, const Allocator& alloc );
+    bimap( bimap&& other );
+    bimap( bimap&& other, const Allocator& alloc );
+    bimap( std::initializer_list<value_type> init,const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
 
-    mapAsVector( std::initializer_list<value_type> init, const Allocator& );
+    bimap( std::initializer_list<value_type> init, const Allocator& );
 
-    ~mapAsVector();
+    ~bimap() = default;
 
-    mapAsVector& operator=(mapAsVector const &other);
-    mapAsVector& operator=(mapAsVector&& other ) noexcept(std::allocator_traits<Allocator>::is_always_equal::value && std::is_nothrow_move_assignable<Compare>::value);
-    mapAsVector& operator=(std::initializer_list<value_type> ilist);
+    bimap& operator=(bimap const &other) = default;
+    bimap& operator=(bimap&& other ) noexcept(std::allocator_traits<Allocator>::is_always_equal::value && std::is_nothrow_move_assignable<Compare>::value);
+    bimap& operator=(std::initializer_list<value_type> ilist);
 
     allocator_type get_allocator() const noexcept;
 
     /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
     ///             If no such element exists, an exception of type std::out_of_range is thrown.
-    /// @param[in]  key: The key of the element to find.
+    /// @param[in]  keyLeft: The left key of the element to find.
     /// @returns    Reference to the mapped value of the requested element
     /// @throws     std::out_of_range if the container does not have an element with the specified key
     /// @complexity Logarithmic in the size of the container.
-    /// @version    2020-09-05/GGB - Function created.
+    /// @version    2023-11-17/GGB - Function created.
 
-    T& at(Key const &key)
+    KeyRight& at(KeyLeft const &keyLeft)
     {
-      iterator i = keyData.find(key);
+      iterator i = keyLeftData_.find(keyLeft);
 
-      return valueData.at(i->second);
+      return i->second;
+    }
+    
+    /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
+    ///             If no such element exists, an exception of type std::out_of_range is thrown.
+    /// @param[in]  keyLeft: The left key of the element to find.
+    /// @returns    Reference to the mapped value of the requested element
+    /// @throws     std::out_of_range if the container does not have an element with the specified key
+    /// @complexity Logarithmic in the size of the container.
+    /// @version    2023-11-17/GGB - Function created.
+
+    KeyLeft& at(KeyRight const &keyRight)
+    {
+      iterator i = keyRightData_.find(keyRight);
+
+      return i->second;
     }
 
     /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
@@ -156,30 +132,46 @@ namespace SCL
     /// @returns    Reference to the mapped value of the requested element
     /// @throws     std::out_of_range if the container does not have an element with the specified key
     /// @complexity Logarithmic in the size of the container.
-    /// @version    2020-09-05/GGB - Function created.
+    /// @version    2023-11-17/GGB - Function created.
 
-    const T& at(Key const &key) const
+    const KeyRight& at(KeyLeft const &keyLeft) const
     {
-      iterator i = keyData.find(key);
+      iterator i = keyDataLeft_.find(keyLeft);
 
-      return valueData.at(i->second);
+      return i->second;
+    }
+    
+    /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
+    ///             If no such element exists, an exception of type std::out_of_range is thrown.
+    /// @param[in]  key: The key of the element to find.
+    /// @returns    Reference to the mapped value of the requested element
+    /// @throws     std::out_of_range if the container does not have an element with the specified key
+    /// @complexity Logarithmic in the size of the container.
+    /// @version    2023-11-17/GGB - Function created.
+
+    const KeyLeft& at(KeyRight const &keyRight) const
+    {
+      iterator i = keyDataRight_.find(keyRight);
+
+      return i->second;
     }
 
-    /// @brief      Returns a reference to the value that is mapped to a key equivalent to key, performing an insertion if such key
-    ///             does not already exist.
+    /// @brief      Returns a reference to the value that is mapped to a key equivalent to key, performing an insertion if such 
+    //              key not already exist.
     /// @param[in]  key: The key of the element to find.
     /// @returns    Reference to the mapped value of the new element if no element with key key existed. Otherwise a reference to
     ///             the mapped value of the existing element whose key is equivalent to key.
     /// @throws
     /// @version    2020-09-05/GGB - Function created.
 
-    T& operator[](Key const &key)
+    KeyRight& operator[](KeyLeft const &keyLeft)
     {
     }
 
-    T& operator[]( Key&& key );
+    KeyRight& operator[]( KeyLeft&& keyLeft);
 
-    /// @brief      Returns an iterator to the first element of the map. If the map is empty, the returned iterator will be equal to
+    /// @brief      Returns an iterator to the first element of the map. If the map is empty, the returned iterator will be 
+    //              equal to
     ///             end().
     /// @returns    Iterator to the first element.
     /// @throws     None.
@@ -499,4 +491,4 @@ namespace SCL
 
 } // namespace SCL
 
-#endif // MAP_FLAT_HPP
+#endif // SCL_BIMAP_HPP

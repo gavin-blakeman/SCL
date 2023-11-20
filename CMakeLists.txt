@@ -19,8 +19,10 @@ set(SOURCES
 set(HEADERS
   include/array1DP.h
   include/array2DP.h
+  include/bimap.hpp
   include/config.h
   include/hierarchyBuilder.hpp
+  include/mapAsVector.hpp
   include/valarray2DP.h
   include/vectorSorted.hpp
   )
