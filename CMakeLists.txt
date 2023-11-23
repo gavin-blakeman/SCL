@@ -23,13 +23,20 @@ set(HEADERS
   include/config.h
   include/hierarchyBuilder.hpp
   include/mapAsVector.hpp
+  include/multiVectorSorted.hpp
   include/valarray2DP.h
   include/vectorSorted.hpp
   )
 
+set(OTHER
+  SCL
+  )
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES} ${HEADERS})
+
+add_library(${PROJECT_NAME} STATIC ${SOURCES} ${HEADERS} ${OTHER})
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
   PRIVATE "../GCL" "../MCL" )
+
+#ADD_SUBDIRECTORY(test)
