@@ -52,8 +52,8 @@
 
 namespace SCL
 {
-  /// @brief    The multiVector_sorted class is and STL-like implementation of a sorted vector that allows multiple values. 
-  ///           This offers O(N) insertion and deletion times and O(log N) search time. The container is similar to a map. 
+  /// @brief    The multiVector_sorted class is and STL-like implementation of a sorted vector that allows multiple values.
+  ///           This offers O(N) insertion and deletion times and O(log N) search time. The container is similar to a map.
   ///           The container does not support duplicates.
   /// @details  This is implmented as a std::vector that stores the objects. Sorting is performed on insertion.
   /// @note     1. This is a drop-in for std::vector.
@@ -245,9 +245,9 @@ namespace SCL
     }
 
     /// @brief      Returns pointer to the underlying array serving as element storage. The pointer is such that range
-    ///             [data(); data() + size()) is always a valid range, even if the container is empty (data() is not 
+    ///             [data(); data() + size()) is always a valid range, even if the container is empty (data() is not
     ///             dereferenceable in that case).
-    /// @returns    Pointer to the underlying element storage. For non-empty containers, the returned pointer compares equal to 
+    /// @returns    Pointer to the underlying element storage. For non-empty containers, the returned pointer compares equal to
     ///             the address of the first element.
     /// @throws     None.
     /// @version    2023-11-21/GGB - Function created.
@@ -258,9 +258,9 @@ namespace SCL
     }
 
     /// @brief      Returns pointer to the underlying array serving as element storage. The pointer is such that range
-    ///             [data(); data() + size()) is always a valid range, even if the container is empty (data() is not 
+    ///             [data(); data() + size()) is always a valid range, even if the container is empty (data() is not
     ///             dereferenceable in that case).
-    /// @returns    Pointer to the underlying element storage. For non-empty containers, the returned pointer compares equal to 
+    /// @returns    Pointer to the underlying element storage. For non-empty containers, the returned pointer compares equal to
     ///             the address of the first element.
     /// @throws     None.
     /// @version    2023-11-21/GGB - Function created.
@@ -369,15 +369,15 @@ namespace SCL
       return data_.max_size();
     }
 
-    /// @brief      Increase the capacity of the vector to a value that's greater or equal to new_cap. If new_cap is greater 
+    /// @brief      Increase the capacity of the vector to a value that's greater or equal to new_cap. If new_cap is greater
     ///             than the current capacity(), new storage is allocated, otherwise the method does nothing.
     ///             reserve() does not change the size of the vector.
-    ///             If new_cap is greater than capacity(), all iterators, including the past-the-end iterator, and all 
+    ///             If new_cap is greater than capacity(), all iterators, including the past-the-end iterator, and all
     ///             references to the elements are invalidated. Otherwise, no iterators or references are invalidated.
     /// @param[in]  new_cap: The new capacity of the vector.
     /// @throws     std::length_error if new_cap > max_size().
     /// @throws     any exception thrown by Allocator::allocate() (typically std::bad_alloc)
-    /// @note       If an exception is thrown, this function has no effect (strong exception guarantee).    
+    /// @note       If an exception is thrown, this function has no effect (strong exception guarantee).
     /// @version    2023-11-21/GGB - Function created.
 
     constexpr void reserve(size_type new_cap)
@@ -396,9 +396,9 @@ namespace SCL
     }
 
     /// @brief      Requests the removal of unused capacity.
-    ///             It is a non-binding request to reduce capacity() to size(). It depends on the implementation whether the 
+    ///             It is a non-binding request to reduce capacity() to size(). It depends on the implementation whether the
     ///             request is fulfilled.
-    ///             If reallocation occurs, all iterators, including the past the end iterator, and all references to the 
+    ///             If reallocation occurs, all iterators, including the past the end iterator, and all references to the
     ///             elements are invalidated. If no reallocation takes place, no iterators or references are invalidated.
     /// @throws
     /// @version    2023-11-21/GGB - Function created.
@@ -424,19 +424,13 @@ namespace SCL
     /// @returns    A std::pair with an iterator to the insertion position and a bool to indicate if insertion occurred.
     /// @throws
     /// @note       All the insertion style functions (insert, push_back) use this function.
+    /// @version    2023-11-23/GGB - Bug#308 - Remove logic checking for duplicates.
     /// @version    2023-11-21/GGB - Function created.
 
     iterator insert_sorted(T const &value)
     {
       iterator i = lower_bound(begin(), end(), value, comp_);
-      if (i == end() || comp_(value, *i))
-      {
-        data_.insert(i, value);
-      }
-      else
-      {
-        throw(std::runtime_error("Unexpected"));
-      };
+      data_.insert(i, value);
       return i;
 
     }
@@ -446,19 +440,13 @@ namespace SCL
     /// @returns    An iterator to the insertion position.
     /// @throws
     /// @note       All the insertion style functions (insert, push_back) use this function.
+    /// @version    2023-11-23/GGB - Bug#308 - Remove logic checking for duplicates.
     /// @version    2023-11-21/GGB - Function created.
 
     iterator insert_sorted(T &&value)
     {
       iterator i = lower_bound(begin(), end(), value, comp_);
-      if (i == end() || comp_(value, *i))
-      {
-        data_.insert(i, value);
-      }
-      else
-      {
-        throw(std::runtime_error("Unexpected"));
-      };
+      data_.insert(i, value);
       return i;
     }
 
@@ -494,7 +482,7 @@ namespace SCL
     template< class InputIt >
     constexpr iterator insert( const_iterator pos, InputIt first, InputIt last);
     constexpr iterator insert( const_iterator pos, std::initializer_list<T> ilist);
-    
+
     /// @brief      Emplace constructs the item in the correct position in the array.
     /// @param[in]  args: THe args to forward to the element constructor.
     /// @returns    An iterator to the inserted item
@@ -507,12 +495,6 @@ namespace SCL
     iterator emplace(Args&&... args)
     {
       T value(std::forward<Args>(args)...);
-
-//      iterator i = lower_bound(begin(), end(), value, comp_);
-//      if (i == end() || comp_(value, *i))
-//      {
-//        data_.emplace(i, std::forward<Args>(args)...);
-//      }
       return insert_sorted(std::move(value));
     }
 
@@ -545,7 +527,7 @@ namespace SCL
     constexpr iterator erase(const_iterator first, const_iterator last)
     {
       return data_.erase(first, last);
-    }    
+    }
 
     /// @brief      Removes the last element of the container.
     /// @note       1. Calling pop_back on an empty container results in undefined behavior.
