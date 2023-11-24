@@ -430,9 +430,7 @@ namespace SCL
     iterator insert_sorted(T const &value)
     {
       iterator i = lower_bound(begin(), end(), value, comp_);
-      data_.insert(i, value);
-      return i;
-
+      return data_.insert(i, value);
     }
 
     /// @brief      Moves the value into the correct position in the container to ensure the container remains sorted.
@@ -446,8 +444,7 @@ namespace SCL
     iterator insert_sorted(T &&value)
     {
       iterator i = lower_bound(begin(), end(), value, comp_);
-      data_.insert(i, value);
-      return i;
+      return data_.insert(i, value);
     }
 
     /// @brief      Inserts an element into the list. The sort order is always maintained using the comparison function.
