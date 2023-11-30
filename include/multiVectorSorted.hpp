@@ -104,7 +104,7 @@ namespace SCL
     template<class InputIt>
     multiVector_sorted(InputIt first, InputIt last, Allocator const & alloc()) : data_(alloc) {}
 
-    multiVector_sorted(multiVector_sorted const &other) : data_(other.data_), comp_(other.comp_) {}
+    multiVector_sorted(multiVector_sorted const &other);
     multiVector_sorted(multiVector_sorted const &other, Allocator const &alloc);
 
     multiVector_sorted(multiVector_sorted &&other);
