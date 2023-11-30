@@ -31,12 +31,19 @@ set(HEADERS
 set(OTHER
   SCL
   )
+  
+set(DIRECTORIES  
+  ../GCL
+  ../MCL
+  ../fmt/include
+  ${Boost_INCLUDE_DIRS}
+  )
 
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES} ${HEADERS} ${OTHER})
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-  PRIVATE "../GCL" "../MCL" )
+  PRIVATE ${DIRECTORIES} )
 
 #ADD_SUBDIRECTORY(test)
