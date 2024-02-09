@@ -9,22 +9,16 @@ SET(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
 
-set(SOURCES
-  source/array1DP.cpp
-  source/array2DP.cpp
+set(SOURCES    
   source/common.cpp
   source/config.cpp
-  source/valarray2DP.cpp
   )
 set(HEADERS
-  include/array1DP.h
-  include/array2DP.h
   include/bimap.hpp
   include/config.h
   include/hierarchyBuilder.hpp
   include/mapAsVector.hpp
   include/multiVectorSorted.hpp
-  include/valarray2DP.h
   include/vectorSorted.hpp
   )
 
