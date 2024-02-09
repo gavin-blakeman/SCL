@@ -8,7 +8,7 @@
 // NAMESPACE:           SCL
 // LICENSE:             GPLv2
 //
-//                      Copyright 2019-2022 Gavin Blakeman.
+//                      Copyright 2019-2024 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
