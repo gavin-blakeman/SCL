@@ -431,28 +431,25 @@ namespace SCL
     /// @returns    A std::pair with an iterator to the insertion position and a bool to indicate if insertion occurred.
     /// @throws
     /// @note       All the insertion style functions (insert, push_back) use this function.
+    /// @version    2024-02-13/GGB - ug fix to update logic.
     /// @version    2020-09-04/GGB - Function created.
 
     iterator insert_sorted(T const &value)
     {
       iterator i = lower_bound(begin(), end(), value, comp_);
-      if (i == end() || comp_(value, *i))
+      if (i == end())
       {
-        if (value != *i)
-        {
-          data_.insert(i, value);
-          return std::make_pair(i, true);
-        }
-        else
-        {
-          return std::make_pair(i, false);
-        }
+        data_.insert(i, value);
+      }
+      else if (value != *i)
+      {
+        data_.insert(i, value);
+        return std::make_pair(i, true);
       }
       else
       {
         return std::make_pair(i, false);
       }
-
     }
 
     /// @brief      Moves the value into the correct position in the container to ensure the container remains sorted.
@@ -460,27 +457,25 @@ namespace SCL
     /// @returns    An iterator to the insertion position.
     /// @throws
     /// @note       All the insertion style functions (insert, push_back) use this function.
+    /// @version    2024-02-13/GGB - ug fix to update logic.
     /// @version    2020-09-04/GGB - Function created.
 
     std::pair<iterator, bool> insert_sorted(T &&value)
     {
       iterator i = lower_bound(begin(), end(), value, comp_);
-      if (i == end() || comp_(value, *i))
+      if (i == end())
       {
-        if (value != *i)
-        {
-          data_.insert(i, value);
-          return std::make_pair(i, true);
-        }
-        else
-        {
-          return std::make_pair(i,false);
-        }
+        data_.insert(i, value);
+      }
+      else if (value != *i)
+      {
+        data_.insert(i, value);
+        return std::make_pair(i, true);
       }
       else
       {
         return std::make_pair(i, false);
-      };
+      }
     }
 
     /// @brief      Inserts an element into the list. The sort order is always maintained using the comparison function.
@@ -512,7 +507,7 @@ namespace SCL
 
     constexpr iterator insert(T &&value)
     {
-      return insert_sorted(value);
+      return insert_sorted(std::move(value));
     }
 
 
@@ -521,28 +516,19 @@ namespace SCL
     constexpr iterator insert( const_iterator pos, InputIt first, InputIt last);
     constexpr iterator insert( const_iterator pos, std::initializer_list<T> ilist);
 
+    /// @brief      Emplace the object directly into the vector.
+    /// @param[in]  args: The values that wioll for used to create the item.
+    /// @return     A std::pair containing the iterator where the emplacement took place, and a bool indicating whether the
+    ///             emplacement occurred.
+    /// @throws
+    /// @version    2024-02-13/GGB - ug fix to update logic.
+
     template< class... Args >
     std::pair<iterator, bool> emplace(Args&&... args)
     {
       T value(args...);
 
-      iterator i = lower_bound(begin(), end(), value, comp_);
-      if (i == end() || comp_(value, *i))
-      {
-        if (value != *i)
-        {
-          data_.insert(i, value);
-          return std::make_pair(i, true);
-        }
-        else
-        {
-          return std::make_pair(i,false);
-        }
-      }
-      else
-      {
-        return std::make_pair(i, false);
-      };
+      return insert_sorted(std::move(value));
     }
 
     constexpr void resize(size_type count);
