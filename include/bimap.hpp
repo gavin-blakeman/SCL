@@ -4,97 +4,102 @@
   // Standard C++ library header files.
 
 #include <algorithm>
-#include <map>
+#include <iterator>
+#include <type_traits>
+#include <unordered_map>
 
   // SCL Library header files
 
-
 namespace SCL
 {
+  template <typename L, typename R> class bimap_iterator;
 
-  /// @brief    The bimap class is and STL-like implementation of a bi-directional map type class. This offers the same insert 
-  ///           and search times as a std::map, but includes the ability to search/retrieve on key or value.
-  /// @details  This is implmented as a std::list (a list preserves iterators) that stores the objects and a map that stores the 
-  ///           keys. Sorting is  on insertion.
-  ///           The std::vector is used to store the data in the original insertion order, the map implements a
-  ///           permutation map  that links the Key to the values.  
-  /// @note     1. This is a drop-in for std::map  
-  /// @note     2. This class works well where insertions can be in order or amortised over a large number of searches.
-  /// @note     3. operator < needs to be implemented for both the key and the value. 
+  /// @brief    The bimap class is a simple implementation of a bi-directional map type class. This relates a left hand side
+  ///           (LHS) value to a right hand side (RHS) value. All the values must be unique. All the relationships are fixed and
+  ///           1-1. The LHS:RHS pairs can be treated as pairs.
+  ///           There container is also small value optimised, with different storage strategies utilised.
 
-  template<class KeyLeft,
-           class KeyRight,
-           class CompareLeft = std::less<KeyLeft>,
-           class CompareRight = std::less<KeyRight>
-           class Allocator = std::allocator<T>
+  template<class LHS_T,
+           class RHS_T,
+           bool SVO = (sizeof(LHS_T) <= sizeof(std::reference_wrapper<LHS_T>)) &&
+                      (sizeof(RHS_T) <= sizeof(std::reference_wrapper<RHS_T>))
            >
   class bimap
   {
   public:
-    using keyLeft_type = KeyLeft;
-    using keyRight_type = KeyRight;
-    using value_type = std::pair<KeyLeft, KeyRight>;
-    using rvalue_type = std::pair<KeyRight, KeyLeft>;
-    using value_storage = std::list<value_type>;
-    using value_iterator = std::list<value_type>::iterator;
-    using size_type = typename value_storage::size_type;
-    using keyLeft_storage = map<KeyLeft, value_iterator, Compare>;
-    using keyRight_storage = map<KeyRight, value_iterator>, Compare>;
-    
-    using difference_type = typename value_storage::difference_type;
-    using keyLeft_compare = CompareLeft;
-    using keyRight_compare = CompareRight;
-    using allocator_type = Allocator;
-    using reference = value_type &;
-    using rreference = rbalue_type &;
-    using const_reference = value_type const &;
-    using const_rreference = rvalue_type const &;
-    using pointer = typename std::allocator_traits<Allocator>::pointer;
-    using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
-    using iterator = typename key_storage::iterator;
-    using const_iterator = typename key_storage::const_iterator;
-    using reverse_iterator = typename key_storage::reverse_iterator;
-    using const_reverse_iterator = typename key_storage::const_reverse_iterator;
-    using node_type = std::pair<Key, T>;
-    using insert_return_type = struct {
-                                        iterator position;
-                                        bool inserted;
-                                        node_type node;
-                                      };
+    friend class bimap_iterator<LHS_T, RHS_T>;
+
+    using size_type = std::size_t;
+    using value_type = std::pair<LHS_T, RHS_T>;
+//    using left_type = std::pair<RHS_T, reference>;
+//    using right_type = std::pair<LHS_T, reference>;
+//    using pointer = typename std::allocator_traits<Allocator>::pointer;
+//    using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
+    using const_iterator = bimap_iterator<LHS_T, RHS_T>;
+//    using iterator_r = typename keyRight_storage::iterator;
+//    using const_iterator_l = typename keyLeft_storage::const_iterator;
+//    using reverse_iterator_l = typename keyLeft_storage::reverse_iterator;
+//    using const_reverse_iterator_l = typename keyLeft_storage::const_reverse_iterator;
 
   private:
-    value_storage valueData_;
-    keyLeft_storage keyLeftData_;
-    keyRight_storage keyRightData_
-    CompareLeft comparisonFunctionLeft_;
-    CompareRight comparisonFunctionRight+;
+    constexpr static bool optimised = SVO;
+    std::conditional<SVO,
+                     std::unordered_map<LHS_T, RHS_T>,
+                     std::unordered_map<LHS_T, std::reference_wrapper<value_type const>>>::type lhsMap;
+    std::conditional<SVO,
+                     std::unordered_map<RHS_T, LHS_T>,
+                     std::unordered_map<RHS_T, std::reference_wrapper<value_type const>>>::type rhsMap;;
+
+
+    struct empty_t{};
+
+    [[no_unique_address]] std::conditional_t<SVO, empty_t, std::list<value_type>> valueStorage;
+
 
   public:
     bimap() = default;
-    explicit bimap(Compare const &comp, Allocator const &alloc = Allocator());
 
-    template< class InputIt >
-    bimap(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
+    //template< class InputIt >
+    //bimap(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
 
-    template< class InputIt >
-    bimap(InputIt first, InputIt last, const Allocator& alloc );
+    //template< class InputIt >
+    //bimap(InputIt first, InputIt last, const Allocator& alloc );
 
-    bimap(const bimap& other );
-
-    bimap( const bimap& other, const Allocator& alloc );
-    bimap( bimap&& other );
-    bimap( bimap&& other, const Allocator& alloc );
-    bimap( std::initializer_list<value_type> init,const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
-
-    bimap( std::initializer_list<value_type> init, const Allocator& );
+    bimap(const bimap& other) = default;
+    bimap(bimap&& other);
+    bimap( std::initializer_list<std::pair<LHS_T, RHS_T>> init)
+    {
+      for (auto &v: init)
+      {
+        insert(v.first, v.second);
+      }
+    }
 
     ~bimap() = default;
 
     bimap& operator=(bimap const &other) = default;
-    bimap& operator=(bimap&& other ) noexcept(std::allocator_traits<Allocator>::is_always_equal::value && std::is_nothrow_move_assignable<Compare>::value);
+    bimap& operator=(bimap&& other ) noexcept;
     bimap& operator=(std::initializer_list<value_type> ilist);
 
-    allocator_type get_allocator() const noexcept;
+    /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
+    ///             If no such element exists, an exception of type std::out_of_range is thrown.
+    /// @param[in]  keyRight: The right key.
+    /// @returns    const reference to the left key.
+    /// @throws     std::out_of_range if the container does not have an element with the specified key
+    /// @complexity Logarithmic in the size of the container.
+    /// @version    2023-11-17/GGB - Function created.
+
+    LHS_T const &LHS(RHS_T const &keyRight) const
+    {
+      if constexpr (SVO)
+      {
+        return rhsMap.at(keyRight);
+      }
+      else
+      {
+        return rhsMap.at(keyRight).get().first;
+      }
+    }
 
     /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
     ///             If no such element exists, an exception of type std::out_of_range is thrown.
@@ -104,218 +109,16 @@ namespace SCL
     /// @complexity Logarithmic in the size of the container.
     /// @version    2023-11-17/GGB - Function created.
 
-    KeyRight& at(KeyLeft const &keyLeft)
+    RHS_T const &RHS(LHS_T const &key) const
     {
-      iterator i = keyLeftData_.find(keyLeft);
-
-      return i->second;
-    }
-    
-    /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
-    ///             If no such element exists, an exception of type std::out_of_range is thrown.
-    /// @param[in]  keyLeft: The left key of the element to find.
-    /// @returns    Reference to the mapped value of the requested element
-    /// @throws     std::out_of_range if the container does not have an element with the specified key
-    /// @complexity Logarithmic in the size of the container.
-    /// @version    2023-11-17/GGB - Function created.
-
-    KeyLeft& at(KeyRight const &keyRight)
-    {
-      iterator i = keyRightData_.find(keyRight);
-
-      return i->second;
-    }
-
-    /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
-    ///             If no such element exists, an exception of type std::out_of_range is thrown.
-    /// @param[in]  key: The key of the element to find.
-    /// @returns    Reference to the mapped value of the requested element
-    /// @throws     std::out_of_range if the container does not have an element with the specified key
-    /// @complexity Logarithmic in the size of the container.
-    /// @version    2023-11-17/GGB - Function created.
-
-    const KeyRight& at(KeyLeft const &keyLeft) const
-    {
-      iterator i = keyDataLeft_.find(keyLeft);
-
-      return i->second;
-    }
-    
-    /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
-    ///             If no such element exists, an exception of type std::out_of_range is thrown.
-    /// @param[in]  key: The key of the element to find.
-    /// @returns    Reference to the mapped value of the requested element
-    /// @throws     std::out_of_range if the container does not have an element with the specified key
-    /// @complexity Logarithmic in the size of the container.
-    /// @version    2023-11-17/GGB - Function created.
-
-    const KeyLeft& at(KeyRight const &keyRight) const
-    {
-      iterator i = keyDataRight_.find(keyRight);
-
-      return i->second;
-    }
-
-    /// @brief      Returns a reference to the value that is mapped to a key equivalent to key, performing an insertion if such 
-    //              key not already exist.
-    /// @param[in]  key: The key of the element to find.
-    /// @returns    Reference to the mapped value of the new element if no element with key key existed. Otherwise a reference to
-    ///             the mapped value of the existing element whose key is equivalent to key.
-    /// @throws
-    /// @version    2020-09-05/GGB - Function created.
-
-    KeyRight& operator[](KeyLeft const &keyLeft)
-    {
-    }
-
-    KeyRight& operator[]( KeyLeft&& keyLeft);
-
-    /// @brief      Returns an iterator to the first element of the map. If the map is empty, the returned iterator will be 
-    //              equal to
-    ///             end().
-    /// @returns    Iterator to the first element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    iterator begin() noexcept
-    {
-      return keyData.begin();
-    }
-
-    /// @brief      Returns an iterator to the first element of the map. If the map is empty, the returned iterator will be equal to
-    ///             end().
-    /// @returns    Iterator to the first element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    const_iterator begin() const noexcept
-    {
-      return keyData.begin();
-    }
-
-    /// @brief      Returns an iterator to the first element of the map. If the map is empty, the returned iterator will be equal to
-    ///             end().
-    /// @returns    Iterator to the first element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    const_iterator cbegin() const noexcept
-    {
-      return keyData.begin();
-    }
-
-    /// @brief      Returns an iterator to the element following the last element of the map. This element acts as a placeholder;
-    ///             attempting to access it results in undefined behavior.
-    /// @returns    Iterator to the element following the last element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    iterator end() noexcept
-    {
-      return keyData.end();
-    }
-
-    /// @brief      Returns an iterator to the element following the last element of the map. This element acts as a placeholder;
-    ///             attempting to access it results in undefined behavior.
-    /// @returns    Iterator to the element following the last element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    const_iterator end() const noexcept
-    {
-      return keyData.end();
-    }
-
-    /// @brief      Returns an iterator to the element following the last element of the map. This element acts as a placeholder;
-    ///             attempting to access it results in undefined behavior.
-    /// @returns    Iterator to the element following the last element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    const_iterator cend() const noexcept
-    {
-      return keyData.end();
-    }
-
-    /// @brief      Returns a reverse iterator to the first element of the reversed map. It corresponds to the last element of the
-    ///             non-reversed map. If the map is empty, the returned iterator is equal to rend().
-    /// @returns    Reverse iterator to the first element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    reverse_iterator rbegin() noexcept
-    {
-      return keyData.rbegin();
-    }
-
-    /// @brief      Returns a reverse iterator to the first element of the reversed map. It corresponds to the last element of the
-    ///             non-reversed map. If the map is empty, the returned iterator is equal to rend().
-    /// @returns    Reverse iterator to the first element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    const_reverse_iterator rbegin() const noexcept
-    {
-      return keyData.rbegin();
-    }
-
-    /// @brief      Returns a reverse iterator to the first element of the reversed map. It corresponds to the last element of the
-    ///             non-reversed map. If the map is empty, the returned iterator is equal to rend().
-    /// @returns    Reverse iterator to the first element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    const_reverse_iterator crbegin() const noexcept
-    {
-      return keyData.rbegin();
-    }
-
-    /// @brief      Returns a reverse iterator to the element following the last element of the reversed map. It corresponds to the
-    ///             element preceding the first element of the non-reversed map. This element acts as a placeholder, attempting to
-    ///             access it results in undefined behavior.
-    /// @returns    Reverse iterator to the element following the last element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    reverse_iterator rend() noexcept
-    {
-      return keyData.rend();
-    }
-
-    /// @brief      Returns a reverse iterator to the element following the last element of the reversed map. It corresponds to the
-    ///             element preceding the first element of the non-reversed map. This element acts as a placeholder, attempting to
-    ///             access it results in undefined behavior.
-    /// @returns    Reverse iterator to the element following the last element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    const_reverse_iterator rend() const noexcept
-    {
-      return keyData.rend();
-    }
-
-    /// @brief      Returns a reverse iterator to the element following the last element of the reversed map. It corresponds to the
-    ///             element preceding the first element of the non-reversed map. This element acts as a placeholder, attempting to
-    ///             access it results in undefined behavior.
-    /// @returns    Reverse iterator to the element following the last element.
-    /// @throws     None.
-    /// @note       As expected this function returns the iterator to the first sorted element.
-    /// @version    2020-09-05/GGB - Function created.
-
-    const_reverse_iterator crend() const noexcept
-    {
-      return keyData.rend();
+      if constexpr (SVO)
+      {
+        return lhsMap.at(key);
+      }
+      else
+      {
+        return lhsMap.at().get().second;
+      }
     }
 
     /// @brief      Checks if the container has no elements, i.e. whether begin() == end().
@@ -325,28 +128,17 @@ namespace SCL
 
     [[nodiscard]] bool empty() const noexcept
     {
-      return valueData.empty();
+      return lhsMap.empty();
     }
 
     /// @brief      Returns the number of elements in the container, i.e. std::distance(begin(), end()).
     /// @returns    The number of elements in the container.
     /// @throws     None.
-    /// @version    2020-09-05/GGB - Function created.
+    /// @version    2023-12-04/GGB - Function created.
 
-    size_type size() const noexcept
+    [[nodiscard]] size_type size() const noexcept
     {
-      return valueData.size();
-    }
-
-    /// @brief      Returns the maximum number of elements the container is able to hold due to system or library implementation
-    ///             limitations, i.e. std::distance(begin(), end()) for the largest container.
-    /// @returns    Maximum number of elements.
-    /// @throws     None.
-    /// @version    2020-09-05/GGB - Function created.
-
-    size_type max_size() const noexcept
-    {
-      return std::min(valueData.max_size(), keyData.max_size());
+      return lhsMap.size();
     }
 
     /// @brief      Erases all elements from the container. After this call, size() returns zero.
@@ -357,137 +149,147 @@ namespace SCL
 
     void clear() noexcept
     {
-      valueData.clear();
-      keyData.clear();
+      lhsMap.clear();
+      rhsMap.clear();
+      if constexpr (!SVO)
+      {
+        valueStorage.clear();
+      };
     }
 
     /// @brief      Inserts element(s) into the container, if the container doesn't already contain an element with an equivalent
     ///             key.
-    /// @param[in]  value: element value to insert.
-    /// @returns    Returns a pair consisting of an iterator to the inserted element (or to the element that prevented the
-    ///             insertion) and a bool denoting whether the insertion took place.
+    /// @param[in]  lk: The LHS key
+    /// @param[in]  rk: The RHS key
     /// @complexity O(n)
     /// @throws
     /// @version    2020-09-05/GGB - Function created.
 
-    std::pair<iterator, bool> insert(value_type const &value)
+    void insert(LHS_T const &lk, RHS_T const &rk)
     {
-
+      if constexpr (SVO)
+      {
+        lhsMap.emplace(lk, rk);
+        rhsMap.emplace(rk, lk);
+      }
+      else
+      {
+        valueStorage.emplace_back(lk, rk);
+        lhsMap.emplace(lk, std::cref(valueStorage.back()));
+        rhsMap.emplace(rk, std::cref(valueStorage.back()));
+      };
     }
 
-    template< class P >
-    std::pair<iterator, bool> insert(P &&value);
-    std::pair<iterator, bool> insert(value_type &&value);
+    void insert(value_type v)
+    {
+      insert(v.first, v.second);
+    }
 
-    iterator insert( const_iterator hint, const value_type& value );
-    template< class P >
-    iterator insert( const_iterator hint, P&& value );
-    iterator insert( const_iterator hint, value_type&& value );
+    template<class InputIt>
+    void insert(InputIt first, InputIt last)
+    {
+      std::for_each(first, last, [&](value_type const &v)
+      {
+        insert(v);
+      });
+    }
 
-    template< class InputIt >
-    void insert( InputIt first, InputIt last );
+    void insert(std::initializer_list<std::pair<LHS_T, RHS_T>> ilist)
+    {
+      for (auto &v: ilist)
+      {
+        insert(v.first, v.second);
+      }
+    }
 
-    void insert( std::initializer_list<value_type> ilist );
+    [[nodiscard]] bool contains_LHS(LHS_T const &lk) const noexcept
+    {
+      return lhsMap.contains(lk);
+    }
 
-    //insert_return_type insert(node_type&& nh);
+    [[nodiscard]] bool contains_RHS(RHS_T  const &rk) const noexcept
+    {
+      return rhsMap.contains(rk);
+    }
 
-    //iterator insert(const_iterator hint, node_type &&nh);
+    const_iterator begin() { return const_iterator(*this, lhsMap.begin());}
+    const_iterator end() { return const_iterator(*this, lhsMap.end()); }
 
-    template <class M>
-    std::pair<iterator, bool> insert_or_assign(const key_type& k, M&& obj);
+  };  // class bimap
 
-    template <class M>
-    std::pair<iterator, bool> insert_or_assign(key_type&& k, M&& obj);
+  template<typename L,
+           typename R>
+  class bimap_iterator
+  {
+  public:
+    using iteratored_type = bimap<L, R>;
+    using value_type = iteratored_type::value_type;
+    using internal_iterator = decltype(bimap<L, R>::lhsMap)::const_iterator;
+    using const_pointer = value_type const *;
+    using const_reference = value_type const &;
+    using iterator_category = std::input_iterator_tag;
 
-    template <class M>
-    iterator insert_or_assign(const_iterator hint, const key_type& k, M&& obj);
+    bimap_iterator() = delete;
+    bimap_iterator(bimap<L, R> const &i, internal_iterator ii) : instance(i), internalIterator(ii) {}
+    bimap_iterator(bimap_iterator const &i) = default;
 
-    template <class M>
-    iterator insert_or_assign(const_iterator hint, key_type&& k, M&& obj);
+    const_reference operator*() const
+    {
+      if constexpr (instance.optimised)
+      {
+        currentValue = *internalIterator;
+      }
+      else
+      {
+        currentValue = *internalIterator.get();
+      }
+      return currentValue;
+    }
 
-    template< class... Args >
-    std::pair<iterator,bool> emplace( Args&&... args );
-
-    template <class... Args>
-    iterator emplace_hint( const_iterator hint, Args&&... args );
-
-    template <class... Args>
-    std::pair<iterator, bool> try_emplace(const key_type& k, Args&&... args);
-
-    template <class... Args>
-    std::pair<iterator, bool> try_emplace(key_type&& k, Args&&... args);
-
-    template <class... Args>
-    iterator try_emplace(const_iterator hint, const key_type& k, Args&&... args);
-
-    template <class... Args>
-    iterator try_emplace(const_iterator hint, key_type&& k, Args&&... args);
-
-    iterator erase( const_iterator pos );
-    iterator erase( iterator pos );
-    iterator erase( const_iterator first, const_iterator last );
-    size_type erase( const key_type& key );
-
-    //void swap( mapAsVector& other ) noexcept(std::allocator_traits<Allocator>::is_always_equal::value && std::is_nothrow_swappable<Compare>::value);
-
-    node_type extract( const_iterator position );
-    node_type extract( const key_type& x );
-
-    template<class C2>
-    void merge( std::map<Key, T, C2, Allocator>& source );
-
-    template<class C2>
-    void merge( std::map<Key, T, C2, Allocator>&& source );
-
-    template<class C2>
-    void merge( std::multimap<Key, T, C2, Allocator>& source );
-
-    template<class C2>
-    void merge( std::multimap<Key, T, C2, Allocator>&& source );
-
-    size_type count( const Key& key ) const;
-
-    template< class K >
-    size_type count( const K& x ) const;
-
-    iterator find( const Key& key );
-    const_iterator find( const Key& key ) const;
-    template< class K > iterator find( const K& x );
-    template< class K > const_iterator find( const K& x ) const;
-
-    bool contains( const Key& key ) const;
-    template< class K > bool contains( const K& x ) const;
-
-    std::pair<iterator,iterator> equal_range( const Key& key );
-    std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const;
-    template< class K >
-    std::pair<iterator,iterator> equal_range( const K& x );
-    template< class K >
-    std::pair<const_iterator,const_iterator> equal_range( const K& x ) const;
-
-    iterator lower_bound( const Key& key );
-    const_iterator lower_bound( const Key& key ) const;
-    template< class K >
-    iterator lower_bound(const K& x);
-    template< class K >
-    const_iterator lower_bound(const K& x) const;
-
-    iterator upper_bound( const Key& key );
-    const_iterator upper_bound( const Key& key ) const;
-    template< class K >
-    iterator upper_bound( const K& x );
-    template< class K >
-    const_iterator upper_bound( const K& x ) const;
+    const_pointer operator->() const
+    {
+      if constexpr (instance.optimised)
+      {
+        currentValue = *internalIterator;
+      }
+      else
+      {
+        currentValue = *internalIterator.get();
+      }
+      return &currentValue;
+    }
 
 
-    key_compare key_comp() const;
+    bimap_iterator &operator++()
+    {
+      ++internalIterator;
+      return *this;
+    }
 
-    //value_compare value_comp() const;
+    bimap_iterator &operator++(int)
+    {
+      bimap_iterator temp(*this);
+
+      ++internalIterator;
+      return temp;
+    }
+
+    friend bool operator==(bimap_iterator const &lhs, bimap_iterator const rhs)
+    {
+      return lhs.internalIterator == rhs.internalIterator;
+    }
+
+    friend bool operator!=(bimap_iterator const &lhs, bimap_iterator const rhs)
+    {
+      return lhs.internalIterator != rhs.internalIterator;
+    }
 
 
-
-
-  };  // class mapAsVector
+  private:
+    bimap<L, R> const &instance;
+    internal_iterator internalIterator;
+    mutable value_type currentValue;
+  };
 
 } // namespace SCL
 

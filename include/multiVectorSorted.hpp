@@ -116,8 +116,8 @@ namespace SCL
     ~multiVector_sorted() {}
 
     constexpr multiVector_sorted &operator=(multiVector_sorted const &other);
-    constexpr multiVector_sorted &operator=(multiVector_sorted &&other) noexcept(std::allocator_traits<Allocator>::is_always_equal::value
-                                                                       && std::is_nothrow_move_assignable<Compare>::value);
+    constexpr multiVector_sorted &operator=(multiVector_sorted &&other) noexcept (std::allocator_traits<Allocator>::is_always_equal::value
+                                                                       && std::is_nothrow_move_assignable<Compare>::value) = default;
     constexpr multiVector_sorted &operator=(std::initializer_list<value_type> ilist);
 
     constexpr void assign(size_type count, T const &value);

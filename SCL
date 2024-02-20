@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman (GGB).
 // LICENSE:             GPLv2
 //
-//                      Copyright 2010, 2013-2023 Gavin Blakeman.
+//                      Copyright 2010, 2013-2024 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -55,6 +55,7 @@
  * set                | O(log n)  | O(log n)  | O(log n)  | STL container
  * vector_sorted      | O(n)      | O(n)      | O(log n)  | Efficient storage, fast transversal.
  * multiVector_sorted | O(n)      | O(n)      | O(log n)  | Fast traversal
+ * bimap              | O(log n)  |           | O(log n)  | Bi-directional connection. Two keys.
  *
  *
  * @section Dependencies
@@ -89,7 +90,7 @@
  * @section Legal
  * @author Gavin Blakeman (GGB)
  * @version 2023.11
- * @copyright 2005-2023 Gavin Blakeman
+ * @copyright 2005-2024 Gavin Blakeman
  * @par Licence
  * The Storage Class Library is licensed under the GPLv2. The full text of the GPLv2 can be found in the file license.txt that
  * is distributed with the source of the library.<br>
@@ -103,6 +104,7 @@
 
 #include "include/any.hpp"
 #include "include/array2D.hpp"
+#include "include/bimap.hpp"
 #include "include/circularbuffer.hpp"
 #include "include/common.h"
 #include "include/config.h"
@@ -111,6 +113,7 @@
 #include "include/multiVectorSorted.hpp"
 #include "include/index2D.hpp"
 #include "include/sparseArray.hpp"
+#include "include/stackHierarchy.hpp"
 #include "include/vector2D.hpp"
 #include "include/vectorSorted.hpp"
 #include "include/sortedHierarchyBuilder.hpp"

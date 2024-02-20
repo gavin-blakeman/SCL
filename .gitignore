@@ -17,3 +17,7 @@ CMakeFiles/SCL.dir/
 *.a
 
 *.marks
+
+test/.cproject
+
+test/.project
