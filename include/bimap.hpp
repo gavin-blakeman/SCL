@@ -109,15 +109,15 @@ namespace SCL
     /// @complexity Logarithmic in the size of the container.
     /// @version    2023-11-17/GGB - Function created.
 
-    RHS_T const &RHS(LHS_T const &key) const
+    RHS_T const &RHS(LHS_T const &keyLeft) const
     {
       if constexpr (SVO)
       {
-        return lhsMap.at(key);
+        return lhsMap.at(keyLeft);
       }
       else
       {
-        return lhsMap.at().get().second;
+        return lhsMap.at(keyLeft).get().second;
       }
     }
 
