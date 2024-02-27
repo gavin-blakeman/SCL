@@ -304,6 +304,7 @@ namespace SCL
       return data_.cbegin();
     }
 
+
     /// @brief Returns an iterator to the end.
     /// @returns An iterator to the end.
     /// @throws None.
@@ -325,23 +326,15 @@ namespace SCL
       return data_.cend();
     }
 
-    /// @brief      Returns a const iterator to the end.
-    /// @returns    An const iterator to the end.
-    /// @throws     None.
-    /// @version    2020-09-04/GGB - Function created.
+    constexpr const_iterator cend() const noexcept { return data_.cend(); }
 
-    constexpr const_iterator cend() const noexcept
-    {
-      return data_.cend();
-    }
+    constexpr reverse_iterator rbegin() noexcept { return data_.rbegin(); }
+    constexpr const_reverse_iterator rbegin() const noexcept { return data_.rbegin(); }
+    constexpr const_reverse_iterator crbegin() const noexcept { return data_.crbegin(); }
 
-    constexpr reverse_iterator rbegin() noexcept;
-    constexpr const_reverse_iterator rbegin() const noexcept;
-    constexpr const_reverse_iterator crbegin() const noexcept;
-
-    constexpr reverse_iterator rend() noexcept;
-    constexpr const_reverse_iterator rend() const noexcept;
-    constexpr const_reverse_iterator crend() const noexcept;
+    constexpr reverse_iterator rend() noexcept { return data_.rend(); }
+    constexpr const_reverse_iterator rend() const noexcept { return data_.rend(); }
+    constexpr const_reverse_iterator crend() const noexcept { return data_.crend(); }
 
     /// @brief      Checks if the container has no elements. IE whether begin() == end().
     /// @returns    true if the container is empty, false otherwise.
@@ -431,10 +424,10 @@ namespace SCL
     /// @returns    A std::pair with an iterator to the insertion position and a bool to indicate if insertion occurred.
     /// @throws
     /// @note       All the insertion style functions (insert, push_back) use this function.
-    /// @version    2024-02-13/GGB - ug fix to update logic.
+    /// @version    2024-02-13/GGB - Bug fix to update logic.
     /// @version    2020-09-04/GGB - Function created.
 
-    iterator insert_sorted(T const &value)
+    std::pair<iterator, bool> insert_sorted(T const &value)
     {
       iterator i = lower_bound(begin(), end(), value, comp_);
       if (i == end())
