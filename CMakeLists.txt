@@ -30,6 +30,7 @@ set(DIRECTORIES
   ../GCL
   ../MCL
   ../fmt/include
+  ${CMAKE_SOURCE_DIR}/xlnt
   ${Boost_INCLUDE_DIRS}
   )
 
