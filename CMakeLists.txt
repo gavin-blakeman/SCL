@@ -27,9 +27,9 @@ set(OTHER
   )
   
 set(DIRECTORIES  
-  ../GCL
-  ../MCL
-  ../fmt/include
+  ${CMAKE_SOURCE_DIR}/GCL
+  ${CMAKE_SOURCE_DIR}/MCL
+  ${CMAKE_SOURCE_DIR}/fmt/include
   ${CMAKE_SOURCE_DIR}/xlnt
   ${Boost_INCLUDE_DIRS}
   )
@@ -41,4 +41,4 @@ target_include_directories(${PROJECT_NAME}
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
   PRIVATE ${DIRECTORIES} )
 
-#ADD_SUBDIRECTORY(test)
+ADD_SUBDIRECTORY(test)

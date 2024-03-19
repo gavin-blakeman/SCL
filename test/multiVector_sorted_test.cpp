@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_SUITE(multiVectorSorted)
 
 BOOST_AUTO_TEST_CASE(insert)
 {
-  SCL::multiVectorSorted mvs;
+  SCL::multiVector_sorted mvs;
 
   BOOST_TEST(MCL::mean(X) == 1.650);
   BOOST_TEST(MCL::mean(Y) == 62.078);

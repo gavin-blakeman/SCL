@@ -9,6 +9,10 @@
 #include <typeinfo>
 #include <vector>
 
+// Misceallaneous libraries
+
+#include <GCL>
+
 #include "include/vectorSorted.hpp"
 
 namespace SCL
@@ -75,11 +79,13 @@ namespace SCL
     /// @brief      Pre-order converts the hierarchy to a form P, C1, C11, C2, C12
     /// @param[in]  PID: The parentID for the top of the hierarchy.
     /// @tparam     The template parameter must be an STL like container that maintains order and has a push_back() or
-    ///             emplace_back member.
+    ///             emplace_back member. The container must have container<valueReference>.
     ///             List, Vector, Deque and forward_list all meet the requirements. The type must be specified as
     ///             container<std::reference_wrapper<const &V>>
     /// @returns    The specified container type with a pre-order traversal.
     /// @version    2024-02-22/GGB - Function created
+    /// @note       There does not need to be an ID corresponding to the parentID for the top of the hierarchy. However, there
+    ///             must be parentID's that correspond.
 
     template<typename O>
     //requires ({(O o, valueReference vr) o.push_back(vr)})
@@ -93,9 +99,18 @@ namespace SCL
         processInput();
       };
 
+      RUNTIME_ASSERT(pidMap.contains(PID), "Unknown or invalid parentID.");
+
       // Set up the initial stack.
 
-      stack.push(PID);
+      if (!idMap.contains(PID))
+      {
+        stackChildren(PID, stack);
+      }
+      else
+      {
+        stack.push(PID);
+      }
 
       while (!stack.empty())
       {
@@ -115,7 +130,16 @@ namespace SCL
       return returnValue;
     }
 
-    /// @brief      Post-order converts the hierarchy to the form, C11, C1, C22, C2, P.
+    /// @brief      Pre-order converts the hierarchy to a form P, C1, C11, C2, C12
+    /// @param[in]  PID: The parentID for the top of the hierarchy.
+    /// @tparam     The template parameter must be an STL like container that maintains order and has a push_back() or
+    ///             emplace_back member. The container must have container<valueReference>.
+    ///             List, Vector, Deque and forward_list all meet the requirements. The type must be specified as
+    ///             container<std::reference_wrapper<const &V>>
+    /// @returns    The specified container type with a pre-order traversal.
+    /// @version    2024-02-22/GGB - Function created
+    /// @note       There does not need to be an ID corresponding to the parentID for the top of the hierarchy. However, there
+    ///             must be parentID's that correspond.
 
     template<typename O>
     O postOrder(parentType PID)
@@ -129,23 +153,42 @@ namespace SCL
         processInput();
       };
 
+      RUNTIME_ASSERT(pidMap.contains(PID), "Unknown or invalid parentID.");
+
       // Set up the initial stack.
 
-      stack.push(PID);
+      if (!idMap.contains(PID))
+      {
+        stackChildren(PID, stack);
+      }
+      else
+      {
+        stack.push(PID);
+      }
 
       while(!stack.empty())
       {
         if ((pStack.top() != stack.top()) && hasChildren(stack.top()))
         {
           pStack.push(stack.top());
-          stackChildren(stack.top());
+          stackChildren(stack.top(), stack);
+        }
+        else if (pStack.top() == stack.top())
+        {
+          while ( !pStack.empty() && !stack.empty() && (pStack.top() == stack.top()))
+          {
+            returnValue.emplace_back(idMap.at(stack.top()));
+            stack.pop();
+            pStack.pop();
+          };
         }
         else
         {
-          returnValue.emplace_back(std::get<0>(idMap.at(stack.top())));
+          returnValue.emplace_back(idMap.at(stack.top()));
           stack.pop();
         }
       }
+      return returnValue;
     }
 
   private:
@@ -161,7 +204,7 @@ namespace SCL
 
     bool hasChildren(parentType PID)
     {
-      return !pidMap.at(PID).empty();
+      return pidMap.contains(PID) && !pidMap.at(PID).empty();
     }
 
     /// @brief      Process the input data to create the ID Map (byId) and the parentID map.
@@ -172,8 +215,8 @@ namespace SCL
     {
       for (auto &val: inputData)
       {
-        idType ID = val.template get<0>();
-        parentType PID = val.template get<1>();
+        idType ID = val.template get<II>();
+        parentType PID = val.template get<PI>();
 
         idMap.emplace(ID, std::ref(val));
         pidMap[PID].push_back(std::ref(val));

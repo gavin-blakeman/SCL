@@ -13,33 +13,41 @@ find_package(Boost COMPONENTS thread unit_test_framework REQUIRED)
 
 set(SOURCES
   main.cpp
-  multiVector_sorted_test.cpp
+#  multiVector_sorted_test.cpp
+  stackHierarchy_test.cpp
   )
 
 set(LIBRARIES
-  SCL,
+  GCL
+  SCL
   ${Boost_LIBRARIES}
+  fmt
+  mpfr
+  xlnt
   )
-
+  
 cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH PARENT_DIR)
 cmake_path(GET PARENT_DIR PARENT_PATH PARENT_PARENT_DIR)
-
+  
+set(DIRECTORIES  
+  ${CMAKE_SOURCE_DIR}/GCL
+  ${CMAKE_SOURCE_DIR}/fmt/include
+  ${CMAKE_SOURCE_DIR}/xlnt
+  ${PARENT_DIR}
+  ${Boost_INCLUDE_DIRS}
+  )
 
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR})
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIBRARIES})
 
-target_include_directories(${PROJECT_NAME}
+target_include_directories(
+  ${PROJECT_NAME}
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-  PRIVATE ${PARENT_DIR},
-          ${Boost_INCLUDE_DIRS},
-          ../GCL,
-          ../
-          )
+  PRIVATE ${DIRECTORIES}
+  )
 
-
-ENABLE_TESTING()
 ADD_TEST(${PROJECT_NAME} ${PROJECT_NAME})
 
 ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} COMMENT "Run tests" POST_BUILD  COMMAND ${PROJECT_NAME})

@@ -69,7 +69,7 @@ namespace SCL
   class multiVector_sorted
   {
   public:
-    using self_type = vector_sorted<T, Compare, Allocator>;
+    using self_type = multiVector_sorted<T, Compare, Allocator>;
     using allocator_type = Allocator;
     using value_type = typename Allocator::value_type;
     using container_type = std::vector<value_type>;
