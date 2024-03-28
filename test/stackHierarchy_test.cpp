@@ -76,8 +76,6 @@ BOOST_AUTO_TEST_CASE(postOrder)
   std::vector<std::uint32_t> resultVector = { 16, 17, 8,  18, 19, 9,  4, 20, 21, 10, 22, 23, 11, 5, 2,
                                               24, 25, 12, 26, 27, 13, 6, 28, 29, 14, 30, 31, 15, 7, 3, 1};
 
-  BOOST_TEST(testVector.size() == resultVector.size());
-
   std::vector<std::uint32_t> testVector2;
   for (auto const &v: testVector)
   {

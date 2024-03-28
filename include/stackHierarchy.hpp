@@ -85,7 +85,7 @@ namespace SCL
       inputProcessed = false;
     }
 
-    /// @brief      Pre-order converts the hierarchy to a form P, C1, C11, C2, C12
+    /// @brief      Pre-order converts the hierarchy to a form P, C1, C11, C12, C2, C12, C22
     /// @param[in]  PID: The parentID for the top of the hierarchy.
     /// @tparam     The template parameter must be an STL like container that maintains order and has a push_back() or
     ///             emplace_back member. The container must have container<valueReference>.
@@ -139,7 +139,7 @@ namespace SCL
       return returnValue;
     }
 
-    /// @brief      Pre-order converts the hierarchy to a form P, C1, C11, C2, C12
+    /// @brief      Post-order converts the hierarchy to a form C11, C12, C1, C21, C22, C2, P
     /// @param[in]  PID: The parentID for the top of the hierarchy.
     /// @tparam     The template parameter must be an STL like container that maintains order and has a push_back() or
     ///             emplace_back member. The container must have container<valueReference>.
@@ -159,7 +159,7 @@ namespace SCL
 
       /*! Musings: Either hash the entire container to check for changes, or just update every time. For small input collections it
        * is probably quicker to just re-process every time. For larger containers, the better approach would be to hash.
-       * The balance is between re-process time and hash time. If reprocess time << hash time, then just reprocess.
+       * The balance is between re-process time and hash time. If re-process time << hash time, then just re-process.
        * Note: Has is the better way to go, as the data within the container needs to be checked for changes.
        *    > If the size of the inputContainer changes, then re-process
        *    > If any of the ID's of the inputContainer change, then re-process.
@@ -177,18 +177,23 @@ namespace SCL
 
       // Set up the initial stack.
 
-      if (!idMap.contains(PID))
+      if (idMap.contains(PID))
       {
-        stackChildren(PID, stack);
+        stack.push(PID);
       }
       else
       {
-        stack.push(PID);
+        stackChildren(PID, stack);
       }
 
       while(!stack.empty())
       {
-        if ((pStack.top() != stack.top()) && hasChildren(stack.top()))
+        if (pStack.empty())
+        {
+          pStack.push(stack.top());
+          stackChildren(stack.top(), stack);
+        }
+        else if ((pStack.top() != stack.top()) && hasChildren(stack.top()))
         {
           pStack.push(stack.top());
           stackChildren(stack.top(), stack);
