@@ -1,6 +1,7 @@
 
 // Standard C++ library
 
+#include <functional>
 #include <list>
 #include <map>
 #include <stack>
@@ -9,7 +10,7 @@
 #include <typeinfo>
 #include <vector>
 
-// Misceallaneous libraries
+// Miscellaneous libraries
 
 #include <GCL>
 
@@ -17,24 +18,36 @@
 
 namespace SCL
 {
-  // Implements a class that accepts parent:child input data and provides various traversal outputs for traversing the parent
-  // child relationship.
-  // The class does not copy the original data, but accepts a reference and holds a reference to the original data.
-  // The data has to have 3 columns. ID, ParentID, SortOrder. These need to be accessible by using std::get<0>, std::get<1>
-  // and std::get<2>.
+  /// @brief      Implements a class that accepts parent:child input data and provides various traversal outputs for traversing the
+  ///             parent child relationship.
+  ///             The class does not copy the original data, but accepts a reference and holds a reference to the original data.
+  ///             The data has to have 2 columns. ID, ParentID. These need to be accessible by using get<II>, get<PI>
+  ///             The ID value (get<II>()) must be unique. The ParentID can be repeated.
+  ///             IE. the class must implement a function template<int N>get(), or similar.
+  ///             It is also possible to have sorted and unsorted child orders. If Sorted, then the valueType must implement
+  ///             std::less to provide the sort order. IF !Sorted then the sort order may be consistent.
+  /// @tparam     I: ID type. Must provide std::less
+  /// @tparam     V: The value type. Any type of structure, provided that get<int>(valueType) is implemented. Must provide
+  ///                std::less if Sorted is true.
+  /// @tparam     II: The get index for the ID field.
+  /// @tparam     PI: The get index for the ParentID field.
+  /// @param      Sorted: true of the SortOrder must be used.
+  /// @tparam     C: Collection type. The type of collection providing the data. Must support cbegin() and cend(). Does not need
+  ///                to be an ordered type.
+  /// @param      Compare: The comparison function to use.
+  ///
+  /// @note       If multiple hierarchies are being managed int he same collection, then the get<PI>() may not return a value. In
+  ///             these cases, the get<PI> function should throw an exception. The code will catch the exception and not allow it
+  ///             to propogate. Additionally the item that threw an exception will not be included in the PID list.
+  ///             This functionality is also needed for hierarchies that may have multiple hierarchies.
 
-  /// @tparam   I: ID type. Must provide std::less
-  /// @tparam   V: The value type. Any type of structure, provided that get<int>(valueType) is implemented. Must provide std::less.
-  /// @tparam   II: The tuple offset for the Index field.
-  /// @tparam   PI: The tuple offset for the Parent field.
-  /// @tparam   C:  Collection type. The type of collection providing the data. Must support cbegin() and cend(). Does not need
-  ///           to be an ordered type.
 
   template <typename I,
             class V,
-            int II,
-            int PI,
+            unsigned int II,
+            unsigned int PI,
             class C = std::vector<V>,
+            bool Sorted = true,
             class Compare = std::less<I>
             >
   class parentChild
@@ -55,15 +68,14 @@ namespace SCL
     using childType = std::conditional_t<true, idType, idRef>;
 
     parentChild() = delete;
-    parentChild(parentChild const &);
-    parentChild(parentChild &&);
+    parentChild(parentChild const &) = default;
+    parentChild(parentChild &&) = default;
+    parentChild(input_type &it) : inputData(it) {}  // No content in constructor.
 
-    parentChild(input_type &it) : inputData(it) {}
+    parentChild &operator=(parentChild const &) = default;
+    parentChild &operator=(parentChild &&) = default;
 
-    parentChild &operator=(parentChild const &);
-    parentChild &operator=(parentChild &&);
-
-    /// @brief      Invalidates all stored data. Causes recalculation of the hierarchies.
+    /// @brief      Invalidates all stored data. Causes recalculation of the hierarchies. Does not delete the input collection.
     /// @throws     None.
 
     void clear() noexcept
@@ -71,10 +83,7 @@ namespace SCL
       idMap.clear();
       pidMap.clear();
       inputProcessed = false;
-      preOrdered.reset();
-      postOrdered.reset();
     }
-
 
     /// @brief      Pre-order converts the hierarchy to a form P, C1, C11, C2, C12
     /// @param[in]  PID: The parentID for the top of the hierarchy.
@@ -83,9 +92,9 @@ namespace SCL
     ///             List, Vector, Deque and forward_list all meet the requirements. The type must be specified as
     ///             container<std::reference_wrapper<const &V>>
     /// @returns    The specified container type with a pre-order traversal.
-    /// @version    2024-02-22/GGB - Function created
     /// @note       There does not need to be an ID corresponding to the parentID for the top of the hierarchy. However, there
     ///             must be parentID's that correspond.
+    /// @version    2024-02-22/GGB - Function created
 
     template<typename O>
     //requires ({(O o, valueReference vr) o.push_back(vr)})
@@ -136,10 +145,10 @@ namespace SCL
     ///             emplace_back member. The container must have container<valueReference>.
     ///             List, Vector, Deque and forward_list all meet the requirements. The type must be specified as
     ///             container<std::reference_wrapper<const &V>>
-    /// @returns    The specified container type with a pre-order traversal.
-    /// @version    2024-02-22/GGB - Function created
     /// @note       There does not need to be an ID corresponding to the parentID for the top of the hierarchy. However, there
     ///             must be parentID's that correspond.
+    /// @returns    The specified container type with a pre-order traversal.
+    /// @version    2024-02-22/GGB - Function created
 
     template<typename O>
     O postOrder(parentType PID)
@@ -147,6 +156,17 @@ namespace SCL
       std::stack<idType> stack;
       std::stack<parentType> pStack;    // Stack of parents that have childs processed.
       O returnValue;
+
+      /*! Musings: Either hash the entire container to check for changes, or just update every time. For small input collections it
+       * is probably quicker to just re-process every time. For larger containers, the better approach would be to hash.
+       * The balance is between re-process time and hash time. If reprocess time << hash time, then just reprocess.
+       * Note: Has is the better way to go, as the data within the container needs to be checked for changes.
+       *    > If the size of the inputContainer changes, then re-process
+       *    > If any of the ID's of the inputContainer change, then re-process.
+       *    > If any of the PIDs of the inputContainer change, then re-process.
+       * Reading this data is just as long as recreating the hierarchy data.
+       * Leave it to the controlling application to invalidate using clear().
+       */
 
       if (!inputProcessed)
       {
@@ -193,14 +213,17 @@ namespace SCL
 
   private:
     using idMap_t = std::map<idType, valueReference>;
-    using pidMap_t = std::map<idType, SCL::vector_sorted<valueReference>>;
+    // Select the type of container depending on whether it is sorted or not.
+    using pidMap_t = std::conditional_t<Sorted,
+                                        std::map<idType, SCL::vector_sorted<valueReference>>,
+                                        std::map<idType, std::vector<valueReference>>>;
 
-    input_type &inputData;
-    idMap_t idMap;    // Main storage. All others reference the data.
-    pidMap_t pidMap;
-    bool inputProcessed = false;
-    std::optional<std::list<valueReference>> preOrdered;
-    std::optional<std::list<valueReference>> postOrdered;
+
+
+    input_type &inputData;            // Reference to the input data. Needs to be non-const.
+    idMap_t idMap;                    // Storage by ID.
+    pidMap_t pidMap;                  // Storage by PID.
+    bool inputProcessed = false;      // Keeps track of whether the idMap and pidMap are current.
 
     bool hasChildren(parentType PID)
     {
@@ -215,12 +238,14 @@ namespace SCL
     {
       for (auto &val: inputData)
       {
-        idType ID = val.template get<II>();
-        parentType PID = val.template get<PI>();
-
+        idType ID = val.template get<II>();   // Must have an ID type.
         idMap.emplace(ID, std::ref(val));
-        pidMap[PID].push_back(std::ref(val));
-
+        try
+        {
+          parentType PID = val.template get<PI>();    // Does not have to have a parent ID. Only add to the PID list if it has a
+          pidMap[PID].push_back(std::ref(val));       // ParentID.
+        }
+        catch(...) { }
       }
       inputProcessed = true;
     }
