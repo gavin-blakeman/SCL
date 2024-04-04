@@ -433,6 +433,7 @@ namespace SCL
       if (i == end())
       {
         data_.insert(i, value);
+        return std::make_pair(end()--, true);
       }
       else if (value != *i)
       {
@@ -450,6 +451,7 @@ namespace SCL
     /// @returns    An iterator to the insertion position.
     /// @throws
     /// @note       All the insertion style functions (insert, push_back) use this function.
+    /// @note       Does not allow repeated values.
     /// @version    2024-02-13/GGB - ug fix to update logic.
     /// @version    2020-09-04/GGB - Function created.
 
@@ -459,6 +461,7 @@ namespace SCL
       if (i == end())
       {
         data_.insert(i, value);
+        return std::make_pair(end()--, true);
       }
       else if (value != *i)
       {
@@ -482,7 +485,7 @@ namespace SCL
     /// @version    2013-04-25/GGB - Added code to allow equal value packages to be stored.
     /// @version    2012-12-31/GGB - Function created.
 
-    constexpr iterator insert(T const &value)
+    constexpr std::pair<iterator, bool> insert(T const &value)
     {
       return insert_sorted(value);
     }
@@ -498,12 +501,10 @@ namespace SCL
     /// @version    2013-04-25/GGB - Added code to allow equal value packages to be stored.
     /// @version    2012-12-31/GGB - Function created.
 
-    constexpr iterator insert(T &&value)
+    constexpr std::pair<iterator, bool> insert(T &&value)
     {
       return insert_sorted(std::move(value));
     }
-
-
     constexpr iterator insert( const_iterator pos, size_type count, T const &value );
     template< class InputIt >
     constexpr iterator insert( const_iterator pos, InputIt first, InputIt last);
