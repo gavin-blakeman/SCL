@@ -98,7 +98,7 @@ namespace SCL
 
     template<typename O>
     //requires ({(O o, valueReference vr) o.push_back(vr)})
-    O preOrder(parentType PID)
+    O preOrder(parentType PID) const
     {
       std::stack<idType> stack;
       O returnValue;
@@ -151,7 +151,7 @@ namespace SCL
     /// @version    2024-02-22/GGB - Function created
 
     template<typename O>
-    O postOrder(parentType PID)
+    O postOrder(parentType PID) const
     {
       std::stack<idType> stack;
       std::stack<parentType> pStack;    // Stack of parents that have childs processed.
@@ -226,11 +226,11 @@ namespace SCL
 
 
     input_type &inputData;            // Reference to the input data. Needs to be non-const.
-    idMap_t idMap;                    // Storage by ID.
-    pidMap_t pidMap;                  // Storage by PID.
-    bool inputProcessed = false;      // Keeps track of whether the idMap and pidMap are current.
+    mutable idMap_t idMap;            // Storage by ID.
+    mutable pidMap_t pidMap;          // Storage by PID.
+    mutable bool inputProcessed = false;      // Keeps track of whether the idMap and pidMap are current.
 
-    bool hasChildren(parentType PID)
+    bool hasChildren(parentType PID) const
     {
       return pidMap.contains(PID) && !pidMap.at(PID).empty();
     }
@@ -239,7 +239,7 @@ namespace SCL
     /// @throws
     /// @version    2024-02-22/GGB - Function created.
 
-    void processInput()
+    void processInput() const
     {
       for (auto &val: inputData)
       {
@@ -255,7 +255,7 @@ namespace SCL
       inputProcessed = true;
     }
 
-    void stackChildren(parentType PID, std::stack<idType> &stack)
+    void stackChildren(parentType PID, std::stack<idType> &stack) const
     {
       // Children need to be stacked in reverse order.
 
