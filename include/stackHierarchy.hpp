@@ -43,13 +43,13 @@ namespace SCL
 
 
   template <typename I,
-            class V,
-            unsigned int II,
-            unsigned int PI,
-            class C = std::vector<V>,
-            bool Sorted = true,
-            class Compare = std::less<I>
-            >
+  class V,
+  unsigned int II,
+  unsigned int PI,
+  class C = std::vector<V>,
+  bool Sorted = true,
+  class Compare = std::less<I>
+  >
   class parentChild
   {
   public:
@@ -62,7 +62,7 @@ namespace SCL
     using listType = std::list<valueType>;
     using inputDataType = C;
     using stackType = std::tuple<idType, std::stack<idType>>;
-    using valueReference = std::reference_wrapper<V>;
+    using value_reference = std::reference_wrapper<V>;
 
     using parentType = std::conditional_t<true, idType, idRef>;
     using childType = std::conditional_t<true, idType, idRef>;
@@ -74,6 +74,47 @@ namespace SCL
 
     parentChild &operator=(parentChild const &) = default;
     parentChild &operator=(parentChild &&) = default;
+
+    /// @brief      Returns the parent of the item.
+    /// @param[in]  ID: The item to find the parent.
+    /// @returns    Vector of the children.
+    /// @throws
+    /// @version     2024-04-29/GGB - Function created.
+
+    idType parent(idType ID) const
+    {
+      if (!inputProcessed)
+      {
+        processInput();
+      }
+
+      return idMap.at(ID).get().template get<PI>();
+    }
+
+    /// @brief      Returns a vector of the children by ID.
+    /// @param[in]  PID: The parent to get the children of.
+    /// @returns    Vector of the children.
+    /// @throws
+    /// @version     2024-04-29/GGB - Function created.
+
+    std::vector<idType> children(idType PID) const
+    {
+      std::vector<idType> rv;
+
+      if (!inputProcessed)
+      {
+        processInput();
+      }
+
+      rv.reserve(pidMap.at(PID).size());
+
+      for (auto const &child: pidMap.at(PID))
+      {
+        rv.emplace_back(child.get().template get<II>());
+      }
+
+      return rv;
+    }
 
     /// @brief      Invalidates all stored data. Causes recalculation of the hierarchies. Does not delete the input collection.
     /// @throws     None.
@@ -134,6 +175,118 @@ namespace SCL
         else
         {
           stack.pop();
+        }
+      }
+      return returnValue;
+    }
+
+    /// @brief      PreOrder converts the hierarchy to a form P, C1, C11, C12, C2, C12, C22. The output is by ID.
+    /// @param[in]  PID: The parentID for the top of the hierarchy.
+    /// @tparam     The template parameter must be an STL like container that maintains order and has a push_back() or
+    ///             emplace_back member.
+    ///             List, Vector, Deque and forward_list all meet the requirements. The type must be specified as
+    ///             container<idType>
+    /// @returns    The specified container type with a pre-order traversal.
+    /// @note       There does not need to be an ID corresponding to the parentID for the top of the hierarchy. However, there
+    ///             must be parentID's that correspond.
+    /// @version    2024-04-29/GGB - Function created
+
+    template<typename O>
+    //requires std::is_integer<O::value_type>
+    O preOrder_ID(parentType PID) const
+    {
+      std::stack<idType> stack;
+      O returnValue;
+
+      if (!inputProcessed)
+      {
+        processInput();
+      };
+
+      RUNTIME_ASSERT(pidMap.contains(PID), "Unknown or invalid parentID.");
+
+      // Set up the initial stack.
+
+      if (!idMap.contains(PID))
+      {
+        stackChildren(PID, stack);
+      }
+      else
+      {
+        stack.push(PID);
+      }
+
+      while (!stack.empty())
+      {
+        returnValue.template push_back(stack.top());
+
+        if (hasChildren(stack.top()))
+        {
+          idType temp = stack.top();
+          stack.pop();
+          stackChildren(temp, stack);
+        }
+        else
+        {
+          stack.pop();
+        }
+      }
+      return returnValue;
+    }
+
+    /// @brief      PreOrder converts the hierarchy to a form P, C1, C11, C12, C2, C12, C22. The output is byID.
+    /// @param[in]  PID: The parentID for the top of the hierarchy.
+    /// @tparam     The template parameter must be an STL like container that maintains order and has a push_back() or
+    ///             emplace_back member. The container must have container<valueReference>.
+    ///             List, Vector, Deque and forward_list all meet the requirements. The type must be specified as
+    ///             container<std::pair<ID_t, int_type>>
+    /// @returns    The specified container type with a pre-order traversal.
+    /// @note       There does not need to be an ID corresponding to the parentID for the top of the hierarchy. However, there
+    ///             must be parentID's that correspond.
+    /// @version    2024-04-29/GGB - Function created
+
+    template<typename O>
+    //requires std::is_integer<O::value_type>
+    O preOrder_ID_level(parentType PID) const
+    {
+      std::stack<idType> stack;
+      O returnValue;
+      using level_t = decltype(O::value_type::second);
+      level_t level = 0;
+
+      if (!inputProcessed)
+      {
+        processInput();
+      };
+
+      RUNTIME_ASSERT(pidMap.contains(PID), "Unknown or invalid parentID.");
+
+      // Set up the initial stack.
+
+      if (!idMap.contains(PID))
+      {
+        stackChildren(PID, stack);
+      }
+      else
+      {
+        stack.push(PID);
+      }
+
+      while (!stack.empty())
+      {
+        returnValue.template push_back(stack.top(), level);
+
+        if (hasChildren(stack.top()))
+        {
+          idType temp = stack.top();
+          stack.pop();
+          stackChildren(temp, stack);
+          level++;
+        }
+        else
+        {
+          stack.pop();
+          level--;
         }
       }
       return returnValue;
@@ -217,11 +370,12 @@ namespace SCL
     }
 
   private:
-    using idMap_t = std::map<idType, valueReference>;
+    using idMap_t = std::map<idType, value_reference>;
+    using child_vector = std::conditional_t<Sorted,
+        SCL::vector_sorted<value_reference>,
+        std::vector<value_reference>>;
     // Select the type of container depending on whether it is sorted or not.
-    using pidMap_t = std::conditional_t<Sorted,
-                                        std::map<idType, SCL::vector_sorted<valueReference>>,
-                                        std::map<idType, std::vector<valueReference>>>;
+    using pidMap_t = std::map<idType, child_vector>;
 
 
 
@@ -259,10 +413,10 @@ namespace SCL
     {
       // Children need to be stacked in reverse order.
 
-      std::for_each(pidMap.at(PID).rbegin(), pidMap.at(PID).rend(), [&stack](valueReference &child)
-      {
+      std::for_each(pidMap.at(PID).rbegin(), pidMap.at(PID).rend(), [&stack](value_reference &child)
+                    {
         stack.push(child.get().template get<0>());
-      });
+                    });
     }
   };
 }

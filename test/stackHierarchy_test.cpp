@@ -68,6 +68,17 @@ BOOST_AUTO_TEST_CASE(preOrder)
   BOOST_TEST(testVector2 == resultVector);
 }
 
+BOOST_AUTO_TEST_CASE(preOrder_ID)
+{
+  std::vector<std::uint32_t> testVector = testInt.preOrder_ID<std::vector<std::uint32_t>>(0);
+
+  std::vector<std::uint32_t> resultVector = { 1, 2, 4,  8,  16, 17, 9,  18, 19, 5,  10, 20, 21, 11, 22, 23,
+                                              3, 6, 12, 24, 25, 13, 26, 27, 7,  14, 28, 29, 15, 30, 31 };
+
+  BOOST_TEST(testVector.size() == resultVector.size());
+  BOOST_TEST(testVector == resultVector);
+}
+
 BOOST_AUTO_TEST_CASE(postOrder)
 {
   std::vector<std::reference_wrapper<testClass<std::uint32_t>>> testVector =
@@ -83,6 +94,19 @@ BOOST_AUTO_TEST_CASE(postOrder)
   }
 
   BOOST_TEST(testVector2 == resultVector);
+}
+
+BOOST_AUTO_TEST_CASE(test_parent)
+{
+  BOOST_TEST(testInt.parent(28) == 14);
+}
+
+BOOST_AUTO_TEST_CASE(test_children)
+{
+  std::vector<std::uint32_t> testVector = testInt.children(1);
+  std::vector<std::uint32_t> resultVector = {2, 3};
+
+  BOOST_TEST(testVector == resultVector);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
