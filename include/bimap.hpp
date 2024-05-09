@@ -157,6 +157,29 @@ namespace SCL
       };
     }
 
+    /// @brief      Emplaces element into the container, if the container doesn't already contain an element with an equivalent
+    ///             key.
+    /// @param[in]  lk: The LHS key
+    /// @param[in]  rk: The RHS key
+    /// @complexity O(n)
+    /// @throws
+    /// @version    2024-05-09/GGB - Function created.
+
+    void emplace(LHS_T &&lk, RHS_T &&rk)
+    {
+      if constexpr (SVO)
+      {
+        lhsMap.emplace(lk, rk);
+        rhsMap.emplace(std::move(rk), std::move(lk));
+      }
+      else
+      {
+        valueStorage.emplace_back(std::move(lk), std::move(rk));
+        lhsMap.emplace(valueStorage.back().first,  std::cref(valueStorage.back()));
+        rhsMap.emplace(valueStorage.back().second, std::cref(valueStorage.back()));
+      }
+    }
+
     /// @brief      Inserts element(s) into the container, if the container doesn't already contain an element with an equivalent
     ///             key.
     /// @param[in]  lk: The LHS key
@@ -165,7 +188,7 @@ namespace SCL
     /// @throws
     /// @version    2020-09-05/GGB - Function created.
 
-    void insert(LHS_T const &lk, RHS_T const &rk)
+    void insert(LHS_T const&lk, RHS_T const &rk)
     {
       if constexpr (SVO)
       {
@@ -180,7 +203,12 @@ namespace SCL
       };
     }
 
-    void insert(value_type v)
+    /*! @brief      Insert function taking a value_type
+     *  @param[in]  v: The value to insert.
+     *  @throws
+     */
+
+    void insert(value_type const &v)
     {
       insert(v.first, v.second);
     }

@@ -15,6 +15,7 @@ set(SOURCES
   main.cpp
 #  multiVector_sorted_test.cpp
   stackHierarchy_test.cpp
+  test_bimap.cpp
   )
 
 set(LIBRARIES
