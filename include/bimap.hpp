@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <map>
 #include <type_traits>
 #include <unordered_map>
 
@@ -19,8 +20,8 @@ namespace SCL
   ///           1-1. The LHS:RHS pairs can be treated as pairs.
   ///           There container is also small value optimised, with different storage strategies utilised.
 
-  template<class LHS_T,
-           class RHS_T,
+  template<typename LHS_T,
+           typename RHS_T,
            bool SVO = (sizeof(LHS_T) <= sizeof(std::reference_wrapper<LHS_T>)) &&
                       (sizeof(RHS_T) <= sizeof(std::reference_wrapper<RHS_T>))
            >
@@ -44,11 +45,11 @@ namespace SCL
   private:
     constexpr static bool optimised = SVO;
     std::conditional<SVO,
-                     std::unordered_map<LHS_T, RHS_T>,
-                     std::unordered_map<LHS_T, std::reference_wrapper<value_type const>>>::type lhsMap;
+                     std::map<LHS_T, RHS_T>,
+                     std::map<LHS_T, std::reference_wrapper<value_type const>>>::type lhsMap;
     std::conditional<SVO,
-                     std::unordered_map<RHS_T, LHS_T>,
-                     std::unordered_map<RHS_T, std::reference_wrapper<value_type const>>>::type rhsMap;;
+                     std::map<RHS_T, LHS_T>,
+                     std::map<RHS_T, std::reference_wrapper<value_type const>>>::type rhsMap;
 
 
     struct empty_t{};
@@ -67,7 +68,7 @@ namespace SCL
 
     bimap(const bimap& other) = default;
     bimap(bimap&& other);
-    bimap( std::initializer_list<std::pair<LHS_T, RHS_T>> init)
+    bimap(std::initializer_list<std::pair<LHS_T, RHS_T>> init)
     {
       for (auto &v: init)
       {
@@ -110,6 +111,26 @@ namespace SCL
     /// @version    2023-11-17/GGB - Function created.
 
     RHS_T const &RHS(LHS_T const &keyLeft) const
+    {
+      if constexpr (SVO)
+      {
+        return lhsMap.at(keyLeft);
+      }
+      else
+      {
+        return lhsMap.at(keyLeft).get().second;
+      }
+    }
+
+    /// @brief      Returns a reference to the mapped value of the element with key equivalent to key.
+    ///             If no such element exists, an exception of type std::out_of_range is thrown.
+    /// @param[in]  keyLeft: The left key of the element to find.
+    /// @returns    Reference to the mapped value of the requested element
+    /// @throws     std::out_of_range if the container does not have an element with the specified key
+    /// @complexity Logarithmic in the size of the container.
+    /// @version    2023-11-17/GGB - Function created.
+
+    RHS_T &RHS(LHS_T const &keyLeft)
     {
       if constexpr (SVO)
       {
@@ -212,13 +233,15 @@ namespace SCL
     {
       insert(v.first, v.second);
     }
+//    template<typename _InputIterator,
+//            typename = std::_RequireInputIter<_InputIterator>>
 
-    template<class InputIt>
+    template<typename InputIt> requires std::input_or_output_iterator<InputIt>
     void insert(InputIt first, InputIt last)
     {
       std::for_each(first, last, [&](value_type const &v)
       {
-        insert(v);
+        insert(v.first, v.second);
       });
     }
 
