@@ -32,24 +32,16 @@ namespace SCL
 
     using size_type = std::size_t;
     using value_type = std::pair<LHS_T, RHS_T>;
-//    using left_type = std::pair<RHS_T, reference>;
-//    using right_type = std::pair<LHS_T, reference>;
-//    using pointer = typename std::allocator_traits<Allocator>::pointer;
-//    using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
     using const_iterator = bimap_iterator<LHS_T, RHS_T>;
-//    using iterator_r = typename keyRight_storage::iterator;
-//    using const_iterator_l = typename keyLeft_storage::const_iterator;
-//    using reverse_iterator_l = typename keyLeft_storage::reverse_iterator;
-//    using const_reverse_iterator_l = typename keyLeft_storage::const_reverse_iterator;
 
   private:
     constexpr static bool optimised = SVO;
     std::conditional<SVO,
                      std::map<LHS_T, RHS_T>,
-                     std::map<LHS_T, std::reference_wrapper<value_type const>>>::type lhsMap;
+                     std::map<LHS_T, std::reference_wrapper<value_type>>>::type lhsMap;
     std::conditional<SVO,
                      std::map<RHS_T, LHS_T>,
-                     std::map<RHS_T, std::reference_wrapper<value_type const>>>::type rhsMap;
+                     std::map<RHS_T, std::reference_wrapper<value_type>>>::type rhsMap;
 
 
     struct empty_t{};
@@ -196,8 +188,8 @@ namespace SCL
       else
       {
         valueStorage.emplace_back(std::move(lk), std::move(rk));
-        lhsMap.emplace(valueStorage.back().first,  std::cref(valueStorage.back()));
-        rhsMap.emplace(valueStorage.back().second, std::cref(valueStorage.back()));
+        lhsMap.emplace(valueStorage.back().first,  std::ref(valueStorage.back()));
+        rhsMap.emplace(valueStorage.back().second, std::ref(valueStorage.back()));
       }
     }
 
@@ -219,8 +211,8 @@ namespace SCL
       else
       {
         valueStorage.emplace_back(lk, rk);
-        lhsMap.emplace(lk, std::cref(valueStorage.back()));
-        rhsMap.emplace(rk, std::cref(valueStorage.back()));
+        lhsMap.emplace(lk, std::ref(valueStorage.back()));
+        rhsMap.emplace(rk, std::ref(valueStorage.back()));
       };
     }
 
