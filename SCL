@@ -102,7 +102,6 @@
  * <a href="http://www.gnu.org/licenses/">The GNU Project</a>
  */
 
-#include "include/any.hpp"
 #include "include/array2D.hpp"
 #include "include/bimap.hpp"
 #include "include/circularbuffer.hpp"

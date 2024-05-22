@@ -4,7 +4,9 @@
   // Standard C++ library header files.
 
 #include <algorithm>
+#include <functional>
 #include <iterator>
+#include <list>
 #include <map>
 #include <type_traits>
 #include <unordered_map>
@@ -36,9 +38,11 @@ namespace SCL
 
   private:
     constexpr static bool optimised = SVO;
+    typename
     std::conditional<SVO,
                      std::map<LHS_T, RHS_T>,
                      std::map<LHS_T, std::reference_wrapper<value_type>>>::type lhsMap;
+    typename
     std::conditional<SVO,
                      std::map<RHS_T, LHS_T>,
                      std::map<RHS_T, std::reference_wrapper<value_type>>>::type rhsMap;
@@ -228,7 +232,11 @@ namespace SCL
 //    template<typename _InputIterator,
 //            typename = std::_RequireInputIter<_InputIterator>>
 
+#if (__cplusplus >= 202002L)
     template<typename InputIt> requires std::input_or_output_iterator<InputIt>
+#else
+    template<typename InputIt>
+#endif
     void insert(InputIt first, InputIt last)
     {
       std::for_each(first, last, [&](value_type const &v)
@@ -266,8 +274,8 @@ namespace SCL
   {
   public:
     using iteratored_type = bimap<L, R>;
-    using value_type = iteratored_type::value_type;
-    using internal_iterator = decltype(bimap<L, R>::lhsMap)::const_iterator;
+    using value_type = typename iteratored_type::value_type;
+    using internal_iterator = typename decltype(bimap<L, R>::lhsMap)::const_iterator;
     using const_pointer = value_type const *;
     using const_reference = value_type const &;
     using iterator_category = std::input_iterator_tag;
