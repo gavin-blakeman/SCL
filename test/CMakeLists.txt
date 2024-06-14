@@ -16,6 +16,7 @@ set(SOURCES
 #  multiVector_sorted_test.cpp
   stackHierarchy_test.cpp
   test_bimap.cpp
+  test_circularBuffer.cpp
   )
 
 set(LIBRARIES

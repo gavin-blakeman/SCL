@@ -15,6 +15,7 @@ set(SOURCES
   )
 set(HEADERS
   include/bimap.hpp
+  include/circularBuffer.hpp
   include/config.h
   include/hierarchyBuilder.hpp
   include/mapAsVector.hpp
