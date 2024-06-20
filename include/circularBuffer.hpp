@@ -117,19 +117,15 @@ namespace SCL
      */
     const_reference operator[](size_type index) const
     {
+      RUNTIME_ASSERT(index <= elementCount, "Requesting elements that does not exist.");
+
       index += tailIndex;
       if (index >= buffer.size())
       {
         index %= buffer.size();
       }
-      if (index >= headIndex + (headIndex - tailIndex) % buffer.size())
-      {
-        throw std::out_of_range("Requesting elements that does not exist.");
-      }
-      else
-      {
-        return buffer[index];
-      }
+
+      return buffer[index];
     }
 
     bool empty() const noexcept
