@@ -1,12 +1,12 @@
 ﻿//*********************************************************************************************************************************
 //
-// PROJECT:							Storage Class Library
-// FILE:								vectorSorted.hpp
-// SUBSYSTEM:						Sorted Vector implementation
-// LANGUAGE:						C++20
-// TARGET OS:						None.
-// NAMESPACE:						SCL
-// AUTHOR:							Gavin Blakeman (GGB)
+// PROJECT:Storage Class Library
+// FILE:                vectorSorted.hpp
+// SUBSYSTEM:           Sorted Vector implementation
+// LANGUAGE:            C++20
+// TARGET OS:           None.
+// NAMESPACE:           SCL
+// AUTHOR:              Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
 //                      Copyright 2012-2024 Gavin Blakeman.
@@ -23,9 +23,9 @@
 //                      You should have received a copy of the GNU General Public License along with SCL.  If not, see
 //                      <http://www.gnu.org/licenses/>.
 //
-// OVERVIEW:						This is a templated sorted vector implementation.
+// OVERVIEW:            This is a templated sorted vector implementation.
 //
-// CLASSES INCLUDED:		vector_sorted - Implements an STL style sorted vector.
+// CLASSES INCLUDED:    vector_sorted - Implements an STL style sorted vector.
 //
 //
 // HISTORY:             2015-09-22 GGB - astroManager 2015.09 release
@@ -82,17 +82,11 @@ namespace SCL
     using size_type = typename container_type::size_type;
     using difference_type = typename Allocator::difference_type;
     using compare = Compare;
-    using const_reference = const value_type&;
+    using const_reference = const value_type &;
     using iterator = typename container_type::iterator;
     using const_iterator = typename container_type::const_iterator;
     using reverse_iterator = typename container_type::reverse_iterator;
     using const_reverse_iterator = typename container_type::const_reverse_iterator;
-
-  private:
-    container_type data_;
-    Compare comp_;
-
-  protected:
 
   public:
     constexpr vector_sorted() noexcept(noexcept(Allocator())) : data_() {}
@@ -113,8 +107,21 @@ namespace SCL
     vector_sorted(vector_sorted &&other);
     vector_sorted(vector_sorted &&other, Allocator const &alloc);
 
-    vector_sorted(std::initializer_list<value_type> init, Compare const &comp = Compare(), Allocator const &alloc = Allocator());
-    vector_sorted(std::initializer_list<value_type> init, Allocator const &alloc);
+    vector_sorted(std::initializer_list<value_type> init, Compare const &comp = Compare(), Allocator const &alloc = Allocator()) : comp_(comp)
+    {
+      for (auto &v: init)
+      {
+        insert(v);
+      }
+    }
+
+    vector_sorted(std::initializer_list<value_type> init, Allocator const &alloc)
+    {
+      for (auto &v: init)
+      {
+        insert(v);
+      }
+    }
 
     ~vector_sorted() {}
 
@@ -233,7 +240,7 @@ namespace SCL
 
     constexpr reference back()
     {
-      return data_.front();
+      return data_.back();
     }
 
     /// @brief Returns a reference to the last element in the container.
@@ -244,7 +251,7 @@ namespace SCL
 
     constexpr const_reference back() const
     {
-      return data_.front();
+      return data_.back();
     }
 
     /// @brief    Returns pointer to the underlying array serving as element storage. The pointer is such that range
@@ -613,6 +620,11 @@ namespace SCL
       const_iterator i = lower_bound(begin(), end(), value, comp_);
       return i == end() || comp(value, *i) ? end() : i;
     }
+
+  private:
+    container_type data_;
+    Compare comp_;
+
   };  // Class end.
 
 

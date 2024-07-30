@@ -13,10 +13,10 @@ find_package(Boost COMPONENTS thread unit_test_framework REQUIRED)
 
 set(SOURCES
   main.cpp
-#  multiVector_sorted_test.cpp
   stackHierarchy_test.cpp
   test_bimap.cpp
   test_circularBuffer.cpp
+  test_vectorSorted.cpp
   )
 
 set(LIBRARIES
