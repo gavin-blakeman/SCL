@@ -33,7 +33,7 @@
 //                      2013-01-20 GGB - astroManager 0000.00 release.
 //                      2012-12-31 GGB - File created.
 //
-//*********************************************************************************************************************************
+//*********************************************************************************************************************************/
 
 #ifndef SCL_VECTORSORTED_H
 #define SCL_VECTORSORTED_H
@@ -101,10 +101,10 @@ namespace SCL
     template<class InputIt>
     vector_sorted(InputIt first, InputIt last, Allocator const & alloc()) : data_(alloc) {}
 
-    vector_sorted(vector_sorted const &other);
+    vector_sorted(vector_sorted const &other) = default;
     vector_sorted(vector_sorted const &other, Allocator const &alloc);
 
-    vector_sorted(vector_sorted &&other);
+    vector_sorted(vector_sorted &&other) = default;
     vector_sorted(vector_sorted &&other, Allocator const &alloc);
 
     vector_sorted(std::initializer_list<value_type> init, Compare const &comp = Compare(), Allocator const &alloc = Allocator()) : comp_(comp)
@@ -123,11 +123,11 @@ namespace SCL
       }
     }
 
-    ~vector_sorted() {}
+    ~vector_sorted() = default;
 
-    constexpr vector_sorted &operator=(vector_sorted const &other);
+    constexpr vector_sorted &operator=(vector_sorted const &other) = default;
     constexpr vector_sorted &operator=(vector_sorted &&other) noexcept(std::allocator_traits<Allocator>::is_always_equal::value
-                                                                       && std::is_nothrow_move_assignable<Compare>::value);
+                                                                       && std::is_nothrow_move_assignable<Compare>::value) = default;
     constexpr vector_sorted &operator=(std::initializer_list<value_type> ilist);
 
     constexpr void assign(size_type count, T const &value);
@@ -137,8 +137,6 @@ namespace SCL
     ///        argument is an iterator into *this.
     /// @param[in] first:
     /// @param[in] last:
-    /// @version 2021-11-30/GGB - Function created.
-
     constexpr void assign(InputIt first, InputIt last)
     {
       clear();
@@ -166,8 +164,6 @@ namespace SCL
     /// @param[in] pos: The index to the element.
     /// @returns Reference to the element at pos.
     /// @throws std::out_of_range
-    /// @version 2020-09-04/GGB - Function created.
-    ///
     constexpr reference at(size_type pos)
     {
       return data_.at(pos);
@@ -177,8 +173,6 @@ namespace SCL
     /// @param[in] pos: The index to the element.
     /// @returns Reference to the element at pos.
     /// @throws std::out_of_range
-    /// @version 2020-09-04/GGB - Function created.
-
     constexpr const_reference at(size_type pos) const
     {
       return data_.at(pos);
@@ -252,6 +246,18 @@ namespace SCL
     constexpr const_reference back() const
     {
       return data_.back();
+    }
+
+    /*! @brief     Tests if the specified values in currently included in the vector.
+     *  @param[in] key: The value to test.
+     *  @returns   true if the key is in the collection.
+     *  @throws    noexcept
+     */
+    bool contains(T key) const noexcept
+    {
+      auto i = find(key);
+
+     return (i != end()) && (*i == key);
     }
 
     /// @brief    Returns pointer to the underlying array serving as element storage. The pointer is such that range
@@ -538,6 +544,18 @@ namespace SCL
     constexpr void swap(vector_sorted& other ) noexcept(std::allocator_traits<Allocator>::propagate_on_container_swap::value
                                                   || std::allocator_traits<Allocator>::is_always_equal::value);
 
+    /*! @brief      Erases the element with value equal to key. If no element exists, not element is erased.
+     *  @param[in]  key: The element to delete.
+     *  @returns    An iterator to the element following the deletion. In the case there was no element deleted, iterator
+     *              to end().
+     *  @note       1. Timing in O(N) where N is the number of elements following the deleted item.
+     */
+    iterator erase(T const &key)
+    {
+      iterator rv = find(key);
+      return erase(rv);
+    }
+
 
     /// @brief      Erases a single element as specified by the iterator from the container.
     /// @param[in]  pos: Iterator to the element to remove.
@@ -609,16 +627,22 @@ namespace SCL
     }
 
 
-    /// @brief      Finds the element = val. If no element is found, then the end() is returned.
-    /// @param[in]  value: The value to find.
-    /// @throws     None.
-    /// @version    2020-09-04/GGB - Converted to STL-like container.
-    /// @version    2013-01-01/GGB - Function created.
-
+    /*! @brief      Finds the element = val. If no element is found, then the end() is returned.
+     *  @param[in]  value: The value to find.
+     *  @throws     None
+     */
     iterator find(T const &value)
     {
-      const_iterator i = lower_bound(begin(), end(), value, comp_);
-      return i == end() || comp(value, *i) ? end() : i;
+      return lower_bound(begin(), end(), value, comp_);
+    }
+
+    /*! @brief      Finds the element = val. If no element is found, then the end() is returned.
+     *  @param[in]  value: The value to find.
+     *  @throws     None
+     */
+    const_iterator find(T const &value) const
+    {
+      return  lower_bound(cbegin(), cend(), value, comp_);
     }
 
   private:
