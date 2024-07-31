@@ -13,10 +13,10 @@ find_package(Boost COMPONENTS thread unit_test_framework REQUIRED)
 
 set(SOURCES
   main.cpp
-#  multiVector_sorted_test.cpp
   stackHierarchy_test.cpp
   test_bimap.cpp
   test_circularBuffer.cpp
+  test_vectorSorted.cpp
   )
 
 set(LIBRARIES
@@ -27,11 +27,11 @@ set(LIBRARIES
   mpfr
   xlnt
   )
-  
+
 cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH PARENT_DIR)
 cmake_path(GET PARENT_DIR PARENT_PATH PARENT_PARENT_DIR)
-  
-set(DIRECTORIES  
+
+set(DIRECTORIES
   ${CMAKE_SOURCE_DIR}/GCL
   ${CMAKE_SOURCE_DIR}/fmt/include
   ${CMAKE_SOURCE_DIR}/xlnt
