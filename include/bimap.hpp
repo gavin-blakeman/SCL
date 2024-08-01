@@ -174,6 +174,28 @@ namespace SCL
       };
     }
 
+    /*! @brief      Emplaces element into the container, if the container doesn't already contain an element with an equivalent
+     *              key.
+     *  @param[in]  lk: The LHS key
+     *  @param[in]  rk: The RHS key
+     *  @complexity O(n)
+     *  @throws
+     */
+    void emplace(LHS_T const &lk, RHS_T const &rk)
+    {
+      if constexpr (SVO)
+      {
+        lhsMap.emplace(lk, rk);
+        rhsMap.emplace(rk, lk);
+      }
+      else
+      {
+        valueStorage.emplace_back(lk, rk);
+        lhsMap.emplace(valueStorage.back().first,  std::ref(valueStorage.back()));
+        rhsMap.emplace(valueStorage.back().second, std::ref(valueStorage.back()));
+      }
+    }
+
     /// @brief      Emplaces element into the container, if the container doesn't already contain an element with an equivalent
     ///             key.
     /// @param[in]  lk: The LHS key
