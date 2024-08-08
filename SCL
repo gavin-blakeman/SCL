@@ -105,6 +105,7 @@
 #include "include/array2D.hpp"
 #include "include/bimap.hpp"
 #include "include/circularBuffer.hpp"
+#include "include/circular_biBuffer.hpp"
 #include "include/common.h"
 #include "include/config.h"
 #include "include/hierarchyBuilder.hpp"

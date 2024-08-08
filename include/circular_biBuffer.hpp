@@ -1,12 +1,12 @@
 ﻿//*********************************************************************************************************************************
 //
 // PROJECT:             Storage Class Library (SCL)
-// FILE:                Circular Buffer
+// FILE:                Circular Bi-Directional Bugger
 // TARGET OS:           All
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2017-2024 Gavin Blakeman.
+//                      Copyright 2024 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -20,35 +20,33 @@
 //                      You should have received a copy of the GNU General Public License along with SCL.  If not, see
 //                      <http://www.gnu.org/licenses/>.
 //
-// OVERVIEW:            Implements a circular buffer.
+// OVERVIEW:            Implements a bi-directional circular buffer. IE allows push at both frontand back, but consumption only
+//                      from the front.
 //
-// HISTORY:             2017-07-21/GGB - File Created.
+// HISTORY:             2024-08-08/GGB - File Created.
 //
 //*********************************************************************************************************************************
 
-#ifndef SCL_CIRCULARBUFFER_HPP
-#define SCL_CIRCULARBUFFER_HPP
+#ifndef SCL_CIRCULARBIBUFFER_HPP
+#define SCL_CIRCULARBIBUFFER_HPP
 
-  // Standard libraries
-
+// Standard libraries
 #include <iterator>
 #include <memory>
 #include <mutex>
 #include <shared_mutex>
 
-
-  // SCL Libraries
-
+// SCL Libraries
 #include "common.h"
 #include "config.h"
-  // Miscellaneous libraries.
 
+// Miscellaneous libraries.
 #include <GCL>
 
 namespace SCL
 {
-  /*! @class    circularBuffer
-   *  @brief    Implements a fixed size circular buffer.
+  /*! @class    circular_biBuffer
+   *  @brief    Implements a fixed size circular buffer having the ability to push at either end, but opnly consume from the head.
    *  @details  The Circular Buffer is a fixed size sequence container that allows elements to be pushed to the back of the
    *            container and elements to be popped from the front of the container. FIFO The Circular Buffer can also be referred
    *            to as  a Ring Buffer.
@@ -63,14 +61,16 @@ namespace SCL
    *  @tparam   T: The type to be stored. Must be copy or move constructible.
    *  @tparam   bufferSize: The size of the buffer to allocate.
    *  @tparam   acceptDataWhenFull: true=> The buffer will overwrite the oldest data if full.
+   *  @tparam   reserveFront: The number of slots to reserve at the front.
    *  @tparam   MTA: true=>Separate threads for filling and emptying the buffer.
    */
 
   template<class T,
-           std::size_t bufferSize = 1024,
-           bool acceptDataWhenFull = true,
-           bool MTA = false>
-  class circularBuffer
+  std::size_t bufferSize = 1024,
+  bool acceptDataWhenFull = true,
+  std::size_t reserveFront = 8,
+  bool MTA = false>
+  class circular_biBuffer
   {
   public:
     using value_type = T;
@@ -81,6 +81,7 @@ namespace SCL
     using reference = value_type &;
     using const_reference = value_type const &;
 
+    static constexpr std::size_t frontReserved = reserveFront;
 
   private:
     using mutex_type = std::shared_mutex;
@@ -100,13 +101,13 @@ namespace SCL
      *  @param[in]  extent: The extent of the buffer to create. IE how many elements can it hold.
      *  @throws     std::bad_alloc
      */
-    explicit circularBuffer() {}
+    explicit circular_biBuffer() {}
 
     /*! @brief      Destructor for the circular buffer class.
      *  @details    Iterates the elements between head and tail and destroys them before deleting the storage.
      * @throws      None.
      */
-    ~circularBuffer() {}
+    ~circular_biBuffer() {}
 
     /*! @brief      Returns a reference to the element at the given position in the circularBuffer. The position is relative to the
      *              tail pointer.
@@ -139,7 +140,7 @@ namespace SCL
     bool full() const noexcept
     {
       shared_lock sl(mBuffer);
-      return elementCount == buffer.size();
+      return elementCount >= (buffer.size() - frontReserved);
     }
 
     /*! @brief      Returns the number of elements currently stored n the buffer.
@@ -167,7 +168,6 @@ namespace SCL
     {
       return buffer.size();
     }
-
 
     /*! @brief      Returns a const reference to the last element pushed into the circular buffer.
      *  @returns    const Reference to the last element.
@@ -200,9 +200,9 @@ namespace SCL
       elementCount = 0;
     }
 
-    /*! @brief Returns a reference to the first element in the circularBuffer.
-     *  @returns A reference to the first element.
-     *  @throws std::out_of_range
+    /*! @brief      Returns a reference to the first element in the circularBuffer.
+     *  @returns    A reference to the first element.
+     *  @throws     std::out_of_range
      */
     const_reference front() const
     {
@@ -228,8 +228,48 @@ namespace SCL
       {
         unique_lock ul{mBuffer};
         tailIndex++;
-        tailIndex %= buffer.size();
+        tailIndex = normalise(tailIndex);
         elementCount--;
+      }
+    }
+
+    /*! @brief      Pushes a new value into the front of circular buffer.
+     *  @param[in]  element: The element to add to the circular buffer.
+     *  @throws     noexcept
+     */
+    void push_front(value_type const &element) noexcept
+    {
+      if (size() == capacity())
+      {
+        unique_lock ul{mBuffer};
+        if (acceptDataWhenFull)
+        {
+          if (tailIndex == 0)
+          {
+            tailIndex = buffer.size() - 1;
+          }
+          else
+          {
+            --tailIndex;
+          }
+          buffer[tailIndex] = element;
+          headIndex = tailIndex;
+        }
+      }
+      else
+      {
+        unique_lock ul{mBuffer};
+        if (tailIndex == 0)
+        {
+          tailIndex = buffer.size() - 1;
+        }
+        else
+        {
+          --tailIndex;
+        }
+
+        buffer[tailIndex] = element;
+        elementCount++;
       }
     }
 
@@ -237,7 +277,7 @@ namespace SCL
      *  @param[in]  element: The element to add to the circular buffer.
      *  @throws     noexcept
      */
-    void push(value_type const &element) noexcept
+    void push_back(value_type const &element) noexcept
     {
       unique_lock ul(mBuffer);
       if (elementCount >= buffer.max_size())
@@ -262,18 +302,58 @@ namespace SCL
       }
     }
 
-    /*! @brief      Pushes a new value into the circular buffer.
+    /*! @brief      Pushes a new value into the front of circular buffer.
      *  @param[in]  element: The element to add to the circular buffer.
      *  @throws     noexcept
      */
-    void push(value_type &&element) noexcept
+    void push_front(value_type &&element) noexcept
     {
       if (size() == capacity())
       {
         unique_lock ul{mBuffer};
         if (acceptDataWhenFull)
         {
-          buffer[headIndex++] = element;
+          if (tailIndex == 0)
+          {
+            tailIndex = buffer.size() - 1;
+          }
+          else
+          {
+            --tailIndex;
+          }
+          buffer[tailIndex] = std::move(element);
+          headIndex = tailIndex;
+        }
+      }
+      else
+      {
+        unique_lock ul{mBuffer};
+        if (tailIndex == 0)
+        {
+          tailIndex = buffer.size() - 1;
+        }
+        else
+        {
+          --tailIndex;
+        }
+
+        buffer[tailIndex] = std::move(element);
+        elementCount++;
+      }
+    }
+
+    /*! @brief      Pushes a new value into the back of circular buffer.
+     *  @param[in]  element: The element to add to the circular buffer.
+     *  @throws     noexcept
+     */
+    void push_back(value_type &&element) noexcept
+    {
+      if (size() == capacity())
+      {
+        unique_lock ul{mBuffer};
+        if (acceptDataWhenFull)
+        {
+          buffer[headIndex++] = std::move(element);
           tailIndex = headIndex;
         }
       }
@@ -284,10 +364,7 @@ namespace SCL
         buffer[headIndex++] = std::move(element);
         elementCount++;
       }
-      if (headIndex >= buffer.size())
-      {
-        headIndex %= buffer.size();
-      }
+      headIndex = normalise(headIndex);
     }
 
   private:
@@ -297,12 +374,22 @@ namespace SCL
     size_type tailIndex = 0;                ///< Index of the tail (rear) of the buffer.
 
     /* Prevent move and copy. */
-    circularBuffer(circularBuffer const &) = delete;
-    circularBuffer(circularBuffer &&) = delete;
-    circularBuffer &operator=(circularBuffer const &) = delete;
-    circularBuffer &operator=(circularBuffer &&) = delete;
+    circular_biBuffer(circular_biBuffer const &) = delete;
+    circular_biBuffer(circular_biBuffer &&) = delete;
+    circular_biBuffer &operator=(circular_biBuffer const &) = delete;
+    circular_biBuffer &operator=(circular_biBuffer &&) = delete;
+
+    inline size_type normalise(size_type indx) const noexcept
+    {
+      if (indx >= buffer.size())
+      {
+        indx %= buffer.size();
+      }
+
+      return indx;
+    }
   };
 } // namespace SCL
 
-#endif // SCL_CIRCULARBUFFER_HPP
+#endif // SCL_CIRCULARBIBUFFER_HPP
 
