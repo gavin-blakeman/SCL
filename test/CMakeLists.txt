@@ -17,6 +17,7 @@ set(SOURCES
   test_bimap.cpp
   test_circularBuffer.cpp
   test_vectorSorted.cpp
+  test_trimap.cpp
   )
 
 set(LIBRARIES

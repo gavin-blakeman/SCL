@@ -114,6 +114,7 @@
 #include "include/index2D.hpp"
 #include "include/sparseArray.hpp"
 #include "include/stackHierarchy.hpp"
+#include "include/trimap.hpp"
 #include "include/vector2D.hpp"
 #include "include/vectorSorted.hpp"
 #include "include/sortedHierarchyBuilder.hpp"
