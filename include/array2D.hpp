@@ -55,7 +55,7 @@
 
 #include "common.h"
 #include "config.h"
-#include "error.h"
+//#include "error.h"
 
 #ifdef _MSC_VER
 #pragma warning( disable : 4290 )  /* Disable the warning about C++ exception specifications. */

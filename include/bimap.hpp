@@ -8,7 +8,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2023-2024 Gavin Blakeman.
+//                      Copyright 2023-2025 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -307,12 +307,20 @@ namespace SCL
 
     [[nodiscard]] bool contains_LHS(LHS_T const &lk) const noexcept
     {
+#if __cplusplus >=202002L
       return lhsMap.contains(lk);
+#else
+      return lhsMap.find(lk) != lhsMap.end();
+#endif
     }
 
     [[nodiscard]] bool contains_RHS(RHS_T  const &rk) const noexcept
     {
+#if __cplusplus >=202002L
       return rhsMap.contains(rk);
+#else
+      return rhsMap.find(rk) != rhsMap.end();
+#endif
     }
 
     const_iterator begin() { return const_iterator(*this, lhsMap.begin());}
