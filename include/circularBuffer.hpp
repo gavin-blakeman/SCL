@@ -6,7 +6,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2017-2024 Gavin Blakeman.
+//                      Copyright 2017-2025 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -31,10 +31,17 @@
 
   // Standard libraries
 
+#include <array>
 #include <iterator>
 #include <memory>
 #include <mutex>
 #include <shared_mutex>
+
+#ifdef __FREERTOS__
+#include "include/freeRTOS_mutex.hpp"
+#include "include/freeRTOS_shared_mutex.hpp"
+
+#endif
 
 
   // SCL Libraries
@@ -43,7 +50,9 @@
 #include "config.h"
   // Miscellaneous libraries.
 
+#ifndef __EMBEDDED__
 #include <GCL>
+#endif
 
 namespace SCL
 {
@@ -75,15 +84,20 @@ namespace SCL
   public:
     using value_type = T;
     using storage_type = std::array<value_type, bufferSize>;
-    using size_type = storage_type::size_type;
+    using size_type = typename storage_type::size_type;
     using pointer = value_type *;
     using const_pointer = value_type const *;
     using reference = value_type &;
     using const_reference = value_type const &;
 
-
   private:
+#ifndef __EMBEDDED__
     using mutex_type = std::shared_mutex;
+#else
+#ifdef __FREERTOS__
+    using mutex_type = freeRTOS_shared_mutex<MTX_STATIC, 255>;
+#endif
+#endif
 
     struct empty_t{};
     mutable std::conditional_t<MTA, mutex_type, empty_t> mBuffer;
@@ -93,6 +107,7 @@ namespace SCL
 
     using unique_lock = typename std::conditional_t<MTA, std::unique_lock<mutex_type>, FakeLockGuard<empty_t>>;
     using shared_lock = typename std::conditional_t<MTA, std::shared_lock<mutex_type>, FakeLockGuard<empty_t>>;
+
 
   public:
 
@@ -116,7 +131,9 @@ namespace SCL
      */
     const_reference operator[](size_type index) const
     {
+#ifndef __EMBEDDED__
       RUNTIME_ASSERT(index <= elementCount, "Requesting elements that does not exist.");
+#endif
 
       index += tailIndex;
       if (index >= buffer.size())
@@ -186,7 +203,9 @@ namespace SCL
       }
       else
       {
+#ifndef __EMBEDDED__
         throw std::out_of_range("Circular Buffer empty, cannot access back() element.");
+#endif
       }
     }
 
@@ -214,7 +233,9 @@ namespace SCL
       }
       else
       {
+#ifndef __EMBEDDED__
         throw std::out_of_range("Circular Buffer empty, cannot access front() element.");
+#endif
       }
     }
 

@@ -101,12 +101,14 @@
  * You should have received a copy of the GNU General Public License along with the Astronomy Class Library.  If not, see
  * <a href="http://www.gnu.org/licenses/">The GNU Project</a>
  */
+
+#include "include/bimap.hpp"
+#include "include/circularBuffer.hpp"
  
 #ifdef __EMBEDDED__
-#include "include/bimap.hpp"
 #else
 #include "include/array2D.hpp"
-#include "include/circularBuffer.hpp"
+
 #include "include/circular_biBuffer.hpp"
 #include "include/common.h"
 #include "include/config.h"
