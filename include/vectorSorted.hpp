@@ -9,7 +9,7 @@
 // AUTHOR:              Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2012-2024 Gavin Blakeman.
+//                      Copyright 2012-2026 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -312,10 +312,7 @@ namespace SCL
     /// @throws None.
     /// @version 2020-09-04/GGB - Function created.
 
-    constexpr const_iterator cbegin() const noexcept
-    {
-      return data_.cbegin();
-    }
+    constexpr const_iterator cbegin() const noexcept { return data_.cbegin(); }
 
 
     /// @brief Returns an iterator to the end.
@@ -324,20 +321,14 @@ namespace SCL
     /// @version 2020-09-04/GGB - Converted to STL-like container. Changed to noexcept
     /// @version 2012-12-31/GGB - Function created
 
-    constexpr iterator end() noexcept
-    {
-      return data_.end();
-    }
+    constexpr iterator end() noexcept { return data_.end(); }
 
     /// @brief Returns a const iterator to the end.
     /// @returns An const iterator to the end.
     /// @throws None.
     /// @version 2020-09-04/GGB - Function created.
 
-    constexpr const_iterator end() const noexcept
-    {
-      return data_.cend();
-    }
+    constexpr const_iterator end() const noexcept { return data_.cend(); }
 
     constexpr const_iterator cend() const noexcept { return data_.cend(); }
 
@@ -354,20 +345,14 @@ namespace SCL
     /// @throws     None.
     /// @version    2020-09-04/GGB - Function created.
 
-    [[nodiscard]] bool empty() const noexcept
-    {
-      return data_.empty();
-    }
+    [[nodiscard]] bool empty() const noexcept { return data_.empty(); }
 
     /// @brief      Returns the number of elements in the container. ie std::distance(begin(), end()).
     /// @returns    The number of elements in the container.
     /// @throws     None.
     /// @version    2020-09-04/GGB - Function created.
 
-    constexpr size_type size() const noexcept
-    {
-      return data_.size();
-    }
+    constexpr size_type size() const noexcept { return data_.size(); }
 
     /// @brief      Returns the maximum number of elements the container is able to hold due to system or library implementation
     ///             limitations.
@@ -375,10 +360,7 @@ namespace SCL
     /// @throws     None.
     /// @version    2020-09-04/GGB - Function created.
 
-    constexpr size_type max_size() const noexcept
-    {
-      return data_.max_size();
-    }
+    constexpr size_type max_size() const noexcept { return data_.max_size(); }
 
     /// @brief      Increase the capacity of the vector to a value that's greater or equal to new_cap. If new_cap is greater than
     ///             the current capacity(), new storage is allocated, otherwise the method does nothing.
@@ -389,23 +371,14 @@ namespace SCL
     /// @throws     std::length_error if new_cap > max_size().
     /// @throws     any exception thrown by Allocator::allocate() (typically std::bad_alloc)
     /// @note       If an exception is thrown, this function has no effect (strong exception guarantee).
-    /// @version    2020-09-04/GGB - Updated to STL-like vector.
-    /// @version    2012-12-31/GGB - Function created.
 
-    constexpr void reserve(size_type new_cap)
-    {
-      data_.reserve(new_cap);
-    }
+    constexpr void reserve(size_type new_cap) { data_.reserve(new_cap); }
 
     /// @brief      Returns the number of elements that the container has currently allocated space for.
     /// @returns    Capacity of the currently allocated storage.
     /// @throws     None.
-    /// @version    2020-09-04/GGB - Function created.
 
-    constexpr size_type capacity() const noexcept
-    {
-      return data_.capacity();
-    }
+    constexpr size_type capacity() const noexcept { return data_.capacity(); }
 
     /// @brief      Requests the removal of unused capacity.
     ///             It is a non-binding request to reduce capacity() to size(). It depends on the implementation whether the request
@@ -413,24 +386,15 @@ namespace SCL
     ///             If reallocation occurs, all iterators, including the past the end iterator, and all references to the elements
     ///             are invalidated. If no reallocation takes place, no iterators or references are invalidated.
     /// @throws
-    /// @version    2020-09-04/GGB - Function created.
 
-    constexpr void shrink_to_fit()
-    {
-      data_.shrink_to_fit();
-    }
+    constexpr void shrink_to_fit() { data_.shrink_to_fit(); }
 
     /// @brief      Erases all elements from the container. After this call, size() returns zero.
     ///             Invalidates and references, pointers or iterators referring to contained elements. Any past-the-end iterator
     ///             remains valid.
     /// @throws     None.
-    /// @version    2020-09-04/GGB - Converted to STL-like container.
-    /// @version    2013-01-02/GGB - Function created.
 
-    constexpr void clear() noexcept
-    {
-      data_.clear();
-    }
+    constexpr void clear() noexcept { data_.clear(); }
 
     /// @brief      Copies the value into the correct position in the container to ensure the container remains sorted.
     /// @param[in]  value: The value to insert.

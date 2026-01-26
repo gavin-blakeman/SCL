@@ -10,7 +10,7 @@
 // AUTHOR:							Gavin Blakeman (GGB).
 // LICENSE:             GPLv2
 //
-//                      Copyright 2010, 2013-2025 Gavin Blakeman.
+//                      Copyright 2010, 2013-2026 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -90,7 +90,7 @@
  * @section Legal
  * @author Gavin Blakeman (GGB)
  * @version 2023.11
- * @copyright 2005-2024 Gavin Blakeman
+ * @copyright 2005-2026 Gavin Blakeman
  * @par Licence
  * The Storage Class Library is licensed under the GPLv2. The full text of the GPLv2 can be found in the file license.txt that
  * is distributed with the source of the library.<br>
@@ -104,7 +104,7 @@
 
 #include "include/bimap.hpp"
 #include "include/circularBuffer.hpp"
- 
+
 #ifdef __EMBEDDED__
 #else
 #include "include/array2D.hpp"

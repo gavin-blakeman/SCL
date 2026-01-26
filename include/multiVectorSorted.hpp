@@ -9,7 +9,7 @@
 // AUTHOR:							Gavin Blakeman (GGB)
 // LICENSE:             GPLv2
 //
-//                      Copyright 2023-2024 Gavin Blakeman.
+//                      Copyright 2023-2026 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -123,10 +123,10 @@ namespace SCL
     constexpr void assign(size_type count, T const &value);
     template<class InputIt>
 
-    /// @brief    Replaces the contents with copies of those in the range [first, last). The behavior is undefined if either
-    ///           argument is an iterator into *this.
-    /// @param[in] first:
-    /// @param[in] last:
+    /// @brief      Replaces the contents with copies of those in the range [first, last). The behavior is undefined if either
+    ///             argument is an iterator into *this.
+    /// @param[in]  first:
+    /// @param[in]  last:
     /// @version    2023-11-21/GGB - Function created.
 
     constexpr void assign(InputIt first, InputIt last)
@@ -157,7 +157,7 @@ namespace SCL
     /// @returns    Reference to the element at pos.
     /// @throws     std::out_of_range
     /// @version    2023-11-21/GGB - Function created.
-    ///
+
     constexpr reference at(size_type pos)
     {
       return data_.at(pos);
