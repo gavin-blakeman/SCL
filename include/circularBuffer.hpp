@@ -6,7 +6,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2017-2025 Gavin Blakeman.
+//                      Copyright 2017-2026 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -42,7 +42,6 @@
 #include "include/freeRTOS_shared_mutex.hpp"
 
 #endif
-
 
   // SCL Libraries
 
@@ -172,17 +171,17 @@ namespace SCL
     /*! @brief      Returns the maximum size of the buffer. This is set at compile time and cannot be changed.
      *  @returns    The maximum number of elements that can be stored.
      */
-    size_type max_size() const noexcept
+    static constexpr size_type max_size() noexcept
     {
-      return buffer.size();
+      return bufferSize;
     }
 
     /*! @brief      Returns the maximum size of the buffer. This is set at compile time and cannot be changed.
      *  @returns    The maximum number of elements that can be stored.
      */
-    size_type capacity() const noexcept
+    static constexpr size_type capacity() noexcept
     {
-      return buffer.size();
+      return bufferSize;
     }
 
 

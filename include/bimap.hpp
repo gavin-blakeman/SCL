@@ -8,7 +8,7 @@
 // AUTHOR:              Gavin Blakeman
 // LICENSE:             GPLv2
 //
-//                      Copyright 2023-2025 Gavin Blakeman.
+//                      Copyright 2023-2026 Gavin Blakeman.
 //                      This file is part of the Storage Class Library (SCL)
 //
 //                      SCL is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -22,7 +22,7 @@
 //                      You should have received a copy of the GNU General Public License along with SCL.  If not, see
 //                      <http://www.gnu.org/licenses/>.
 //
-// OVERVIEW:
+// OVERVIEW:						Implements a bi-directional map, allowing fast lookup in either direction.
 //
 // HISTORY:             2023-11-17//GGB - File Created.
 //

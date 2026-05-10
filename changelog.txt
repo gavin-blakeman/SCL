@@ -1,4 +1,8 @@
-﻿2022-06
+﻿2026-05
+-------
+ADD					Class circular_buffer_lf - Lock free circular buffer
+
+2022-06
 ------
 BREAKING:   Move class any to GCL library.
 

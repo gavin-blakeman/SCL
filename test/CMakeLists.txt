@@ -4,7 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.16 FATAL_ERROR)
 
 PROJECT(SCL_tests)
 
-SET(CMAKE_CXX_STANDARD 20)
+SET(CMAKE_CXX_STANDARD 23)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 SET(EXECUTABLE_OUTPUT_PATH ${LIBRARY_OUTPUT_PATH}/test)
@@ -16,6 +16,7 @@ set(SOURCES
   stackHierarchy_test.cpp
   test_bimap.cpp
   test_circularBuffer.cpp
+  test_circularBuffer_SPMC.cpp
   test_vectorSorted.cpp
   test_trimap.cpp
   )

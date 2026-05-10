@@ -46,7 +46,7 @@
 namespace SCL
 {
   /*! @class    circular_biBuffer
-   *  @brief    Implements a fixed size circular buffer having the ability to push at either end, but opnly consume from the head.
+   *  @brief    Implements a fixed size circular buffer having the ability to push at either end, but only consume from the head.
    *  @details  The Circular Buffer is a fixed size sequence container that allows elements to be pushed to the back of the
    *            container and elements to be popped from the front of the container. FIFO The Circular Buffer can also be referred
    *            to as  a Ring Buffer.

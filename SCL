@@ -3,7 +3,7 @@
 // PROJECT:							Storage Class Library
 // FILE:                SCL
 // SUBSYSTEM:						Common Include file for the storage class library.
-// LANGUAGE:						C++
+// LANGUAGE:						C++23
 // TARGET OS:						None.
 // LIBRARY DEPENDANCE:	GCL, MCL.
 // NAMESPACE:						SCL
@@ -26,7 +26,8 @@
 //
 // OVERVIEW:
 //
-// HISTORY:             2020-09-04 GGB - Updated vector_sorted to full STL compliance.
+// HISTORY:             2026-05-09 GGB - Added the LRU class.
+//											2020-09-04 GGB - Updated vector_sorted to full STL compliance.
 //                      2020-02-16 GGB - Added vector2D and index2D for use with warGame.wt
 //                      2015-09-22 GGB - astroManager 2015.09 release
 //
@@ -39,7 +40,7 @@
  * @mainpage Storage Class Library (SCL).
  * @section Introduction
  * The Storage Class Library implements a number of classes that have been developed as storage classes.<br>
- * The library is written in C++20.<br>
+ * The library is written in C++23.<br>
  * The library is written as an operating system independent library.<br>
  *
  * @section Containers
@@ -79,8 +80,8 @@
  * The library is still under active development and is being expanded and improved.
  * @par Note
  * The classes within this library have been in development from 2005. As a result, all the code is not written using the
- * C++20 functionality. There is an opportunity to "clean" up the code by updating the code to reflect the C++20 standard.
- * All new code that is being developed is written to the C++20 standard.<br>
+ * C++23 functionality. There is an opportunity to "clean" up the code by updating the code to reflect the C++20 standard.
+ * All new code that is being developed is written to the C++23 standard.<br>
  * Any C string functions will be phased out over time. Any new code should not include C string functions, but should rather use
  * the C++ std::string classes.
  * @par Reporting Bugs
@@ -98,7 +99,7 @@
  * License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.<br>
  * The Storage Class Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>
- * You should have received a copy of the GNU General Public License along with the Astronomy Class Library.  If not, see
+ * You should have received a copy of the GNU General Public License along with the Storage Class Library.  If not, see
  * <a href="http://www.gnu.org/licenses/">The GNU Project</a>
  */
 
@@ -108,11 +109,12 @@
 #ifdef __EMBEDDED__
 #else
 #include "include/array2D.hpp"
-
+#include "include/circularBuffer_SPMC.hpp"
 #include "include/circular_biBuffer.hpp"
 #include "include/common.h"
 #include "include/config.h"
 #include "include/hierarchyBuilder.hpp"
+#include "include/LRU.hpp"
 #include "include/mapAsVector.hpp"
 #include "include/multiVectorSorted.hpp"
 #include "include/index2D.hpp"
