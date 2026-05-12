@@ -1,4 +1,4 @@
-﻿# Tests for MCL
+﻿# Tests for SCL
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.16 FATAL_ERROR)
 

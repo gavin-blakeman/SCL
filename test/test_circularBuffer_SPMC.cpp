@@ -10,115 +10,59 @@
 #include "include/circularBuffer_SPMC.hpp"
 #include <GCL>
 
-BOOST_AUTO_TEST_SUITE(circularBuffer_lf_test)
+BOOST_AUTO_TEST_SUITE(circularBuffer_SPMC_test)
 
 BOOST_AUTO_TEST_CASE(construct_and_destruct)
 {
   using namespace SCL;
 
-  std::unique_ptr<circular_buffer_SPMC<int, 1024, true>> intTest = std::make_unique<circular_buffer_SPMC<int, 1024, true>>();
-  circular_buffer_SPMC<char, 2048, false> charTest;
+  std::unique_ptr<circular_buffer_SPMC<int, 1024>> intTest = std::make_unique<circular_buffer_SPMC<int, 1024>>();
 
-  BOOST_TEST(intTest->capacity() == 1024);
-  BOOST_TEST(charTest.capacity() == 2048);
-  BOOST_TEST(intTest->size() == 0);
-  BOOST_TEST(charTest.size() == 0);
+  BOOST_CHECK_EQUAL(intTest->max_size(), 1023);
+  BOOST_CHECK_EQUAL(intTest->size(), 0);
 
-  intTest.reset();
+
+  circular_buffer_SPMC<char, 2000> charTest;
+  BOOST_CHECK_EQUAL(charTest.max_size(), 2047);
+  BOOST_CHECK_EQUAL(charTest.size(), 0);
 }
 
-BOOST_AUTO_TEST_CASE(capacity)
-{
-	SCL::circular_buffer_SPMC<int, 4, true> intTest;
-	BOOST_TEST(intTest.capacity() == 4);
-}
-
-BOOST_AUTO_TEST_CASE(max_size)
-{
-	SCL::circular_buffer_SPMC<int, 4, true> intTest;
-	BOOST_TEST(intTest.max_size() == 4);
-}
-
-BOOST_AUTO_TEST_CASE(push_accept_when_full)
+BOOST_AUTO_TEST_CASE(push_copy)
 {
   using namespace SCL;
 
-  circular_buffer_SPMC<int, 4, true> intTest;
+  circular_buffer_SPMC<int, 3> intTest;
+  BOOST_CHECK_EQUAL(intTest.max_size(), 3);
 
-  BOOST_TEST(intTest.push(1));
-  BOOST_TEST(intTest.push(2));
-  BOOST_TEST(intTest.push(3));
-  BOOST_TEST(intTest.push(4));
-  BOOST_TEST(intTest.capacity() == 4);
-  BOOST_TEST(intTest.size() == 4);
-  BOOST_TEST(intTest.push(5));
-  BOOST_TEST(intTest.size() == 4);
-
-  intTest.clear();
-  BOOST_TEST(intTest.empty());
-  BOOST_TEST(intTest.size() == 0);
-  BOOST_TEST(intTest.capacity() == 4);
-}
-
-BOOST_AUTO_TEST_CASE(push_not_accept_when_full)
-{
-  using namespace SCL;
-
-  circular_buffer_SPMC<int, 4, false> intTest;
-
-  BOOST_TEST(intTest.push(1));
-  BOOST_TEST(intTest.push(2));
-  BOOST_TEST(intTest.push(3));
-  BOOST_TEST(intTest.push(4));
-  BOOST_TEST(intTest.capacity() == 4);
-  BOOST_TEST(intTest.size() == 4);
-  BOOST_TEST(!intTest.push(5));
-  BOOST_TEST(intTest.size() == 4);
-
-  int v;
-  BOOST_TEST(intTest.pop(v));
-  BOOST_TEST(v == 1);
-  BOOST_TEST(intTest.pop(v));
-  BOOST_TEST(v == 2);
-  BOOST_TEST(intTest.pop(v));
-  BOOST_TEST(v == 3);
-  BOOST_TEST(intTest.pop(v));
-  BOOST_TEST(v == 4);
-  BOOST_TEST(!intTest.pop(v));
-
-  intTest.clear();
-  BOOST_TEST(intTest.empty());
-  BOOST_TEST(intTest.size() == 0);
-  BOOST_TEST(intTest.capacity() == 4);
+  BOOST_CHECK(intTest.push(1));
+  BOOST_CHECK(intTest.push(2));
+  BOOST_CHECK(intTest.push(3));
+  BOOST_REQUIRE(!intTest.push(4));
+  BOOST_CHECK_EQUAL(intTest.size(), 3);
 }
 
 BOOST_AUTO_TEST_CASE(pop)
 {
   using namespace SCL;
 
-  circular_buffer_SPMC<int, 4, true> intTest;
+  circular_buffer_SPMC<int, 4> intTest;
 
-  BOOST_TEST(intTest.push(1));
-  BOOST_TEST(intTest.push(2));
-  BOOST_TEST(intTest.push(3));
-  BOOST_TEST(intTest.push(4));
-  BOOST_TEST(intTest.capacity() == 4);
-  BOOST_TEST(intTest.size() == 4);
+  intTest.push(1);
+  intTest.push(2);
+  intTest.push(3);
 
   int v;
   BOOST_TEST(intTest.pop(v));
   BOOST_TEST(v == 1);
-  BOOST_TEST(intTest.size() == 3);
-  BOOST_TEST(intTest.pop(v));
-  BOOST_TEST(v == 2);
   BOOST_TEST(intTest.size() == 2);
   BOOST_TEST(intTest.pop(v));
-  BOOST_TEST(v == 3);
+  BOOST_TEST(v == 2);
   BOOST_TEST(intTest.size() == 1);
   BOOST_TEST(intTest.pop(v));
-  BOOST_TEST(v == 4);
+  BOOST_TEST(v == 3);
   BOOST_TEST(intTest.size() == 0);
   BOOST_TEST(!intTest.pop(v));
+  BOOST_TEST(intTest.size() == 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
