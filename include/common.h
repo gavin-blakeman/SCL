@@ -46,12 +46,13 @@
 
 namespace SCL
 {
-
+#ifndef __EMBEDDED__
   typedef std::uint8_t base_t;
 
   std::string const SCL_LIBNAME       = "SCL";
 
   std::string getVersionString();
+#endif 
 }
 
 #endif // SCL_COMMON_H

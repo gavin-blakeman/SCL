@@ -22,3 +22,5 @@ test/.cproject
 
 test/.project
 /build/
+.cproject
+.project
